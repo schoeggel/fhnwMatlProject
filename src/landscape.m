@@ -7,12 +7,12 @@ function landscape()
 % um diesen Zufallsbereich weicht der Geländepunkt vom Mittelwert der
 % seiner Nachbarn ab (100 heisst, der Punkt kann um +- 50 abweichen)
 JITTER = 40;            % maximalabweichung vom mittelwert der 2 nachbarn, wenn ein neuer punkt gerechent wird
-JITTERBALANCE = 0.75;    %0.5 bedeutet, der Jitter ist nach oben und unten gleich verteilt. 1= 100% nach oben.
+JITTERBALANCE = 0.75;   %0.5 bedeutet, der Jitter ist nach oben und unten gleich verteilt. 1= 100% nach oben.
 DAEMPFUNG= 1.4;         %Jitter wird nach jeder iteration gedämpft        
 BERGOFFSET = 45;        % wie viel höher ist die Bergspitze
 YLIMITS = [5 85];       % Keine Punkte ausserhalb [von bis] zugelassen. 
 PLATFORMOFFSET=+5;      % die spieler-orte // 
-POSTSMOOTHING=110;      % unterhalb bergrenze wird nachträglich geglättet
+POSTSMOOTHING= 10;      % unterhalb bergrenze wird nachträglich geglättet
 FELSUEBERGANG=[50 70];% zwischen 60 und 90 Höhe passiert der Felsübergang, keine Glättung mehr
 
 HYSTERESIS=10;          % Hysterese zur Felsgrenze
