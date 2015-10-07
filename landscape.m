@@ -7,13 +7,13 @@ function landscape()
 % um diesen Zufallsbereich weicht der Geländepunkt vom Mittelwert der
 % seiner Nachbarn ab (100 heisst, der Punkt kann um +- 50 abweichen)
 JITTER = 40;            % maximalabweichung vom mittelwert der 2 nachbarn, wenn ein neuer punkt gerechent wird
-JITTERBALANCE = 0.75;   % z 0.5 bedeutet, der Jitter ist nach oben und unten gleich verteilt. 1= 100% nach oben.
+JITTERBALANCE = 0.75;    %0.5 bedeutet, der Jitter ist nach oben und unten gleich verteilt. 1= 100% nach oben.
 DAEMPFUNG= 1.4;         %Jitter wird nach jeder iteration gedämpft        
 BERGOFFSET = 45;        % wie viel höher ist die Bergspitze
 YLIMITS = [5 85];       % Keine Punkte ausserhalb [von bis] zugelassen. 
-PLATFORMOFFSET=+5;      % die spieler-orte
+PLATFORMOFFSET=+5;      % die spieler-orte // 
 POSTSMOOTHING=110;      % unterhalb bergrenze wird nachträglich geglättet
-FELSUEBERGANG=[50 70];  % zwischen 60 und 90 Höhe passiert der Felsübergang, keine Glättung mehr
+FELSUEBERGANG=[50 70];% zwischen 60 und 90 Höhe passiert der Felsübergang, keine Glättung mehr
 
 HYSTERESIS=10;          % Hysterese zur Felsgrenze
 max_iterations=6;       % 5-8 haben sich bewährt. Erzeugt polygon mit (3+2^max_iterations) Ecken
@@ -22,7 +22,7 @@ max_iterations=6;       % 5-8 haben sich bewährt. Erzeugt polygon mit (3+2^max_i
 %% Limits für max_iterations durchsetzten
 max_iterations=floor(max_iterations);
 if (max_iterations < 1) iterations = 1; end
-if (max_iterations > 9) iterations = 9; end  % 1+2^9 Punkte reichen aus!
+if (max_iterations > 9) iterations = 9;end  % 1+2^9 Punkte reichen aus!
 
 % Vektor initialisieren                   
 terrain=zeros(max_iterations,2^max_iterations+1);
@@ -56,8 +56,8 @@ for rowindex=2:1:max_iterations   %für jede iteration gibts eine neue Zeile  in 
             
             terrain(rowindex,colindex)= (left+right)/2 + (rand*JITTER-(JITTER*(1-JITTERBALANCE)))/DAEMPFUNG^((rowindex-2.4)*DAEMPFUNG^2.2);
             
-            % if terrain(rowindex,colindex) < YLIMITS(1)  terrain(rowindex,colindex)= YLIMITS(1);end
-            % if terrain(rowindex,colindex) > YLIMITS(2)  terrain(rowindex,colindex)= YLIMITS(2);end
+%            if terrain(rowindex,colindex) < YLIMITS(1)  terrain(rowindex,colindex)= YLIMITS(1);end
+%           if terrain(rowindex,colindex) > YLIMITS(2)  terrain(rowindex,colindex)= YLIMITS(2);end
         end
    end
 % debug: plot(terrain(rowindex,1:2^rowindex+1));axis([1 inf 0 100])
