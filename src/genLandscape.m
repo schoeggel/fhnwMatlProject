@@ -1,4 +1,4 @@
-function landscape()
+function [terrainshapeX terrainshapeY] = landscape()
 % Iteration muss zwingend >= 1 sein. im ersten Druchlauf werden 3
 % Ecken des Berges gesetzt (Linker Rand, Mitte(Berg) und  rechter Rand)
 % im 4. Durchlauf werden Korrekturen vorgenommen, Enden flächer etc.
@@ -129,12 +129,14 @@ colormap(0.4*summer+0.4*flipud(pink)+0.1*flipud(winter));
 %sky
 x = [0 64 64 0];
 y = [0  0 120  120];
-patch(x,y,[0.6 0.9 1]);
+patch(x,y,  [0.6 0.9 1]);
 
 %terrain
-patch(terrainshapeX,terrainshapeY, c,'EdgeColor','interp','MarkerFaceColor','flat');
+%patch(terrainshapeX,terrainshapeY, c,'EdgeColor','interp','MarkerFaceColor','flat');
+%terr=patch(terrainshapeX,terrainshapeY, c,'EdgeColor','interp','MarkerFaceColor','flat');
 axis([1 inf 0 120])
 
+terrain=[terrainshapeX terrainshapeY];
 
 end
 
