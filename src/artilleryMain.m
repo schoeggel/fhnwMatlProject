@@ -62,4 +62,7 @@ player2.Y = player2.shapeY + terrainshapeY(63);
 patch(player1.X, player1.Y,'g')
 patch(player2.X, player2.Y,'y')
 
+answer=gui(1)
+
+
 
