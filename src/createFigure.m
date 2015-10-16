@@ -25,8 +25,8 @@ function [fighandler] = createFigure()
  FIGURE_HEIGHT = 750;
  FIGURE_COLOR = [.15, .15, .15];
  AXIS_COLOR = [0.6 0.9 1]; % Hellblau Himmel
- PLOT_W = 200; %width in plot units. this will be main units for program
- PLOT_H = 324; %height
+ PLOT_W = 324; %width in plot units. this will be main units for program
+ PLOT_H = 200; %height
  FONT = 'Courier'; 
  MESSAGE_SPACE = 15; %spacing between message lines
  LARGE_TEXT = 18; %text sizes
@@ -85,6 +85,8 @@ function [fighandler] = createFigure()
     set(axisTitle, 'FontName', FONT,'FontSize', LARGE_TEXT);
     set(axisTitle, 'Color', TITLE_COLOR);
     
+    colormap(0.4*summer+0.4*flipud(pink)+0.1*flipud(winter));
+   
     hold on;
 fighandler=gcf;
 end

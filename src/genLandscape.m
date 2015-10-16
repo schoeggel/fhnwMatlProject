@@ -1,4 +1,4 @@
-function [terrainshapeX terrainshapeY] = landscape(resolution)
+function [fittingTerrainX fittingTerrainY] = landscape(resolution)
 % resolution = [x] <== auf diese x-auflösung wird gestreckt.
 
 % Iteration muss zwingend >= 1 sein. im ersten Druchlauf werden 3
@@ -88,9 +88,9 @@ terrain=terrain-lowestpoint+YLIMITS(1);
 
 %neuen höchsten Punkt suchen, wenn höher als limite, wird das ganze terrain
 %zusammengestaucht
-highestpoint=max(terrain(max_iterations,:))
+highestpoint=max(terrain(max_iterations,:));
 if highestpoint > YLIMITS(2)
-    terrain=terrain/(highestpoint/YLIMITS(2))
+    terrain=terrain/(highestpoint/YLIMITS(2));
 end
 
 
@@ -124,13 +124,23 @@ end
 terrainshapeY = [0, (contour_mix), 0];                                              % die interssante zeile übernehmen vorne ein und hinten zwei 0 als y-wert 
 terrainshapeX = [0, 0:1:size(terrainshapeY,2)-3, size(terrainshapeY,2)-3 ];      % die X-werte füllen, am schluss wieder auf x=0 weil für polygon
 c=terrainshapeY;
-colormap(0.4*summer+0.4*flipud(pink)+0.1*flipud(winter));
 terrain=[terrainshapeX terrainshapeY];
 
 
+%% Stretch to required resolution
+ 
+ PLOT_W = 200; %width in plot units. this will be main units for program
+ PLOT_H = 324;
 
+n=size(terrainshapeX,2);
+StretchFactorX = 324 / n;
+StretchFactorY = 200 / n;
+%fittingTerrainX = interp1(1:n, terrainshapeX, linspace(1, n, StretchFactorX*n), 'nearest');
+%fittingTerrainY = interp1(1:n, terrainshapeY, linspace(1, n, StretchFactorX*n), 'nearest');
+fittingTerrainX=terrainshapeX.*StretchFactorX;
+fittingTerrainY=terrainshapeY.*2;
 
-
+terrain=[fittingTerrainX fittingTerrainY];
 end
 
 

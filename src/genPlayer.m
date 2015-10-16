@@ -8,9 +8,14 @@ function [x y] = genPlayer(nr)
 if nr <1
     x=[0 4 4 2 2 0 0];
     y=[0 0 3 3 5 5 0];
+    x=x-2;  % in mitte positionieren
+    y=y-2.5;
+    
 else
-    x=[0 -4 -4 -2 -2 0 0]
-    y=[0 0 3 3 5 5 0]
+    x=[0 -4 -4 -2 -2 0 0];
+    y=[0 0 3 3 5 5 0];
+    x=x+2;  % in mitte positionieren
+    y=y-2.5;
 end
 
 end
