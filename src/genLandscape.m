@@ -1,4 +1,6 @@
-function [terrainshapeX terrainshapeY] = landscape()
+function [terrainshapeX terrainshapeY] = landscape(resolution)
+% resolution = [x] <== auf diese x-auflösung wird gestreckt.
+
 % Iteration muss zwingend >= 1 sein. im ersten Druchlauf werden 3
 % Ecken des Berges gesetzt (Linker Rand, Mitte(Berg) und  rechter Rand)
 % im 4. Durchlauf werden Korrekturen vorgenommen, Enden flächer etc.
@@ -98,7 +100,7 @@ contour_soft=contour_raw;               %Diese Version wird geglättet
 contour_mix=contour_raw;                %Diese Version wird die gemischte
 
 for s=1:floor(POSTSMOOTHING/100*2^max_iterations)   % so oft durchlaufen, wie konfiguriert ist
-    for colindex=2:1:2^rowindex % Letzte Zeile ist relevant ==> glätten, aber Bergspitzen / Felsen unberührt lassen
+    for colindex=2:1:2^rowindex % Letzte Zeile ist relevant ==> glätten
             mittelwert=(contour_soft(colindex-1)+contour_soft(colindex+1))/2; % Mittelwert von der 2 nachbarpunkte
             difference = contour_soft(colindex)-mittelwert; % Abweichung gegenüber dem mittel der 2 Nachbarpunkte
             contour_soft(colindex)= contour_soft(colindex)-0.1*(difference); %Angleichen in kleinen Schritten
@@ -118,25 +120,16 @@ for colindex=1:1:size(contour_raw,2)
 end
 
 
-%clear figure, prepare poygon vertex
-clc
-clf
+% prepare polygon vertex
 terrainshapeY = [0, (contour_mix), 0];                                              % die interssante zeile übernehmen vorne ein und hinten zwei 0 als y-wert 
 terrainshapeX = [0, 0:1:size(terrainshapeY,2)-3, size(terrainshapeY,2)-3 ];      % die X-werte füllen, am schluss wieder auf x=0 weil für polygon
 c=terrainshapeY;
 colormap(0.4*summer+0.4*flipud(pink)+0.1*flipud(winter));
-
-%sky
-x = [0 64 64 0];
-y = [0  0 120  120];
-patch(x,y,  [0.6 0.9 1]);
-
-%terrain
-%patch(terrainshapeX,terrainshapeY, c,'EdgeColor','interp','MarkerFaceColor','flat');
-%terr=patch(terrainshapeX,terrainshapeY, c,'EdgeColor','interp','MarkerFaceColor','flat');
-axis([1 inf 0 120])
-
 terrain=[terrainshapeX terrainshapeY];
+
+
+
+
 
 end
 

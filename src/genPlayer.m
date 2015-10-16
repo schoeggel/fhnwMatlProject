@@ -2,7 +2,7 @@ function [x y] = genPlayer(nr)
 %GENPLAYER Summary of this function goes here
 %   Detailed explanation goes here
 % Liefert [x y] des panzers. 
-% wenn nr >1 dann ist der panzer invers
+% wenn nr >1 dann ist der panzer invers (Player L und Player R)
 
 %simpler "panzer":
 if nr <1
