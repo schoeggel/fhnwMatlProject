@@ -1,6 +1,8 @@
 function [answer] = gui(playernr)
 %GUI Summary of this function goes here
 %   Detailed explanation goes here
+% Obsolet
+
 
 prompt = {'angle:','power:'};
 dlg_title = strcat('Player:',num2str(playernr));

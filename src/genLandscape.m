@@ -18,7 +18,7 @@ POSTSMOOTHING=110;      % unterhalb bergrenze wird nachträglich geglättet
 FELSUEBERGANG=[50 70];% zwischen 60 und 90 Höhe passiert der Felsübergang, keine Glättung mehr
 
 HYSTERESIS=10;          % Hysterese zur Felsgrenze
-max_iterations=6;       % 5-8 haben sich bewährt. Erzeugt polygon mit (3+2^max_iterations) Ecken
+max_iterations=6;       % auf 6 stehen lassen! Erzeugt polygon mit (3+2^max_iterations) Ecken
 
 
 %% Limits für max_iterations durchsetzten
@@ -52,17 +52,12 @@ for rowindex=2:1:max_iterations   %für jede iteration gibts eine neue Zeile  in 
             % immer kleiner werden. Um zu Beginn wenig zu dämpfen und
             % später sehr stark, wird die DAEMPFUNG^ITERATION verwendet.
             % die Korrektur an der Iteration (rowidex-1.8) stellt quasi den
-            % Arbeitspunkt der Dämpfung ein.
-            %terrain(rowindex,colindex)= (left+right)/2 + (rand*JITTER-(JITTER/2))/DAEMPFUNG^((rowindex-2)*DAEMPFUNG^2.2);
-            %terrain(rowindex,colindex)= (left+right)/2 + (rand*JITTER-(JITTER/3.7))/DAEMPFUNG^(rowindex-2);
-            
+            % Arbeitspunkt der Dämpfung ein.    
             terrain(rowindex,colindex)= (left+right)/2 + (rand*JITTER-(JITTER*(1-JITTERBALANCE)))/DAEMPFUNG^((rowindex-2.4)*DAEMPFUNG^2.2);
-            
-%            if terrain(rowindex,colindex) < YLIMITS(1)  terrain(rowindex,colindex)= YLIMITS(1);end
-%           if terrain(rowindex,colindex) > YLIMITS(2)  terrain(rowindex,colindex)= YLIMITS(2);end
+
         end
    end
-% debug: plot(terrain(rowindex,1:2^rowindex+1));axis([1 inf 0 100])
+
    
    % *Ein paar Korrekturen für die Positionierung, es geht
    % am einfachsten in der 4. Iteration, wenn 17 Punkte gesetzt sind:
@@ -120,6 +115,8 @@ for colindex=1:1:size(contour_raw,2)
 end
 
 
+
+
 % prepare polygon vertex
 terrainshapeY = [0, (contour_mix), 0];                                              % die interssante zeile übernehmen vorne ein und hinten zwei 0 als y-wert 
 terrainshapeX = [0, 0:1:size(terrainshapeY,2)-3, size(terrainshapeY,2)-3 ];      % die X-werte füllen, am schluss wieder auf x=0 weil für polygon
@@ -139,6 +136,18 @@ StretchFactorY = 200 / n;
 %fittingTerrainY = interp1(1:n, terrainshapeY, linspace(1, n, StretchFactorX*n), 'nearest');
 fittingTerrainX=terrainshapeX.*StretchFactorX;
 fittingTerrainY=terrainshapeY.*2;
+
+
+%add support for player
+%bei den punkten x(5)( und x(62) ist die supportmitte, geht jeweils 1 nach
+%vorne und 1 nach hinten
+offset=5; % wie weit vom Bildrand entfernt ist der Support-Mittelpunkt?
+fittingTerrainY(1, offset-1:offset+1)=max(fittingTerrainY(1,offset-1:offset+1));
+
+offset=67-offset;
+fittingTerrainY(1, offset-1:offset+1)=max(fittingTerrainY(1,offset-1:offset+1));
+
+
 
 terrain=[fittingTerrainX fittingTerrainY];
 end

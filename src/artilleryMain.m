@@ -58,20 +58,21 @@ axis([1 300 0 300])
 [player2.shapeX, player2.shapeY] = genPlayer(5);
 
 %xy = Position+polygon vertices
-player1.X = player1.shapeX + 10;
+player1.X = player1.shapeX + 15;
 player2.X = player2.shapeX + 290;
-player1.Y = player1.shapeY + terrainshapeY(5);
-player2.Y = player2.shapeY + terrainshapeY(62);
+player1.Y = player1.shapeY + terrainshapeY(5) + 3;
+player2.Y = player2.shapeY + terrainshapeY(62) +3 ;
 
 %draw tanks
 patch(player1.X, player1.Y,'g')
 patch(player2.X, player2.Y,'y')
     
 
-answer=gui(1)
+%answer=gui(1)
 t = 0:1/280:pi;
 x = 11:1:290
 y = terrainshapeY(5) + 10 +180*sin(4*t);
-comet(x,y)
+%comet(x,y)
+
 %PlotComet_3D(x,y);
 
