@@ -21,7 +21,10 @@ close all
 clear all
 clc
 globals();
-
+mousedown = false;
+GAMESTATE_PLAYERINPUT = true
+power=0;
+GAMESTATE_FIRE= false
 
 %% CONSTANTS                                
 %#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
@@ -57,33 +60,103 @@ axis([1 300 0 300])
 [player1.shapeX, player1.shapeY] = genPlayer(-1);
 [player2.shapeX, player2.shapeY] = genPlayer(5);
 
-%xy = Position+polygon vertices
-player1.X = player1.shapeX + 15;
-player2.X = player2.shapeX + 290;
-player1.Y = player1.shapeY + terrainshapeY(5) + 3;
-player2.Y = player2.shapeY + terrainshapeY(62) +3 ;
+%Player center-positions
+player1.posX = 15
+player2.posX = 290
+player1.posY = terrainshapeY(5) + 3
+player2.posY = terrainshapeY(62) +3 
+
+% translate player polgon to player position
+player1.polygonX = player1.shapeX + player1.posX;
+player2.polygonX = player2.shapeX + player2.posX;
+player1.polygonY = player1.shapeY + player1.posY;
+player2.polygonY = player2.shapeY + player2.posY ;
 
 %draw tanks
-patch(player1.X, player1.Y,'g')
-patch(player2.X, player2.Y,'y')
+patch(player1.polygonX, player1.polygonY,'g')
+patch(player2.polygonX, player2.polygonY,'y')
     
 
+% Enable Mouse interaction
+set(fig,'WindowButtonDownFcn',@mymousedowncallback)
+set(fig,'WindowButtonUpFcn',@mymouseupcallback)
+
+
+
+
 %Polling schleife. Falls Mouse down, zählt die Powerbar nach oben
+POWERTIMER=0
+%pause(1.5)
+GAMESTATE_PLAYERINPUT
 
-
-
-
-set(fig,'WindowButtonDownFcn',@mytestcallback)
-function mytestcallback(hObject,~)
- mouseposition = get(gca, 'CurrentPoint');
-    mx  = mouseposition(1,1);
-    my  = mouseposition(1,2);
- disp(['You clicked X:',num2str(mx),', Y:',num2str(my)]);
-%disp(mouseposition);
-
+while GAMESTATE_PLAYERINPUT && strcmp(fig.Name,'Artillery')
+    pause(0.01);
+    if mousedown
+       POWERTIMER=POWERTIMER+1;
+       updatePowerBar(POWERTIMER/180);
+    end
+    
+    if GAMESTATE_FIRE
+        GAMESTATE_PLAYERINPUT = false;
+        POWERTIMER
+        gunfire(1,player1.posY+10,mouseposition,100);
+        GAMESTATE_FIRE = false;
+        GAMESTATE_PLAYERINPUT = true;
+        POWERTIMER=0;
+        
+    end
+    
 end
 
 
+
+
+
+
+
+
+function mymousedowncallback(hObject,~)
+    if GAMESTATE_PLAYERINPUT
+        mouseposition = get(gca, 'CurrentPoint');
+        mx  = mouseposition(1,1);
+        my  = mouseposition(1,2);
+        disp(['You clicked X:',num2str(mx),', Y:',num2str(my)]);
+        mousedown=true;
+        tic
+    end
+end
+
+
+
+
+function mymouseupcallback(hObject,~)
+    if GAMESTATE_PLAYERINPUT
+        mouseposition = get(gca, 'CurrentPoint');
+        mx  = mouseposition(1,1);
+        my  = mouseposition(1,2);
+        disp(['You released button X:',num2str(mx),', Y:',num2str(my), ' Time elapesed: ', num2str(POWERTIMER)]);
+        mousedown=false;
+        GAMESTATE_FIRE = true
+    end
+end
+
+
+
+function [] = updatePowerBar(power)
+% zeichnet die powerbar
+% untergrund
+blueX = [100,200,200,100];
+blueY = [250,250,257,257];
+
+pbarX = [100, 100+100*power, 100+100*power, 100];
+pbarY = blueY;
+
+patch(blueX,blueY,[0.6 0.9 1]); % Hellblau Himmel;
+patch(pbarX,pbarY,'R');
+    
+    
+    
+end
 
 
 %% quelle: http://stackoverflow.com/questions/2769249/matlab-how-to-get-the-current-mouse-position-on-a-click-by-using-callbacks

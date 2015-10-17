@@ -42,6 +42,7 @@ function [fighandler] = createFigure()
     
     % in die linke obere ecke stzen
     fig = figure('units','normalized','outerposition',[0 0 1 1]);
+    set(fig, 'Name', 'Artillery');
 
 %     fig = figure('Position',[(screenSize(3)-FIGURE_WIDTH)/2,...
 %       (screenSize(4)-FIGURE_HEIGHT)/2, ...

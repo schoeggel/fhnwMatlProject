@@ -1,9 +1,9 @@
-function [impactpos hit] = gunfire (playernr, mousepos, power)
+function [impactpos hit] = gunfire (playernr, startY, mousepos, power)
 % Stub
 
-t = 0:1/280:pi;
-x = 11:1:290
-y = terrainshapeY(5) + 10 +180*sin(4*t);
+t = 0:1/290:pi;
+x = 15:1:290;
+y = startY +220*sin((rand+2.75)*t);
 comet(x,y)
 
 
