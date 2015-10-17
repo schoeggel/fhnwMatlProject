@@ -68,11 +68,40 @@ patch(player1.X, player1.Y,'g')
 patch(player2.X, player2.Y,'y')
     
 
-%answer=gui(1)
-t = 0:1/280:pi;
-x = 11:1:290
-y = terrainshapeY(5) + 10 +180*sin(4*t);
-%comet(x,y)
+%Polling schleife. Falls Mouse down, zählt die Powerbar nach oben
 
-%PlotComet_3D(x,y);
+
+
+
+set(fig,'WindowButtonDownFcn',@mytestcallback)
+function mytestcallback(hObject,~)
+ mouseposition = get(gca, 'CurrentPoint');
+    mx  = mouseposition(1,1);
+    my  = mouseposition(1,2);
+ disp(['You clicked X:',num2str(mx),', Y:',num2str(my)]);
+%disp(mouseposition);
+
+end
+
+
+
+
+%% quelle: http://stackoverflow.com/questions/2769249/matlab-how-to-get-the-current-mouse-position-on-a-click-by-using-callbacks
+% set(f,'WindowButtonDownFcn',@mytestcallback)
+% function mytestcallback(hObject,~)
+% pos=get(hObject,'CurrentPoint');
+% disp(['You clicked X:',num2str(pos(1)),', Y:',num2str(pos(2))]);
+% end
+
+%% Quelle :http://stackoverflow.com/questions/14684577/matlab-how-to-get-mouse-click-coordinates
+% set(imageHandle,'ButtonDownFcn',@ImageClickCallback);
+% function ImageClickCallback ( objectHandle , eventData )
+% axesHandle  = get(objectHandle,'Parent');
+% coordinates = get(axesHandle,'CurrentPoint'); 
+% coordinates = coordinates(1,1:2);
+% message     = sprintf('x: %.1f , y: %.1f',coordinates (1) ,coordinates (2));
+% helpdlg(message);
+% end
+
+end
 
