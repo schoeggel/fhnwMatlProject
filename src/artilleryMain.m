@@ -22,8 +22,8 @@ clear all
 clc
 globals();
 mousedown = false;
-GAMESTATE_PLAYERINPUT = true
-power=0;
+GAMESTATE_PLAYERINPUT = true;
+FIREPOWER=0;
 GAMESTATE_FIRE= false
 
 %% CONSTANTS                                
@@ -76,6 +76,9 @@ player2.polygonY = player2.shapeY + player2.posY ;
 patch(player1.polygonX, player1.polygonY,'g')
 patch(player2.polygonX, player2.polygonY,'y')
     
+%draw Powerbar
+updatePowerBar(0);
+
 
 % Enable Mouse interaction
 set(fig,'WindowButtonDownFcn',@mymousedowncallback)
@@ -85,6 +88,7 @@ set(fig,'WindowButtonUpFcn',@mymouseupcallback)
 
 
 %Polling schleife. Falls Mouse down, zählt die Powerbar nach oben
+
 POWERTIMER=0
 %pause(1.5)
 GAMESTATE_PLAYERINPUT
@@ -92,14 +96,16 @@ GAMESTATE_PLAYERINPUT
 while GAMESTATE_PLAYERINPUT && strcmp(fig.Name,'Artillery')
     pause(0.01);
     if mousedown
-       POWERTIMER=POWERTIMER+1;
+       POWERTIMER=POWERTIMER*1.02 + 1.5;
        updatePowerBar(POWERTIMER/180);
     end
     
     if GAMESTATE_FIRE
         GAMESTATE_PLAYERINPUT = false;
-        POWERTIMER
-        gunfire(1,player1.posY+10,mouseposition,100);
+        FIREPOWER=min(POWERTIMER/180,1)
+        fireAngle=getAngle();
+        gunfire(1,player1.posY+10,fireAngle,FIREPOWER);
+        updatePowerBar(0);
         GAMESTATE_FIRE = false;
         GAMESTATE_PLAYERINPUT = true;
         POWERTIMER=0;
@@ -148,13 +154,24 @@ function [] = updatePowerBar(power)
 blueX = [100,200,200,100];
 blueY = [250,250,257,257];
 
-pbarX = [100, 100+100*power, 100+100*power, 100];
+pbarX = [100, 100+100*min(power,1), 100+100*min(power,1), 100];
 pbarY = blueY;
 
 patch(blueX,blueY,[0.6 0.9 1]); % Hellblau Himmel;
 patch(pbarX,pbarY,'R');
+%disp('Powerbar updatet.')    
+end
+
+
+function [angle] = getAngle(playernr)
+    px=player1.posX 
+    py=player1.posY
     
-    
+    mouseposition = get(gca, 'CurrentPoint');
+    mx  = max(mouseposition(1,1),px);   % max limitiert den winkel auf 0-90°
+    my  = max(mouseposition(1,2),py);   % max limitiert den winkeln auf 0-90°
+        
+    angle=asind((my-py)/sqrt((my-py)^2 + (mx-px)^2))
     
 end
 

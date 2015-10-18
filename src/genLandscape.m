@@ -1,4 +1,4 @@
-function [fittingTerrainX fittingTerrainY] = landscape(resolution)
+function [fittingTerrainX, fittingTerrainY] = landscape(resolution)
 % resolution = [x] <== auf diese x-auflösung wird gestreckt.
 
 % Iteration muss zwingend >= 1 sein. im ersten Druchlauf werden 3
@@ -16,8 +16,6 @@ YLIMITS = [5 85];       % Keine Punkte ausserhalb [von bis] zugelassen.
 PLATFORMOFFSET=+5;      % die spieler-orte // 
 POSTSMOOTHING=110;      % unterhalb bergrenze wird nachträglich geglättet
 FELSUEBERGANG=[50 70];% zwischen 60 und 90 Höhe passiert der Felsübergang, keine Glättung mehr
-
-HYSTERESIS=10;          % Hysterese zur Felsgrenze
 max_iterations=6;       % auf 6 stehen lassen! Erzeugt polygon mit (3+2^max_iterations) Ecken
 
 
