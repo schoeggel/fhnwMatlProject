@@ -22,7 +22,7 @@ max_iterations=6;       % 5-8 haben sich bewährt. Erzeugt polygon mit (3+2^max_i
 %% Limits für max_iterations durchsetzten
 max_iterations=floor(max_iterations);
 if (max_iterations < 1) iterations = 1; end
-if (max_iterations > 9) iterations = 9;end  % 1+2^9 Punkte reichen aus!
+if (max_iterations > 9) iterations = 9; end  % 1+2^9 Punkte reichen aus!
 
 % Vektor initialisieren                   
 terrain=zeros(max_iterations,2^max_iterations+1);
