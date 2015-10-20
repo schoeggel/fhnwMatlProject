@@ -21,12 +21,12 @@ function [fighandler] = createFigure()
 %#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
  FIGURE_FULLSCREEN = true;
- FIGURE_WIDTH = 464;     % pixels
- FIGURE_HEIGHT = 750;
+ FIGURE_WIDTH = 950;     % pixels
+ FIGURE_HEIGHT = 650;
  FIGURE_COLOR = [.15, .15, .15];
  AXIS_COLOR = [0.6 0.9 1]; % Hellblau Himmel
- PLOT_W = 324; %width in plot units. this will be main units for program
- PLOT_H = 200; %height
+ PLOT_W = 1000; %width in plot units. this will be main units for program
+ PLOT_H = 750; %height
  FONT = 'Courier'; 
  MESSAGE_SPACE = 15; %spacing between message lines
  LARGE_TEXT = 18; %text sizes
@@ -72,7 +72,7 @@ function [fighandler] = createFigure()
 %     set(fig,'WindowButtonMotionFcn', @mouseMoveListener);
     
     %figure can't be resized
-    set(fig, 'Resize', 'off');
+   % set(fig, 'Resize', 'off');
     
     mainAxis = axes(); %handle for axis
     axis([0 PLOT_W 0 PLOT_H]);

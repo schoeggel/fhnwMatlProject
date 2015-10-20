@@ -41,24 +41,26 @@ RED = [.9, .3, .3];
 %#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 fig=createFigure(); %Figure erstellen und FigureHandler dazu erhalten
 
+
+
 %generate landscape, get landscape vertices
 [terrainshapeX,terrainshapeY] = genLandscape();
 c=terrainshapeY;
 
 %draw landscape
-patch(terrainshapeX,terrainshapeY, c,'EdgeColor','interp','MarkerFaceColor','flat');
+terrainhandler = patch(terrainshapeX,terrainshapeY, c,'EdgeColor','interp','MarkerFaceColor','flat');
 colormap(0.4*summer+0.4*flipud(pink)+0.1*flipud(winter));
-axis([1 300 0 300])
+axis([1 1000 0 750])
 
 % Panzerli: get Vertices
 [player1.shapeX, player1.shapeY] = genPlayer(-1);
 [player2.shapeX, player2.shapeY] = genPlayer( 5);
 
 %Player center-positions
-player1.posX = 15;
-player2.posX = 290;
-player1.posY = terrainshapeY(5) + 3;
-player2.posY = terrainshapeY(62) +3;
+player1.posX = 40;
+player2.posX = 1000-40;
+player1.posY = terrainshapeY(40) + 1;
+player2.posY = terrainshapeY(1000-40) + 1 ;
 
 % translate player polgon to player position
 player1.polygonX = player1.shapeX + player1.posX;
@@ -92,7 +94,8 @@ while GAMESTATE_PLAYERINPUT && strcmp(fig.Name,'Artillery')
         GAMESTATE_PLAYERINPUT = false;
         FIREPOWER=min(POWERTIMER/180,1)
         fireAngle=getAngle();
-        gunfire(1,player1.posY+10,fireAngle,FIREPOWER);
+        [impactposX, impactposY, hit] = gunfire(1,player1.posY+10,fireAngle,FIREPOWER);
+        impactcrater(impactposX,impactposY);
         updatePowerBar(0);
         GAMESTATE_FIRE = false;
         GAMESTATE_PLAYERINPUT = true;
@@ -101,46 +104,13 @@ while GAMESTATE_PLAYERINPUT && strcmp(fig.Name,'Artillery')
 end
 
 
-
-
-
-
-
-
-function mymousedowncallback(hObject,~)
-    if GAMESTATE_PLAYERINPUT
-        mouseposition = get(gca, 'CurrentPoint');
-        mx  = mouseposition(1,1);
-        my  = mouseposition(1,2);
-        disp(['You clicked X:',num2str(mx),', Y:',num2str(my)]);
-        mousedown=true;
-        tic
-    end
-end
-
-
-
-
-function mymouseupcallback(hObject,~)
-    if GAMESTATE_PLAYERINPUT
-        mouseposition = get(gca, 'CurrentPoint');
-        mx  = mouseposition(1,1);
-        my  = mouseposition(1,2);
-        disp(['You released button X:',num2str(mx),', Y:',num2str(my), ' Time elapesed: ', num2str(POWERTIMER)]);
-        mousedown=false;
-        GAMESTATE_FIRE = true
-    end
-end
-
-
-
 function [] = updatePowerBar(power)
 % zeichnet die powerbar
 % untergrund
-blueX = [100,200,200,100];
-blueY = [250,250,257,257];
+blueX = [350,650,650,350];
+blueY = [700,700,720,720];
 
-pbarX = [100, 100+100*min(power,1), 100+100*min(power,1), 100];
+pbarX = [350, 350+300*min(power,1), 350+300*min(power,1), 350];
 pbarY = blueY;
 
 patch(blueX,blueY,[0.6 0.9 1]); % Hellblau Himmel;
@@ -152,17 +122,14 @@ end
 function [angle] = getAngle(playernr)
     px=player1.posX 
     py=player1.posY
-    
     mouseposition = get(gca, 'CurrentPoint');
     mx  = max(mouseposition(1,1),px);   % max limitiert den winkel auf 0-90°
     my  = max(mouseposition(1,2),py);   % max limitiert den winkeln auf 0-90°
-        
-    angle=asind((my-py)/sqrt((my-py)^2 + (mx-px)^2))
-    
+    angle=asind((my-py)/sqrt((my-py)^2 + (mx-px)^2)) 
 end
 
 
-function [impactpos, hit] = gunfire (playernr, startY, fireAngle, power)
+function [impactposX, impactposY, hit] = gunfire (playernr, startY, fireAngle, power)
 % in ArtilleryMain integriert, weil beim Schuss auch noch das Terrain
 % verändert wird.
 
@@ -179,31 +146,80 @@ power
 
 gunposX=player1.posX-7;
 gunposY=player1.posY +3;
-t=[gunposX:1:300-gunposX];
+t=[gunposX:1:1000-gunposX];
 
 % Wurparabel : TODO geht noch nicht...
-%g=5.81;
-%power=power*1000
-%vx=cosd(fireAngle)*power
-%vy=sind(fireAngle)*power
-%x=t.*vx;
-%y=t.*vy-(g*t.^2)/2;
 
-% Stattessen eine Gerade zeichnen
-x=cosd(fireAngle)*t + gunposX;
-y=sind(fireAngle)*t + gunposY;
+%für debug einschlag krater testen: gerade von oben nach unten
+x=ones(1,size(t,2))*((90.1-fireAngle)/90)*1000;
+y=1000-t;
 plot(x,y);
 
-%collision detection 
+
+
+% collision detection 
 % 'in' und 'on' sind wie eine maske für die x und y punkte.
 % um den Einschlag zu detektieren, muss einfach die erste davon verwendet
 % werden, die 1 und nicht 0 ist.
-[in,on]= inpolygon(x,y,terrainshapeX,terrainshapeY); 
+[in,on]= inpolygon(x,y,terrainshapeX,terrainshapeY); % on line points: unwichtig
+on=[];
 plot(x(in),y(in),'r+') % points inside
-plot(x(on),y(on),'bo') % points on line
-
-impactpos = 100;
+impactindex=find(in,1,'first')   % erster index innerhalb des terrain-polygons
+impactposX=x(impactindex)
+impactposY=y(impactindex)
 hit = 0;
+end
+
+
+function [] = impactcrater(impactposX, impactposY)
+% rechnet den impactcrater ins terrain-polygono hinein.
+% Krater besteht aus 2 phasen. phase 1: loch, es wird absolut gerechnet ein
+% Kreis oder kreisähnliches Loch aus dem polygon rausgerechnet. Phase 2
+% erzeugt relativ zur bestehenden terrain-Linie einen leichten Hügel. Als
+% mögliche 3. Phase könnte oberhalb des Terrains noch der Blast-Radius
+%(Shock-Zone) angezeichnet werden (nur ganz kurz). Panzer innerhalb dieses
+% Shock-Radius stehen für 2 Züge  unter Schock und schiessen
+% ungenau. 
+        
+explosionradius=8+round(8*rand);%explosion radius nicht immer gleich gross
+deformY=real(sqrt(explosionradius.^2-(terrainshapeX-(round(impactposX))).^2)); % halbkreisformel
+%dieser halbkreis kann jetzt nicht einfach vom bestehenden gelände
+%subtrahiert werden, sieht schlecht aus. Besser so: zur obigen
+%kreisabweichung (delta) in der Y achse den einschlagpunkt Y addieren.
+%Dann auf der x-achse von einschlagpunkt-r 2r nach rechts: den kleineren
+%wert nehmen von kreis oder bestehendem terrain. Das sägt einen kreis aus. 
+%überhängende landschaft ist aber nicht möglich, dort ists dann senkrecht.
+deformY=-deformY+round(impactposY); %das kreisdelta auf die höhe des einschlagpunktes (y) beingen
+ivon=round(impactposX-explosionradius);
+ibis=round(ivon+2*explosionradius);
+terrainshapeY(ivon:ibis)=min(terrainshapeY(ivon:ibis),deformY(ivon:ibis));
+delete(terrainhandler); % altes Terrain löschen, danach neues zeichnen, wieder gleichen handler zuweisen!
+terrainhandler=patch(terrainshapeX,terrainshapeY, c,'EdgeColor','interp','MarkerFaceColor','flat');
+
+end
+
+
+function mymousedowncallback(hObject,~)
+    if GAMESTATE_PLAYERINPUT
+        mouseposition = get(gca, 'CurrentPoint');
+        mx  = mouseposition(1,1);
+        my  = mouseposition(1,2);
+        disp(['You clicked X:',num2str(mx),', Y:',num2str(my)]);
+        mousedown=true;
+        tic
+    end
+end
+
+
+function mymouseupcallback(hObject,~)
+    if GAMESTATE_PLAYERINPUT
+        mouseposition = get(gca, 'CurrentPoint');
+        mx  = mouseposition(1,1);
+        my  = mouseposition(1,2);
+        disp(['You released button X:',num2str(mx),', Y:',num2str(my), ' Time elapesed: ', num2str(POWERTIMER)]);
+        mousedown=false;
+        GAMESTATE_FIRE = true
+    end
 end
 
 %% quelle: http://stackoverflow.com/questions/2769249/matlab-how-to-get-the-current-mouse-position-on-a-click-by-using-callbacks

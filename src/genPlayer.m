@@ -5,18 +5,14 @@ function [x y] = genPlayer(nr)
 % wenn nr >1 dann ist der panzer invers (Player L und Player R)
 
 %simpler "panzer":
-if nr <1
-    x=[0 4 4 2 2 0 0];
-    y=[0 0 3 3 5 5 0];
-    x=x-2;  % in mitte positionieren
-    y=y-2.5;
-    
+ x=[0 10 10 4  4  3  8  7  2  0  0];
+    y=[0  0  6 6  10 10 16 17 10 10 0];
+    x=x-4;  % in mitte positionieren
+    y=y-0;  % soll unten aufliegen
+
+if nr >1    %player 2 spiegeln
+  x=-x
 else
-    x=[0 -4 -4 -2 -2 0 0];
-    y=[0 0 3 3 5 5 0];
-    x=x+2;  % in mitte positionieren
-    y=y-2.5;
-end
 
 end
 
