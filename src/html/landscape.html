@@ -1,0 +1,346 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>landscape</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-10-07"><meta name="DC.source" content="landscape.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#3">Limits f&uuml;r max_iterations durchsetzten</a></li><li><a href="#4">Limits</a></li><li><a href="#5">Gl&auml;ttung:</a></li></ul></div><pre class="codeinput"><span class="keyword">function</span> landscape()
+</pre><pre class="codeinput"><span class="comment">% Iteration muss zwingend &gt;= 1 sein. im ersten Druchlauf werden 3</span>
+<span class="comment">% Ecken des Berges gesetzt (Linker Rand, Mitte(Berg) und  rechter Rand)</span>
+<span class="comment">% im 4. Durchlauf werden Korrekturen vorgenommen, Enden fl&auml;cher etc.</span>
+
+<span class="comment">% JITTER: Random Abweichung der zwischenschritte</span>
+<span class="comment">% um diesen Zufallsbereich weicht der Gel&auml;ndepunkt vom Mittelwert der</span>
+<span class="comment">% seiner Nachbarn ab (100 heisst, der Punkt kann um +- 50 abweichen)</span>
+JITTER = 40;            <span class="comment">% maximalabweichung vom mittelwert der 2 nachbarn, wenn ein neuer punkt gerechent wird</span>
+JITTERBALANCE = 0.75;    <span class="comment">%0.5 bedeutet, der Jitter ist nach oben und unten gleich verteilt. 1= 100% nach oben.</span>
+DAEMPFUNG= 1.4;         <span class="comment">%Jitter wird nach jeder iteration ged&auml;mpft</span>
+BERGOFFSET = 45;        <span class="comment">% wie viel h&ouml;her ist die Bergspitze</span>
+YLIMITS = [5 85];       <span class="comment">% Keine Punkte ausserhalb [von bis] zugelassen.</span>
+PLATFORMOFFSET=+5;      <span class="comment">% die spieler-orte //</span>
+POSTSMOOTHING=110;      <span class="comment">% unterhalb bergrenze wird nachtr&auml;glich gegl&auml;ttet</span>
+FELSUEBERGANG=[50 70];<span class="comment">% zwischen 60 und 90 H&ouml;he passiert der Fels&uuml;bergang, keine Gl&auml;ttung mehr</span>
+
+HYSTERESIS=10;          <span class="comment">% Hysterese zur Felsgrenze</span>
+max_iterations=6;       <span class="comment">% 5-8 haben sich bew&auml;hrt. Erzeugt polygon mit (3+2^max_iterations) Ecken</span>
+</pre><h2>Limits f&uuml;r max_iterations durchsetzten<a name="3"></a></h2><pre class="codeinput">max_iterations=floor(max_iterations);
+<span class="keyword">if</span> (max_iterations &lt; 1) iterations = 1; <span class="keyword">end</span>
+<span class="keyword">if</span> (max_iterations &gt; 9) iterations = 9;<span class="keyword">end</span>  <span class="comment">% 1+2^9 Punkte reichen aus!</span>
+
+<span class="comment">% Vektor initialisieren</span>
+terrain=zeros(max_iterations,2^max_iterations+1);
+
+<span class="comment">%Start und Ende  und mittelpunkt setzen</span>
+terrain (1,2)= rand*1.5*JITTER + BERGOFFSET;    <span class="comment">% Mittenwert (der Berg)</span>
+terrain (1,1) = rand*50;   <span class="comment">% Startwert (Linker Rand)</span>
+terrain (1,3) = rand*50;   <span class="comment">% Endwert (rechter Rand)</span>
+
+<span class="comment">% die Terrainpunkte werden in einer Matrix erstellt. &auml;hnlich wie bei der</span>
+<span class="comment">% erstellung des pascalschen Dreiecks. Zu Beginn sind nur in der ersten</span>
+<span class="comment">% Zeile die Werte von Links, Rechts und der Mitte (Berg). Jede Iteration</span>
+<span class="comment">% erzeugt die Werte in eine n&auml;chste Zeile und f&uuml;gt dort die neuen Punkte</span>
+<span class="comment">% ein. start bei 2, weil die erste bereits gesetzt (die 3 Startpunkte).</span>
+<span class="keyword">for</span> rowindex=2:1:max_iterations   <span class="comment">%f&uuml;r jede iteration gibts eine neue Zeile  in der Matrix</span>
+   <span class="keyword">for</span> colindex=1:1:2^rowindex+1   <span class="comment">%Jede Zeile hat mehr Werte als die letzte</span>
+        <span class="keyword">if</span> mod(colindex, 2) &gt; 0    <span class="comment">%ungerade zeilen &uuml;bernehmen bestehende werte (verschoben)</span>
+            terrain(rowindex,colindex)= terrain(rowindex-1, (colindex+1)/2);
+        <span class="keyword">else</span>    <span class="comment">%gerade Zeilen berechnen einen neuen mittelwert +- random</span>
+            left= terrain(rowindex-1, (colindex)/2);
+            right= terrain(rowindex-1, (colindex+2)/2);
+            <span class="comment">% Die D&auml;mpfung wichtig: Einerseits soll die Gesamtlandschaft</span>
+            <span class="comment">% nicht zu flach sein, andernseits m&uuml;ssen die</span>
+            <span class="comment">% Zufallsh&ouml;henunterschiede bei fortschreitenden Detailgraden</span>
+            <span class="comment">% immer kleiner werden. Um zu Beginn wenig zu d&auml;mpfen und</span>
+            <span class="comment">% sp&auml;ter sehr stark, wird die DAEMPFUNG^ITERATION verwendet.</span>
+            <span class="comment">% die Korrektur an der Iteration (rowidex-1.8) stellt quasi den</span>
+            <span class="comment">% Arbeitspunkt der D&auml;mpfung ein.</span>
+            <span class="comment">%terrain(rowindex,colindex)= (left+right)/2 + (rand*JITTER-(JITTER/2))/DAEMPFUNG^((rowindex-2)*DAEMPFUNG^2.2);</span>
+            <span class="comment">%terrain(rowindex,colindex)= (left+right)/2 + (rand*JITTER-(JITTER/3.7))/DAEMPFUNG^(rowindex-2);</span>
+
+            terrain(rowindex,colindex)= (left+right)/2 + (rand*JITTER-(JITTER*(1-JITTERBALANCE)))/DAEMPFUNG^((rowindex-2.4)*DAEMPFUNG^2.2);
+
+<span class="comment">%            if terrain(rowindex,colindex) &lt; YLIMITS(1)  terrain(rowindex,colindex)= YLIMITS(1);end</span>
+<span class="comment">%           if terrain(rowindex,colindex) &gt; YLIMITS(2)  terrain(rowindex,colindex)= YLIMITS(2);end</span>
+        <span class="keyword">end</span>
+   <span class="keyword">end</span>
+<span class="comment">% debug: plot(terrain(rowindex,1:2^rowindex+1));axis([1 inf 0 100])</span>
+
+   <span class="comment">% *Ein paar Korrekturen f&uuml;r die Positionierung, es geht</span>
+   <span class="comment">% am einfachsten in der 4. Iteration, wenn 17 Punkte gesetzt sind:</span>
+    <span class="keyword">if</span> rowindex == 4 <span class="comment">% Beide Spieler  etwas nach unten.</span>
+        terrain(4,2) = max(terrain(4,2) + PLATFORMOFFSET,5);
+        terrain(4,16)= max(terrain(4,16) + PLATFORMOFFSET,5);
+        <span class="comment">%Spielfeld gegen aussen flacher machen, gegen innen leicht flacher.</span>
+        terrain(4,1) = terrain(4,1)-((terrain(4,1)-terrain(4,2))/1.1);
+        terrain(4,3) = terrain(4,3)-((terrain(4,3)-terrain(4,2))/2);
+        <span class="comment">% auch f&uuml;r den anderen Spieler:</span>
+        terrain(4,17) = terrain(4,17)-((terrain(4,17)-terrain(4,16))/1.1);
+        terrain(4,15) = terrain(4,15)-((terrain(4,15)-terrain(4,16))/2);
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+</pre><h2>Limits<a name="4"></a></h2><pre class="codeinput"><span class="comment">%Versetzen Tiefster Punkt als Refernz auf YLIMITS(1)</span>
+lowestpoint=min(terrain(max_iterations,:));
+terrain=terrain-lowestpoint+YLIMITS(1);
+
+<span class="comment">%neuen h&ouml;chsten Punkt suchen, wenn h&ouml;her als limite, wird das ganze terrain</span>
+<span class="comment">%zusammengestaucht</span>
+highestpoint=max(terrain(max_iterations,:))
+<span class="keyword">if</span> highestpoint &gt; YLIMITS(2)
+    terrain=terrain/(highestpoint/YLIMITS(2))
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">
+highestpoint =
+
+   81.5677
+
+</pre><h2>Gl&auml;ttung:<a name="5"></a></h2><pre class="codeinput">contour_raw=terrain(max_iterations,:);  <span class="comment">%relevante letzte zeile aus den generierten Terrain Daten kopieren</span>
+contour_soft=contour_raw;               <span class="comment">%Diese Version wird gegl&auml;ttet</span>
+contour_mix=contour_raw;                <span class="comment">%Diese Version wird die gemischte</span>
+
+<span class="keyword">for</span> s=1:floor(POSTSMOOTHING/100*2^max_iterations)   <span class="comment">% so oft durchlaufen, wie konfiguriert ist</span>
+    <span class="keyword">for</span> colindex=2:1:2^rowindex <span class="comment">% Letzte Zeile ist relevant ==&gt; gl&auml;tten, aber Bergspitzen / Felsen unber&uuml;hrt lassen</span>
+            mittelwert=(contour_soft(colindex-1)+contour_soft(colindex+1))/2; <span class="comment">% Mittelwert von der 2 nachbarpunkte</span>
+            difference = contour_soft(colindex)-mittelwert; <span class="comment">% Abweichung gegen&uuml;ber dem mittel der 2 Nachbarpunkte</span>
+            contour_soft(colindex)= contour_soft(colindex)-0.1*(difference); <span class="comment">%Angleichen in kleinen Schritten</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">%Mix raw und soft anhand der Parameter FELSUEBERGANG(1)  und (2)</span>
+<span class="keyword">for</span> colindex=1:1:size(contour_raw,2)
+   <span class="keyword">if</span>  contour_raw(colindex) &lt; FELSUEBERGANG(1)     <span class="comment">% Nur Berge</span>
+        contour_mix(colindex)=contour_soft(colindex);
+    <span class="keyword">elseif</span> contour_raw(colindex) &gt; FELSUEBERGANG(2) <span class="comment">% Nur H&uuml;gel</span>
+        contour_mix(colindex)=contour_raw(colindex);
+    <span class="keyword">else</span> <span class="comment">% Mischung</span>
+        felsanteil= (contour_raw(colindex)-FELSUEBERGANG(1))/(FELSUEBERGANG(2)-FELSUEBERGANG(1));
+        contour_mix(colindex)= felsanteil*contour_raw(colindex) + (1-felsanteil)*contour_soft(colindex);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+
+<span class="comment">%clear figure, prepare poygon vertex</span>
+clc
+clf
+terrainshapeY = [0, (contour_mix), 0];                                              <span class="comment">% die interssante zeile &uuml;bernehmen vorne ein und hinten zwei 0 als y-wert</span>
+terrainshapeX = [0, 0:1:size(terrainshapeY,2)-3, size(terrainshapeY,2)-3 ];      <span class="comment">% die X-werte f&uuml;llen, am schluss wieder auf x=0 weil f&uuml;r polygon</span>
+c=terrainshapeY;
+colormap(0.4*summer+0.4*flipud(pink)+0.1*flipud(winter));
+
+<span class="comment">%sky</span>
+x = [0 64 64 0];
+y = [0  0 120  120];
+patch(x,y,[0.6 0.9 1]);
+
+<span class="comment">%terrain</span>
+patch(terrainshapeX,terrainshapeY, c,<span class="string">'EdgeColor'</span>,<span class="string">'interp'</span>,<span class="string">'MarkerFaceColor'</span>,<span class="string">'flat'</span>);
+axis([1 inf 0 120])
+</pre><img vspace="5" hspace="5" src="landscape_01.png" alt=""> <pre class="codeinput"><span class="keyword">end</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+function landscape()
+% Iteration muss zwingend >= 1 sein. im ersten Druchlauf werden 3
+% Ecken des Berges gesetzt (Linker Rand, Mitte(Berg) und  rechter Rand)
+% im 4. Durchlauf werden Korrekturen vorgenommen, Enden flächer etc.
+
+% JITTER: Random Abweichung der zwischenschritte
+% um diesen Zufallsbereich weicht der Geländepunkt vom Mittelwert der
+% seiner Nachbarn ab (100 heisst, der Punkt kann um +- 50 abweichen)
+JITTER = 40;            % maximalabweichung vom mittelwert der 2 nachbarn, wenn ein neuer punkt gerechent wird
+JITTERBALANCE = 0.75;    %0.5 bedeutet, der Jitter ist nach oben und unten gleich verteilt. 1= 100% nach oben.
+DAEMPFUNG= 1.4;         %Jitter wird nach jeder iteration gedämpft        
+BERGOFFSET = 45;        % wie viel höher ist die Bergspitze
+YLIMITS = [5 85];       % Keine Punkte ausserhalb [von bis] zugelassen. 
+PLATFORMOFFSET=+5;      % die spieler-orte // 
+POSTSMOOTHING=110;      % unterhalb bergrenze wird nachträglich geglättet
+FELSUEBERGANG=[50 70];% zwischen 60 und 90 Höhe passiert der Felsübergang, keine Glättung mehr
+
+HYSTERESIS=10;          % Hysterese zur Felsgrenze
+max_iterations=6;       % 5-8 haben sich bewährt. Erzeugt polygon mit (3+2^max_iterations) Ecken
+
+
+%% Limits für max_iterations durchsetzten
+max_iterations=floor(max_iterations);
+if (max_iterations < 1) iterations = 1; end
+if (max_iterations > 9) iterations = 9;end  % 1+2^9 Punkte reichen aus!
+
+% Vektor initialisieren                   
+terrain=zeros(max_iterations,2^max_iterations+1);
+
+%Start und Ende  und mittelpunkt setzen
+terrain (1,2)= rand*1.5*JITTER + BERGOFFSET;    % Mittenwert (der Berg)
+terrain (1,1) = rand*50;   % Startwert (Linker Rand)
+terrain (1,3) = rand*50;   % Endwert (rechter Rand)  
+
+% die Terrainpunkte werden in einer Matrix erstellt. ähnlich wie bei der 
+% erstellung des pascalschen Dreiecks. Zu Beginn sind nur in der ersten
+% Zeile die Werte von Links, Rechts und der Mitte (Berg). Jede Iteration
+% erzeugt die Werte in eine nächste Zeile und fügt dort die neuen Punkte
+% ein. start bei 2, weil die erste bereits gesetzt (die 3 Startpunkte).
+for rowindex=2:1:max_iterations   %für jede iteration gibts eine neue Zeile  in der Matrix
+   for colindex=1:1:2^rowindex+1   %Jede Zeile hat mehr Werte als die letzte
+        if mod(colindex, 2) > 0    %ungerade zeilen übernehmen bestehende werte (verschoben)
+            terrain(rowindex,colindex)= terrain(rowindex-1, (colindex+1)/2);
+        else    %gerade Zeilen berechnen einen neuen mittelwert +- random
+            left= terrain(rowindex-1, (colindex)/2);
+            right= terrain(rowindex-1, (colindex+2)/2);
+            % Die Dämpfung wichtig: Einerseits soll die Gesamtlandschaft
+            % nicht zu flach sein, andernseits müssen die
+            % Zufallshöhenunterschiede bei fortschreitenden Detailgraden
+            % immer kleiner werden. Um zu Beginn wenig zu dämpfen und
+            % später sehr stark, wird die DAEMPFUNG^ITERATION verwendet.
+            % die Korrektur an der Iteration (rowidex-1.8) stellt quasi den
+            % Arbeitspunkt der Dämpfung ein.
+            %terrain(rowindex,colindex)= (left+right)/2 + (rand*JITTER-(JITTER/2))/DAEMPFUNG^((rowindex-2)*DAEMPFUNG^2.2);
+            %terrain(rowindex,colindex)= (left+right)/2 + (rand*JITTER-(JITTER/3.7))/DAEMPFUNG^(rowindex-2);
+            
+            terrain(rowindex,colindex)= (left+right)/2 + (rand*JITTER-(JITTER*(1-JITTERBALANCE)))/DAEMPFUNG^((rowindex-2.4)*DAEMPFUNG^2.2);
+            
+%            if terrain(rowindex,colindex) < YLIMITS(1)  terrain(rowindex,colindex)= YLIMITS(1);end
+%           if terrain(rowindex,colindex) > YLIMITS(2)  terrain(rowindex,colindex)= YLIMITS(2);end
+        end
+   end
+% debug: plot(terrain(rowindex,1:2^rowindex+1));axis([1 inf 0 100])
+   
+   % *Ein paar Korrekturen für die Positionierung, es geht
+   % am einfachsten in der 4. Iteration, wenn 17 Punkte gesetzt sind:
+    if rowindex == 4 % Beide Spieler  etwas nach unten.
+        terrain(4,2) = max(terrain(4,2) + PLATFORMOFFSET,5);
+        terrain(4,16)= max(terrain(4,16) + PLATFORMOFFSET,5);
+        %Spielfeld gegen aussen flacher machen, gegen innen leicht flacher.
+        terrain(4,1) = terrain(4,1)-((terrain(4,1)-terrain(4,2))/1.1);
+        terrain(4,3) = terrain(4,3)-((terrain(4,3)-terrain(4,2))/2);
+        % auch für den anderen Spieler:
+        terrain(4,17) = terrain(4,17)-((terrain(4,17)-terrain(4,16))/1.1);
+        terrain(4,15) = terrain(4,15)-((terrain(4,15)-terrain(4,16))/2);
+    end
+      
+end 
+
+
+
+%% Limits
+%Versetzen Tiefster Punkt als Refernz auf YLIMITS(1)
+lowestpoint=min(terrain(max_iterations,:));
+terrain=terrain-lowestpoint+YLIMITS(1);
+
+%neuen höchsten Punkt suchen, wenn höher als limite, wird das ganze terrain
+%zusammengestaucht
+highestpoint=max(terrain(max_iterations,:))
+if highestpoint > YLIMITS(2)
+    terrain=terrain/(highestpoint/YLIMITS(2))
+end
+
+
+%% Glättung:
+contour_raw=terrain(max_iterations,:);  %relevante letzte zeile aus den generierten Terrain Daten kopieren
+contour_soft=contour_raw;               %Diese Version wird geglättet
+contour_mix=contour_raw;                %Diese Version wird die gemischte
+
+for s=1:floor(POSTSMOOTHING/100*2^max_iterations)   % so oft durchlaufen, wie konfiguriert ist
+    for colindex=2:1:2^rowindex % Letzte Zeile ist relevant ==> glätten, aber Bergspitzen / Felsen unberührt lassen
+            mittelwert=(contour_soft(colindex-1)+contour_soft(colindex+1))/2; % Mittelwert von der 2 nachbarpunkte
+            difference = contour_soft(colindex)-mittelwert; % Abweichung gegenüber dem mittel der 2 Nachbarpunkte
+            contour_soft(colindex)= contour_soft(colindex)-0.1*(difference); %Angleichen in kleinen Schritten
+    end
+end
+
+%Mix raw und soft anhand der Parameter FELSUEBERGANG(1)  und (2)
+for colindex=1:1:size(contour_raw,2)
+   if  contour_raw(colindex) < FELSUEBERGANG(1)     % Nur Berge
+        contour_mix(colindex)=contour_soft(colindex);
+    elseif contour_raw(colindex) > FELSUEBERGANG(2) % Nur Hügel
+        contour_mix(colindex)=contour_raw(colindex);
+    else % Mischung 
+        felsanteil= (contour_raw(colindex)-FELSUEBERGANG(1))/(FELSUEBERGANG(2)-FELSUEBERGANG(1));
+        contour_mix(colindex)= felsanteil*contour_raw(colindex) + (1-felsanteil)*contour_soft(colindex);
+    end
+end
+
+
+%clear figure, prepare poygon vertex
+clc
+clf
+terrainshapeY = [0, (contour_mix), 0];                                              % die interssante zeile übernehmen vorne ein und hinten zwei 0 als y-wert 
+terrainshapeX = [0, 0:1:size(terrainshapeY,2)-3, size(terrainshapeY,2)-3 ];      % die X-werte füllen, am schluss wieder auf x=0 weil für polygon
+c=terrainshapeY;
+colormap(0.4*summer+0.4*flipud(pink)+0.1*flipud(winter));
+
+%sky
+x = [0 64 64 0];
+y = [0  0 120  120];
+patch(x,y,[0.6 0.9 1]);
+
+%terrain
+patch(terrainshapeX,terrainshapeY, c,'EdgeColor','interp','MarkerFaceColor','flat');
+axis([1 inf 0 120])
+
+
+end
+
+
+
+##### SOURCE END #####
+--></body></html>

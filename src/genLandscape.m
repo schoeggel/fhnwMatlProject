@@ -1,4 +1,6 @@
-function landscape()
+function [fittingTerrainX, fittingTerrainY] = landscape(resolution)
+% resolution = [x] <== auf diese x-auflösung wird gestreckt/interpoliert.
+
 % Iteration muss zwingend >= 1 sein. im ersten Druchlauf werden 3
 % Ecken des Berges gesetzt (Linker Rand, Mitte(Berg) und  rechter Rand)
 % im 4. Durchlauf werden Korrekturen vorgenommen, Enden flächer etc.
@@ -9,14 +11,12 @@ function landscape()
 JITTER = 40;            % maximalabweichung vom mittelwert der 2 nachbarn, wenn ein neuer punkt gerechent wird
 JITTERBALANCE = 0.75;   %0.5 bedeutet, der Jitter ist nach oben und unten gleich verteilt. 1= 100% nach oben.
 DAEMPFUNG= 1.4;         %Jitter wird nach jeder iteration gedämpft        
-BERGOFFSET = 45;        % wie viel höher ist die Bergspitze
-YLIMITS = [5 85];       % Keine Punkte ausserhalb [von bis] zugelassen. 
+BERGOFFSET = 55;        % wie viel höher ist die Bergspitze
+YLIMITS = [5 200];       % Keine Punkte ausserhalb [von bis] zugelassen. 
 PLATFORMOFFSET=+5;      % die spieler-orte // 
 POSTSMOOTHING= 10;      % unterhalb bergrenze wird nachträglich geglättet
 FELSUEBERGANG=[50 70];% zwischen 60 und 90 Höhe passiert der Felsübergang, keine Glättung mehr
-
-HYSTERESIS=10;          % Hysterese zur Felsgrenze
-max_iterations=6;       % 5-8 haben sich bewährt. Erzeugt polygon mit (3+2^max_iterations) Ecken
+max_iterations=6;       % auf 6 stehen lassen! Erzeugt polygon mit (3+2^max_iterations) Ecken
 
 
 %% Limits für max_iterations durchsetzten
@@ -50,17 +50,12 @@ for rowindex=2:1:max_iterations   %für jede iteration gibts eine neue Zeile  in 
             % immer kleiner werden. Um zu Beginn wenig zu dämpfen und
             % später sehr stark, wird die DAEMPFUNG^ITERATION verwendet.
             % die Korrektur an der Iteration (rowidex-1.8) stellt quasi den
-            % Arbeitspunkt der Dämpfung ein.
-            %terrain(rowindex,colindex)= (left+right)/2 + (rand*JITTER-(JITTER/2))/DAEMPFUNG^((rowindex-2)*DAEMPFUNG^2.2);
-            %terrain(rowindex,colindex)= (left+right)/2 + (rand*JITTER-(JITTER/3.7))/DAEMPFUNG^(rowindex-2);
-            
+            % Arbeitspunkt der Dämpfung ein.    
             terrain(rowindex,colindex)= (left+right)/2 + (rand*JITTER-(JITTER*(1-JITTERBALANCE)))/DAEMPFUNG^((rowindex-2.4)*DAEMPFUNG^2.2);
-            
-%            if terrain(rowindex,colindex) < YLIMITS(1)  terrain(rowindex,colindex)= YLIMITS(1);end
-%           if terrain(rowindex,colindex) > YLIMITS(2)  terrain(rowindex,colindex)= YLIMITS(2);end
+
         end
    end
-% debug: plot(terrain(rowindex,1:2^rowindex+1));axis([1 inf 0 100])
+
    
    % *Ein paar Korrekturen für die Positionierung, es geht
    % am einfachsten in der 4. Iteration, wenn 17 Punkte gesetzt sind:
@@ -86,10 +81,15 @@ terrain=terrain-lowestpoint+YLIMITS(1);
 
 %neuen höchsten Punkt suchen, wenn höher als limite, wird das ganze terrain
 %zusammengestaucht
-highestpoint=max(terrain(max_iterations,:))
+highestpoint=max(terrain(max_iterations,:));
 if highestpoint > YLIMITS(2)
-    terrain=terrain/(highestpoint/YLIMITS(2))
+    terrain=terrain/(highestpoint/YLIMITS(2));
 end
+
+
+% auf 1000 punkte aufblasen
+terrain= imresize(terrain,[max_iterations, 1001], 'Method','bilinear')
+
 
 
 %% Glättung:
@@ -97,8 +97,8 @@ contour_raw=terrain(max_iterations,:);  %relevante letzte zeile aus den generier
 contour_soft=contour_raw;               %Diese Version wird geglättet
 contour_mix=contour_raw;                %Diese Version wird die gemischte
 
-for s=1:floor(POSTSMOOTHING/100*2^max_iterations)   % so oft durchlaufen, wie konfiguriert ist
-    for colindex=2:1:2^rowindex % Letzte Zeile ist relevant ==> glätten, aber Bergspitzen / Felsen unberührt lassen
+for s=1:floor(POSTSMOOTHING/1*2^max_iterations)   % so oft durchlaufen, wie konfiguriert ist
+    for colindex=2:1:1000 % Letzte Zeile ist relevant ==> glätten
             mittelwert=(contour_soft(colindex-1)+contour_soft(colindex+1))/2; % Mittelwert von der 2 nachbarpunkte
             difference = contour_soft(colindex)-mittelwert; % Abweichung gegenüber dem mittel der 2 Nachbarpunkte
             contour_soft(colindex)= contour_soft(colindex)-0.1*(difference); %Angleichen in kleinen Schritten
@@ -118,24 +118,34 @@ for colindex=1:1:size(contour_raw,2)
 end
 
 
-%clear figure, prepare poygon vertex
-clc
-clf
+
+
+
+
+%plot (contour_mix)
+
+
+% make polygon 
 terrainshapeY = [0, (contour_mix), 0];                                              % die interssante zeile übernehmen vorne ein und hinten zwei 0 als y-wert 
 terrainshapeX = [0, 0:1:size(terrainshapeY,2)-3, size(terrainshapeY,2)-3 ];      % die X-werte füllen, am schluss wieder auf x=0 weil für polygon
 c=terrainshapeY;
-colormap(0.4*summer+0.4*flipud(pink)+0.1*flipud(winter));
-
-%sky
-x = [0 64 64 0];
-y = [0  0 120  120];
-patch(x,y,[0.6 0.9 1]);
-
-%terrain
-patch(terrainshapeX,terrainshapeY, c,'EdgeColor','interp','MarkerFaceColor','flat');
-axis([1 inf 0 120])
+terrain=[terrainshapeX terrainshapeY];
 
 
+%% Stretch Y
+fittingTerrainX=terrainshapeX
+fittingTerrainY=terrainshapeY.*3.5;
+
+%add support for player
+%bei den punkten x(5)( und x(62) ist die supportmitte, geht jeweils 1 nach
+%vorne und 1 nach hinten
+offset=40; % wie weit vom Bildrand entfernt ist der Support-Mittelpunkt?
+fittingTerrainY(1, offset-15:offset+15)=max(fittingTerrainY(1,offset-15:offset+15));
+offset=1000-offset;
+fittingTerrainY(1, offset-15:offset+15)=max(fittingTerrainY(1,offset-15:offset+15));
+
+
+terrain=[fittingTerrainX; fittingTerrainY];
 end
 
 
