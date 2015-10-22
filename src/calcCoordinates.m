@@ -37,7 +37,7 @@ function [] = calcCoordinates()
 
     dichteMedium =1.3;
     koeffzient = 10;
-    deltaT = 0.01;
+    deltaT = 0.0001;
 
     vx = (vxStart);
     vy = (vyStart);
