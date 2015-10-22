@@ -36,7 +36,7 @@ function [] = calcCoordinates()
     g = 9.81;
 
     dichteMedium =1.3;
-    koeffzient = 1;
+    koeffzient = 10;
     deltaT = 0.01;
 
     vx = (vxStart);
