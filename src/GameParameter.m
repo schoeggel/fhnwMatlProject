@@ -1,4 +1,4 @@
-classdef parameter
+classdef GameParameter
     %UNTITLED3 Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -18,7 +18,21 @@ classdef parameter
         TITLE_COLOR = [.0,.8,.0];
     end
     
+    properties (Access=private)
+    end
+    
+
+    
     methods
+        function setPlanet(strPlanet)
+            switch strPlanet
+                case 'earth'
+                case 'moon'
+                case 'mars'
+                case 'europa'   
+                otherwise
+            end                    
+        end
     end
     
 end

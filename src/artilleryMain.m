@@ -130,25 +130,70 @@ end
 
 
 function [impactposX, impactposY, hit] = gunfire (playernr, startY, fireAngle, power)
-% in ArtilleryMain integriert, weil beim Schuss auch noch das Terrain
-% verändert wird.
+    %% Parameter
+    %
+    %
+    % Der winkel in Grad und Rad
+    % 
+    % $$ang_{rad} = \pi  \frac{ang_{deg}}{180}$$
+    % 
+    % fireAngle = 45;
+    angRad = pi() * fireAngle/180;
+    
+    %% Berechnung der Abbschussgeschwindigkeit
+    % 
+    % $$Energie Projektil: E_{prj} \ Geschwindigkeit Projektil: v_{prj} \ Msse Projektil: m_{Projektil}$$
+    % 
+    % $$Wirkungsgrad Kanon: n_{can} Energie Treibladung $$
+    %
+    % $$E_{prj} = \frac{m_{prj}}{2} v_{prj}^{2}$$
+    %
+    % $$E_{prj} = E_{trbl} * n_{can}$$
+    %
+    % $$v_{prj} = \sqrt{ \frac{2 E_{prj}}{m_{prj}}}$$
+    %
+    masseProjektil = 1;
+    energieTreibladung = 1000000;
+    wirkungsGradKanone = 1;
+    masseKanone = 10000;
 
-playernr
-startY
-fireAngle
-power
+    gunposX=player1.posX-7;
+    gunposY=player1.posY +3;
+    t=[gunposX:1:1000-gunposX];
 
-% alter comet zu testzwecken
-%t = 0:1/290:pi;
-%x = 15:1:290;
-%y = startY +220*sin((rand+2+(1-power))*t);
-%comet(x,y)
+    vStart = sqrt((2 * energieTreibladung * wirkungsGradKanone) / masseProjektil);
+    vxStart = cos(angRad) * vStart;
+    vyStart = sin(angRad) * vStart;
+    tmax = 1000;
 
-gunposX=player1.posX-7;
-gunposY=player1.posY +3;
-t=[gunposX:1:1000-gunposX];
+    g = 9.81;
 
-% Wurparabel : TODO geht noch nicht...
+    dichteMedium =1.3;
+    koeffzient = 10;
+    deltaT = 0.01;
+
+    vx = (vxStart);
+    vy = (vyStart);
+    n=1;
+    x(n)=player1.posX;
+    y(n)=player1.posY;
+
+    for t = 0 : deltaT : tmax
+        
+        ve = [vx, vy]/sqrt(vx^2 + vy^2);
+        fVector = ve * (sqrt(vx^2 + vy^2)^2*koeffzient*dichteMedium)*deltaT;
+        vx = vx - fVector(:,1)*deltaT;
+        vy = vy - g * deltaT - fVector(:,2)*deltaT;
+
+        x(n+1) = x(n)+vx * deltaT;
+        y(n+1) = y(n)+vy * deltaT;
+        n = n+1;
+    end
+    
+    
+    comet(x,y)
+
+
 
 %für debug einschlag krater testen: gerade von oben nach unten
 x=ones(1,size(t,2))*((90.1-fireAngle)/90)*1000;
