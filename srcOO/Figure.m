@@ -9,15 +9,19 @@ classdef Figure
     properties (Access = private)
         fig;    % Figure Object
         title;  % Titeltext als String
+        gameParameter;
+        gameStates;
         btnPlayerCount;
     end    
     
     methods
         %% Konstruktor
         % 
-        function this = Figure()
+        function this = Figure(GameStates,GameParameter)
            this.fig = figure;
            this.fig.Visible = 'off';
+           this.gameStates = GameStates;
+           this.gameParameter = GameParameter;
         end
         
         function [fighandler] = crateFigureMain(this)
@@ -73,13 +77,14 @@ classdef Figure
         fighandler = gcf;
         end
         
-        function [] = drawMenue(this, GameStates, GameParameter)
+        function [] = drawMenue(this)
+            
             this.fig.Name = 'Artillery Menue';
             this.fig.MenuBar = 'none';
             this.fig.ToolBar = 'none';
             this.fig.NumberTitle = 'off';
-            this.fig.Position = GameStates.MENUE_POSITION;
-            this.fig.Color = GameStates.BLACK;
+            this.fig.Position = this.gameStates.MENUE_POSITION;
+            this.fig.Color = this.gameStates.BLACK;
                  
             %% Die Objekte im GUI erstellen
             %
@@ -87,40 +92,82 @@ classdef Figure
             this.title = uicontrol;
             this.title.Style = 'text';
             this.title.String = 'Welcome to Artillery';
-            this.title.Position = [0,GameStates.MENUE_HIGH-65,GameStates.MENUE_WIDTH,35];
-            this.title.ForegroundColor = GameStates.TITLE_COLOR;
-            this.title.BackgroundColor = GameStates.BLACK;
-            this.title.FontName = GameStates.FONT;
-            this.title.FontSize = GameStates.TITLE_SIZE;
-            %% Auswahl Spieleranzahl      
+            this.title.Position = [0,this.gameStates.MENUE_HIGH-65,this.gameStates.MENUE_WIDTH,35];
+            this.title.ForegroundColor = this.gameStates.TITLE_COLOR;
+            this.title.BackgroundColor = this.gameStates.BLACK;
+            this.title.FontName = this.gameStates.FONT;
+            this.title.FontSize = this.gameStates.TITLE_SIZE;
+            
+            %% Auswahl btn Spieleranzahl      
             this.btnPlayerCount = uicontrol;
             this.btnPlayerCount.Style = 'pushbutton';
-            this.btnPlayerCount.String = ['N off Players >> ',  num2str(GameParameter.playerQuantety)];
-            this.btnPlayerCount.Position = [0,GameStates.MENUE_HIGH-115,GameStates.MENUE_WIDTH,25];
-            this.btnPlayerCount.ForegroundColor = GameStates.GREEN;
-            this.btnPlayerCount.BackgroundColor = GameStates.BLACK;
-            this.btnPlayerCount.FontName = GameStates.FONT;
-            this.btnPlayerCount.FontSize = GameStates.TEXT_SIZE;
-            this.btnPlayerCount.Callback = @this.btnPlayerCountHover;
+            this.btnPlayerCount.String = ['N off Players >> ',  num2str(this.gameParameter.playerQuantety)];
+            this.btnPlayerCount.Position = [0,this.gameStates.MENUE_HIGH-115,this.gameStates.MENUE_WIDTH,25];
+            this.btnPlayerCount.ForegroundColor = this.gameStates.GREEN;
+            this.btnPlayerCount.BackgroundColor = this.gameStates.BLACK;
+            this.btnPlayerCount.FontName = this.gameStates.FONT;
+            this.btnPlayerCount.FontSize = this.gameStates.TEXT_SIZE;
+            this.btnPlayerCount.Callback = @this.btnPlayerCountClick;
             
-            this.fig.Visible = 'on';
-                    
-%             btn_sin = uicontrol('Style','pushbutton', 'String','Plot Sinus',  'Position',[100,280,100,35], 'FontSize', 9,...
-%                         'Callback',@btn_sin_Callback);
-%             btn_cos = uicontrol('Style','pushbutton', 'String','Plot Cosinus',...
-%                         'Position',[300,280,100,35], 'FontSize', 9,...
-%                         'Callback',@btn_cos_Callback);         
-%             txt1    = uicontrol('Style','text','String','GUI ohne GUIDE',...
-%                         'Position',[95,315,300,30], 'FontSize', 10);
-%             axes1   = axes('Units','pixels','Position',[60,60,400,200]);     
+            %% Auswahl btn Spielmodi      
+            this.btnPlayerCount = uicontrol;
+            this.btnPlayerCount.Style = 'pushbutton';
+            this.btnPlayerCount.String = [this.gameParameter.gameMode];
+            this.btnPlayerCount.Position = [0,this.gameStates.MENUE_HIGH-160,this.gameStates.MENUE_WIDTH,25];
+            this.btnPlayerCount.ForegroundColor = this.gameStates.GREEN;
+            this.btnPlayerCount.BackgroundColor = this.gameStates.BLACK;
+            this.btnPlayerCount.FontName = this.gameStates.FONT;
+            this.btnPlayerCount.FontSize = this.gameStates.TEXT_SIZE;
+            this.btnPlayerCount.Callback = @this.btnGameModeClick;
+            
+            %% Auswahl btn Wetter / Wind      
+            this.btnPlayerCount = uicontrol;
+            this.btnPlayerCount.Style = 'pushbutton';
+            this.btnPlayerCount.String = [this.gameParameter.gameMode];
+            this.btnPlayerCount.Position = [0,this.gameStates.MENUE_HIGH-160,this.gameStates.MENUE_WIDTH,25];
+            this.btnPlayerCount.ForegroundColor = this.gameStates.GREEN;
+            this.btnPlayerCount.BackgroundColor = this.gameStates.BLACK;
+            this.btnPlayerCount.FontName = this.gameStates.FONT;
+            this.btnPlayerCount.FontSize = this.gameStates.TEXT_SIZE;
+            this.btnPlayerCount.Callback = @this.btnGameModeClick;
+            
+                        %% Auswahl btn Wetter / Wind      
+            this.btnPlayerCount = uicontrol;
+            this.btnPlayerCount.Style = 'pushbutton';
+            this.btnPlayerCount.String = [this.gameParameter.gameMode];
+            this.btnPlayerCount.Position = [0,this.gameStates.MENUE_HIGH-160,this.gameStates.MENUE_WIDTH,25];
+            this.btnPlayerCount.ForegroundColor = this.gameStates.GREEN;
+            this.btnPlayerCount.BackgroundColor = this.gameStates.BLACK;
+            this.btnPlayerCount.FontName = this.gameStates.FONT;
+            this.btnPlayerCount.FontSize = this.gameStates.TEXT_SIZE;
+            this.btnPlayerCount.Callback = @this.btnGameModeClick;
+            
+            this.fig.Visible = 'on';                  
         end
         
         function [processed] = redrawFigure()
             
         end
         
-        function btnPlayerCountHover(this,source,eventdata, GameParameter) 
-            GameParameter.setPlayerQuantety( GameParameter.playerQuantety + 1);
+ 
+        function [] = updateState(this,GameStates)       
+           this.gameState = GameStates;
+        end
+        function [] = updateParameters(this,GameParameter)       
+           this.gameParameter = GameParameter;
+        end
+        
+        function [GameParameter] = getParameters(this)
+            GameParameter = this.gameParameter;
+        end
+        
+        function btnPlayerCountClick(this,source,eventdata)
+            if this.gameParameter.playerQuantety < this.gameParameter.maxPlayerQuantety
+            this.gameParameter = this.gameParameter.setPlayerQuantety(this.gameParameter.playerQuantety+1);
+            else
+            this.gameParameter = this.gameParameter.setPlayerQuantety(2);
+            end
+            this.btnPlayerCount.String = ['N off Players >> ',  num2str(this.gameParameter.playerQuantety)];
         end;
     end
     

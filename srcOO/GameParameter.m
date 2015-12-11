@@ -9,8 +9,11 @@ classdef GameParameter
     properties (GetAccess=public)
         standardLivepoints = 100;
         playerQuantety = 2;
+        maxPlayerQuantety = 6;
         planet = 'earth';
         gForce = 9.81;
+        gameMode = 'tactics';
+        
     end
     
 
@@ -28,7 +31,7 @@ classdef GameParameter
             end                    
         end
         
-        function [] = setPlayerQuantety(this, playerQuantety)
+        function this = setPlayerQuantety(this, playerQuantety)
             this.playerQuantety = playerQuantety;
         end
         
