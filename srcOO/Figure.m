@@ -12,6 +12,11 @@ classdef Figure
         gameParameter;
         gameStates;
         btnPlayerCount;
+        btnMode;
+        btnWind;
+        btnMountain;
+        btnPlanet;
+        btnStart;
     end    
     
     methods
@@ -22,59 +27,6 @@ classdef Figure
            this.fig.Visible = 'off';
            this.gameStates = GameStates;
            this.gameParameter = GameParameter;
-        end
-        
-        function [fighandler] = crateFigureMain(this)
-        % in die linke obere ecke stzen
-        fig = figure('units','normalized','outerposition',[0 0 1 1]);
-        set(fig, 'Name', 'Artillery');
-
-        %     fig = figure('Position',[(screenSize(3)-FIGURE_WIDTH)/2,...
-        %       (screenSize(4)-FIGURE_HEIGHT)/2, ...
-        %       FIGURE_WIDTH, ...
-        %       FIGURE_HEIGHT]);
-        %       %custom close function.
-
-         % set(fig,'CloseRequestFcn',@my_closefcn);
-
-        %set background color for figure
-        set(fig, 'color',  this.FIGURE_COLOR);
-
-        %make custom mouse pointer
-        pointer = NaN(16, 16);
-        pointer(8, 1:16) = 1;
-        pointer(1:16, 8) = 1;
-        pointer(8, 8) = 2;
-        set(fig, 'Pointer', 'Custom');
-        set(fig, 'PointerShapeHotSpot', [4, 4]);
-        set(fig, 'PointerShapeCData', pointer);
-
-        %     %register keydown and keyup listeners
-        %     set(fig,'KeyPressFcn',@keyDownListener)
-        %     %set(fig, 'KeyReleaseFcn', @keyUpListener);
-        %     set(fig,'WindowButtonDownFcn', @mouseDownListener);
-        %     set(fig,'WindowButtonUpFcn', @mouseUpListener);
-        %     set(fig,'WindowButtonMotionFcn', @mouseMoveListener);
-
-        %figure can't be resized
-        % set(fig, 'Resize', 'off');
-
-        mainAxis = axes(); %handle for axis
-        axis([0 this.PLOT_W 0 this.PLOT_H]);
-        axis manual; %axis wont be resized
-
-        %set color for the court, hide axis ticks.
-        % Himmelblau machen
-        set(mainAxis, 'color', this.AXIS_COLOR, 'YTick', [], 'XTick', []);
-        %handles to title for displaying wave, score
-        axisTitle = title('Artillery');
-        set(axisTitle, 'FontName', this.FONT,'FontSize', this.LARGE_TEXT);
-        set(axisTitle, 'Color', this.TITLE_COLOR);
-
-        colormap(0.4*summer+0.4*flipud(pink)+0.1*flipud(winter));
-        
-        hold on;
-        fighandler = gcf;
         end
         
         function [] = drawMenue(this)
@@ -107,40 +59,63 @@ classdef Figure
             this.btnPlayerCount.BackgroundColor = this.gameStates.BLACK;
             this.btnPlayerCount.FontName = this.gameStates.FONT;
             this.btnPlayerCount.FontSize = this.gameStates.TEXT_SIZE;
-            this.btnPlayerCount.Callback = @this.btnPlayerCountClick;
+            this.btnPlayerCount.ButtonDownFcn = @this.btnPlayerCountClick;
             
             %% Auswahl btn Spielmodi      
-            this.btnPlayerCount = uicontrol;
-            this.btnPlayerCount.Style = 'pushbutton';
-            this.btnPlayerCount.String = [this.gameParameter.gameMode];
-            this.btnPlayerCount.Position = [0,this.gameStates.MENUE_HIGH-160,this.gameStates.MENUE_WIDTH,25];
-            this.btnPlayerCount.ForegroundColor = this.gameStates.GREEN;
-            this.btnPlayerCount.BackgroundColor = this.gameStates.BLACK;
-            this.btnPlayerCount.FontName = this.gameStates.FONT;
-            this.btnPlayerCount.FontSize = this.gameStates.TEXT_SIZE;
-            this.btnPlayerCount.Callback = @this.btnGameModeClick;
+            this.btnMode = uicontrol;
+            this.btnMode.Style = 'pushbutton';
+            this.btnMode.String = [this.gameParameter.gameMode];
+            this.btnMode.Position = [0,this.gameStates.MENUE_HIGH-160,this.gameStates.MENUE_WIDTH,25];
+            this.btnMode.ForegroundColor = this.gameStates.GREEN;
+            this.btnMode.BackgroundColor = this.gameStates.BLACK;
+            this.btnMode.FontName = this.gameStates.FONT;
+            this.btnMode.FontSize = this.gameStates.TEXT_SIZE;
+            this.btnMode.Callback = @this.btnGameModeClick;
             
             %% Auswahl btn Wetter / Wind      
-            this.btnPlayerCount = uicontrol;
-            this.btnPlayerCount.Style = 'pushbutton';
-            this.btnPlayerCount.String = [this.gameParameter.gameMode];
-            this.btnPlayerCount.Position = [0,this.gameStates.MENUE_HIGH-160,this.gameStates.MENUE_WIDTH,25];
-            this.btnPlayerCount.ForegroundColor = this.gameStates.GREEN;
-            this.btnPlayerCount.BackgroundColor = this.gameStates.BLACK;
-            this.btnPlayerCount.FontName = this.gameStates.FONT;
-            this.btnPlayerCount.FontSize = this.gameStates.TEXT_SIZE;
-            this.btnPlayerCount.Callback = @this.btnGameModeClick;
+            this.btnWind = uicontrol;
+            this.btnWind.Style = 'pushbutton';
+            this.btnWind.String = [this.gameParameter.wind];
+            this.btnWind.Position = [0,this.gameStates.MENUE_HIGH-205,this.gameStates.MENUE_WIDTH,25];
+            this.btnWind.ForegroundColor = this.gameStates.GREEN;
+            this.btnWind.BackgroundColor = this.gameStates.BLACK;
+            this.btnWind.FontName = this.gameStates.FONT;
+            this.btnWind.FontSize = this.gameStates.TEXT_SIZE;
+            this.btnWind.Callback = @this.btnWindClick;
             
-                        %% Auswahl btn Wetter / Wind      
-            this.btnPlayerCount = uicontrol;
-            this.btnPlayerCount.Style = 'pushbutton';
-            this.btnPlayerCount.String = [this.gameParameter.gameMode];
-            this.btnPlayerCount.Position = [0,this.gameStates.MENUE_HIGH-160,this.gameStates.MENUE_WIDTH,25];
-            this.btnPlayerCount.ForegroundColor = this.gameStates.GREEN;
-            this.btnPlayerCount.BackgroundColor = this.gameStates.BLACK;
-            this.btnPlayerCount.FontName = this.gameStates.FONT;
-            this.btnPlayerCount.FontSize = this.gameStates.TEXT_SIZE;
-            this.btnPlayerCount.Callback = @this.btnGameModeClick;
+            %% Auswahl btn Berge   
+            this.btnMountain = uicontrol;
+            this.btnMountain.Style = 'pushbutton';
+            this.btnMountain.String = [this.gameParameter.mountain];
+            this.btnMountain.Position = [0,this.gameStates.MENUE_HIGH-250,this.gameStates.MENUE_WIDTH,25];
+            this.btnMountain.ForegroundColor = this.gameStates.GREEN;
+            this.btnMountain.BackgroundColor = this.gameStates.BLACK;
+            this.btnMountain.FontName = this.gameStates.FONT;
+            this.btnMountain.FontSize = this.gameStates.TEXT_SIZE;
+            this.btnMountain.Callback = @this.btnMountainClick;
+            
+            %% Auswahl btn Planet   
+            this.btnPlanet = uicontrol;
+            this.btnPlanet.Style = 'pushbutton';
+            this.btnPlanet.String = [this.gameParameter.planet];
+            this.btnPlanet.Position = [0,this.gameStates.MENUE_HIGH-295,this.gameStates.MENUE_WIDTH,25];
+            this.btnPlanet.ForegroundColor = this.gameStates.GREEN;
+            this.btnPlanet.BackgroundColor = this.gameStates.BLACK;
+            this.btnPlanet.FontName = this.gameStates.FONT;
+            this.btnPlanet.FontSize = this.gameStates.TEXT_SIZE;
+            this.btnPlanet.Callback = @this.btnPlanetClick;
+            
+            
+            %% Start 
+            this.btnStart = uicontrol;
+            this.btnStart.Style = 'pushbutton';
+            this.btnStart.String = '>> Start the f...... Game >>';
+            this.btnStart.Position = [0, 0,this.gameStates.MENUE_WIDTH,25];
+            this.btnStart.ForegroundColor = this.gameStates.RED;
+            this.btnStart.BackgroundColor = this.gameStates.BLACK;
+            this.btnStart.FontName = this.gameStates.FONT;
+            this.btnStart.FontSize = this.gameStates.TEXT_SIZE;
+            this.btnStart.Callback = @this.btnStartClick;
             
             this.fig.Visible = 'on';                  
         end
@@ -168,7 +143,29 @@ classdef Figure
             this.gameParameter = this.gameParameter.setPlayerQuantety(2);
             end
             this.btnPlayerCount.String = ['N off Players >> ',  num2str(this.gameParameter.playerQuantety)];
+        end;  
+        
+        function btnGameModeClick(this,source,eventdata)
+            this.gameParameter = this.gameParameter.nextMode;
+            this.btnMode.String = this.gameParameter.gameMode;
         end;
+        function btnWindClick(this,source,eventdata)
+            this.gameParameter = this.gameParameter.nextWind;
+            this.btnWind.String = this.gameParameter.wind;
+        end;        
+        function btnMountainClick(this,source,eventdata)
+            this.gameParameter = this.gameParameter.nextMountain;
+            this.btnMountain.String = this.gameParameter.mountain;
+        end;
+        function btnPlanetClick(this,source,eventdata)
+            this.gameParameter = this.gameParameter.nextPlanet;
+            this.btnPlanet.String = this.gameParameter.planet;
+        end;
+        function btnStartClick(this,source,eventdata)
+            this.gameParameter = this.gameParameter.nextPlanet;
+            this.btnPlanet.String = this.gameParameter.planet;
+        end;
+        
     end
     
 end

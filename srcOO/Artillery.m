@@ -13,6 +13,5 @@ screen.drawMenue();
         fig.modifyParameter(param);
     end
 
-
 end
 

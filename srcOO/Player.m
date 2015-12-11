@@ -19,6 +19,6 @@ classdef Player
             this.score = 0;
             this.tankType = tankType;
         end
-        
+    end
 end
 

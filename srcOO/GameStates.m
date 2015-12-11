@@ -13,8 +13,10 @@ classdef GameStates
            
            TITLE_COLOR = [.0,.1,.8];
            GREEN = [.01, .5, .01];
+           HOVER_GREEN = [.01, .7, .01]
            BLACK = [.01, .01, .01]; %% Black for Backround 
-           BACK_BLACK = [.01, .01, .01]; %% Black for Backround 
+           BACK_BLACK = [.01, .01, .01]; %% Black for Backround
+           RED = [0.8,0.1,0.15];
                                             
            varScreenSize = get(0,'ScreenSize');
            SCREEN_WIDTH;
@@ -46,6 +48,11 @@ classdef GameStates
 %          %FIGURE_COLOR = [0.6 0.9 1] % Hellblau Himmel
     end
     
+    properties (Access = private)
+      %% Mit folgenden Parameter wird der Status des Programess Beschrieben
+      menueProcessed = 0;
+    end
+    
     methods
         function this = GameStates()
             
@@ -63,7 +70,10 @@ classdef GameStates
            
            this.GAME_POSITION = [ 0, 0, this.GAME_WIDTH, this.GAME_HIGH];
         end
+        
+        function this = setMenueProccessed(state)
+            this.menueProcessed = state;
     end
-    
+    end
 end
 
