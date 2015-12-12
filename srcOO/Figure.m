@@ -1,4 +1,4 @@
-classdef Figure
+classdef Figure < handle
     %FIGURE Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -59,7 +59,7 @@ classdef Figure
             this.btnPlayerCount.BackgroundColor = this.gameStates.BLACK;
             this.btnPlayerCount.FontName = this.gameStates.FONT;
             this.btnPlayerCount.FontSize = this.gameStates.TEXT_SIZE;
-            this.btnPlayerCount.ButtonDownFcn = @this.btnPlayerCountClick;
+            this.btnPlayerCount.Callback = @this.btnPlayerCountClick;
             
             %% Auswahl btn Spielmodi      
             this.btnMode = uicontrol;
@@ -162,8 +162,7 @@ classdef Figure
             this.btnPlanet.String = this.gameParameter.planet;
         end;
         function btnStartClick(this,source,eventdata)
-            this.gameParameter = this.gameParameter.nextPlanet;
-            this.btnPlanet.String = this.gameParameter.planet;
+            this.gameStates.setMenueProccessed(1);
         end;
         
     end

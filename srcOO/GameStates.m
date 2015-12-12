@@ -1,4 +1,4 @@
-classdef GameStates
+classdef GameStates < handle
     %GAMESTATES Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -71,9 +71,12 @@ classdef GameStates
            this.GAME_POSITION = [ 0, 0, this.GAME_WIDTH, this.GAME_HIGH];
         end
         
-        function this = setMenueProccessed(state)
+        function this = setMenueProccessed(this, state)
             this.menueProcessed = state;
-    end
+        end
+        function state = getProcessState(this)
+            state = this.menueProcessed;
+        end
     end
 end
 
