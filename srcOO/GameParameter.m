@@ -21,6 +21,26 @@ classdef GameParameter < handle
         atmosphere;        % für Planeten vorgesehen
         mountain = 'Mountains>> medium';
         numberMountain = 2;
+        
+        %% Landscape Constants
+        % resolution = [x] <== auf diese x-auflösung wird gestreckt/interpoliert.
+        % Iteration muss zwingend >= 1 sein. im ersten Druchlauf werden 3
+        % Ecken des Berges gesetzt (Linker Rand, Mitte(Berg) und  rechter Rand)
+        % im 4. Durchlauf werden Korrekturen vorgenommen, Enden flächer etc.
+        RESOLUTION = 1;
+        % JITTER: Random Abweichung der zwischenschritte
+        % um diesen Zufallsbereich weicht der Geländepunkt vom Mittelwert der
+        % seiner Nachbarn ab (100 heisst, der Punkt kann um +- 50 abweichen)
+        JITTER = 40;            % maximalabweichung vom mittelwert der 2 nachbarn, wenn ein neuer punkt gerechent wird
+        JITTERBALANCE = 0.75;   %0.5 bedeutet, der Jitter ist nach oben und unten gleich verteilt. 1= 100% nach oben.
+        DAEMPFUNG= 1.4;         %Jitter wird nach jeder iteration gedämpft        
+        BERGOFFSET = 55;        % wie viel höher ist die Bergspitze
+        YLIMITS = [5 200];       % Keine Punkte ausserhalb [von bis] zugelassen. 
+        PLATFORMOFFSET=+5;      % die spieler-orte // 
+        POSTSMOOTHING= 10;      % unterhalb bergrenze wird nachträglich geglättet
+        FELSUEBERGANG=[50 70];% zwischen 60 und 90 Höhe passiert der Felsübergang, keine Glättung mehr
+        max_iterations=6;       % auf 6 stehen lassen! Erzeugt polygon mit (3+2^max_iterations) Ecken
+
     end
     
 

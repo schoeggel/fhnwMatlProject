@@ -9,6 +9,7 @@ state = GameStates;         % Instanz GameStates erzeugen
 screen = Figure(state, param);
 screen.drawMenue();
 
+% TODO Warten auf Menue bestätigung besser lösen...
     while(state.getProcessState == 0) % Wraten Bis Parmeter im Menue eingestellt sind
         x=1;
     end
@@ -16,8 +17,8 @@ screen.drawMenue();
     %% Landschaft Erzeugen
      
     %% Loop Speieler Erstellen
-    for i :1:state.playerQuantety
-         
+    for iCount = 1 : 1 : param.playerQuantety
+        player(iCount) = Player(iCount, ['CrashTestDummy>> ', num2str(iCount)], 'artillery', param );
     end
     
     %% Wetter Erstellen

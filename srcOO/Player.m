@@ -1,8 +1,8 @@
-classdef Player
+classdef Player < handle
     %UNTITLED Summary of this class goes here
     %   Detailed explanation goes here
     
-    properties(Access = private)
+    properties(GetAccess = public)
         number;
         name;
         livePoints;
@@ -18,6 +18,7 @@ classdef Player
             this.livePoints = GameParameter.getStandardLivePoints;
             this.score = 0;
             this.tankType = tankType;
+            this.positionXY = [0,0];
         end
     end
 end
