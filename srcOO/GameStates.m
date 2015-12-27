@@ -51,6 +51,10 @@ classdef GameStates < handle
     properties (Access = private)
       %% Mit folgenden Parameter wird der Status des Programess Beschrieben
       menueProcessed = 0;
+      
+      
+      %%
+      actualPlayer=1;
     end
     
     methods
@@ -76,6 +80,20 @@ classdef GameStates < handle
         end
         function state = getProcessState(this)
             state = this.menueProcessed;
+        end
+        
+        function [] = setActualPlayer(this,number)
+            this.actualPlayer = number;
+        end
+        function [actPlayer] = getActualPlayer(this)
+           actPlayer= this.actualPlayer;
+        end      
+        function [] = nextPlayer(this, GameParameter)
+            if GameParameter.playerQuantety == this.actualPlayer
+                this.actualPlayer = 1;
+            else
+            this.actualPlayer = this.actualPlayer + 1;
+            end
         end
     end
 end

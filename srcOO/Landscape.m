@@ -5,7 +5,7 @@ classdef Landscape < handle
     properties
         landscapeArray = [0,1];
         gameParameter;
-        iterations;
+        terrainArray;
     end
     
     methods
@@ -18,8 +18,12 @@ classdef Landscape < handle
 
             %% Limits für max_iterations durchsetzten
             max_iterations = floor(this.gameParameter.max_iterations);
-            if (max_iterations < 1) this.iterations = 1; end
-            if (max_iterations > 9) this.iterations = 9; end  % 1+2^9 Punkte reichen aus!
+            if (max_iterations < 1) 
+                iterations = 1; 
+            end
+            if (max_iterations > 9) 
+                iterations = 9; 
+            end  % 1+2^9 Punkte reichen aus!
 
             %% Vektor initialisieren                   
             terrain = zeros(max_iterations,2^max_iterations+1);
@@ -29,9 +33,13 @@ classdef Landscape < handle
             terrain (1,1) = rand*50;   % Startwert (Linker Rand)
             terrain (1,3) = rand*50;   % Endwert (rechter Rand)  
 
+            JITTER = this.gameParameter.JITTER;
+            DAEMPFUNG = this.gameParameter.DAEMPFUNG;
+            JITTERBALANCE = this.gameParameter.JITTERBALANCE;
+            PLATFORMOFFSET = this.gameParameter.PLATFORMOFFSET;
             % die Terrainpunkte werden in einer Matrix erstellt. ähnlich wie bei der 
             % erstellung des pascalschen Dreiecks. Zu Beginn sind nur in der ersten
-            % Zeile die Werte von Links, Rechts und der Mitte (Berg). Jede Iteration
+            % Zeile die Werte von Links,JITTER Rechts und der Mitte (Berg). Jede Iteration
             % erzeugt die Werte in eine nächste Zeile und fügt dort die neuen Punkte
             % ein. start bei 2, weil die erste bereits gesetzt (die 3 Startpunkte).
             for rowindex=2:1:this.gameParameter.max_iterations   %für jede iteration gibts eine neue Zeile  in der Matrix
@@ -70,12 +78,12 @@ classdef Landscape < handle
             end 
 
 
-
+            YLIMITS = this.gameParameter.YLIMITS;
             %% Limits
             %Versetzen Tiefster Punkt als Refernz auf YLIMITS(1)
             lowestpoint=min(terrain(max_iterations,:));
             terrain=terrain-lowestpoint+YLIMITS(1);
-
+            
             %neuen höchsten Punkt suchen, wenn höher als limite, wird das ganze terrain
             %zusammengestaucht
             highestpoint=max(terrain(max_iterations,:));
@@ -85,7 +93,7 @@ classdef Landscape < handle
 
 
             % auf 1000 punkte aufblasen
-            terrain= imresize(terrain,[max_iterations, 1001], 'Method','bilinear')
+            terrain= imresize(terrain,[max_iterations, 1001], 'Method','bilinear');
 
 
 
@@ -93,7 +101,8 @@ classdef Landscape < handle
             contour_raw=terrain(max_iterations,:);  %relevante letzte zeile aus den generierten Terrain Daten kopieren
             contour_soft=contour_raw;               %Diese Version wird geglättet
             contour_mix=contour_raw;                %Diese Version wird die gemischte
-
+            POSTSMOOTHING = this.gameParameter.YLIMITS;
+            
             for s=1:floor(POSTSMOOTHING/1*2^max_iterations)   % so oft durchlaufen, wie konfiguriert ist
                 for colindex=2:1:1000 % Letzte Zeile ist relevant ==> glätten
                         mittelwert=(contour_soft(colindex-1)+contour_soft(colindex+1))/2; % Mittelwert von der 2 nachbarpunkte
@@ -101,7 +110,7 @@ classdef Landscape < handle
                         contour_soft(colindex)= contour_soft(colindex)-0.1*(difference); %Angleichen in kleinen Schritten
                 end
             end
-
+            FELSUEBERGANG  = this.gameParameter.FELSUEBERGANG;
             %Mix raw und soft anhand der Parameter FELSUEBERGANG(1)  und (2)
             for colindex=1:1:size(contour_raw,2)
                if  contour_raw(colindex) < FELSUEBERGANG(1)     % Nur Berge
@@ -130,7 +139,7 @@ classdef Landscape < handle
 
 
             %% Stretch Y
-            fittingTerrainX=terrainshapeX
+            fittingTerrainX=terrainshapeX;
             fittingTerrainY=terrainshapeY.*3.5;
 
             %add support for player
@@ -142,10 +151,11 @@ classdef Landscape < handle
             fittingTerrainY(1, offset-15:offset+15)=max(fittingTerrainY(1,offset-15:offset+15));
 
 
-            terrain=[fittingTerrainX; fittingTerrainY];
+            this.terrainArray=[fittingTerrainX; fittingTerrainY];
         end
                       
-        function getLandscape()
+        function terrainArray = getLandscape(this)
+            terrainArray = this.terrainArray;
         end
         
     end

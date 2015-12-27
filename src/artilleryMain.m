@@ -52,6 +52,7 @@ terrainhandler = patch(terrainshapeX,terrainshapeY, c,'EdgeColor','interp','Mark
 colormap(0.4*summer+0.4*flipud(pink)+0.1*flipud(winter));
 axis([1 1000 0 750])
 
+
 % Panzerli: get Vertices
 [player1.shapeX, player1.shapeY] = genPlayer(-1);
 [player2.shapeX, player2.shapeY] = genPlayer( 5);

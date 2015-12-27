@@ -40,7 +40,14 @@ classdef GameParameter < handle
         POSTSMOOTHING= 10;      % unterhalb bergrenze wird nachträglich geglättet
         FELSUEBERGANG=[50 70];% zwischen 60 und 90 Höhe passiert der Felsübergang, keine Glättung mehr
         max_iterations=6;       % auf 6 stehen lassen! Erzeugt polygon mit (3+2^max_iterations) Ecken
-
+        
+        
+        PLOT_W = 1000; %width in plot units. this will be main units for program
+        PLOT_H = 750; %height
+        axisArray = [0 1000 0 750];
+        
+        maxTankPos = 0.2 %% in welchem berech der Arraylänge der tank plaziert werden darf
+    
     end
     
 
@@ -90,16 +97,21 @@ classdef GameParameter < handle
                 case 13 %Gliese 1214 b
                     this.planet = 'Exoplanet>> Gliese 1214 b';
                     this.gForce = 9.81;
-                    this.numberPlanet = 0;
                 otherwise
                     this.numberPlanet = 0;
             end                    
         end
         function this = nextPlanet(this)
+            if this.numberPlanet == 13
+               this.numberPlanet = 0;
+            end
             this.numberPlanet= this.numberPlanet+1;
             this.setPlanet();
         end 
         function this = nextWind(this)
+            if this.numberWind == 3
+               this.numberWind = 0;
+            end
             this.numberWind = this.numberWind + 1;
             switch this.numberWind
                 case 1
@@ -110,12 +122,14 @@ classdef GameParameter < handle
 
                 case 3
                     this.wind = 'Wind>> high';
-                    this.numberWind = 0;
                 otherwise
                     this.numberWind = 0;
             end
         end 
         function this = nextMountain(this)
+            if this.numberMountain == 3
+               this.numberMountain = 0;
+            end
             this.numberMountain = this.numberMountain + 1;
             switch this.numberMountain
                 case 1
@@ -126,19 +140,20 @@ classdef GameParameter < handle
 
                 case 3
                     this.mountain = 'Mountains>> high';
-                    this.numberMountain = 1;
                 otherwise
                     this.numberMountain = 1;
             end
         end 
         function this = nextMode(this)
+            if this.numberMode == 2
+               this.numberMode = 0;
+            end
             this.numberMode = this.numberMode + 1;
             switch this.numberMode
                 case 1
                     this.gameMode = 'Game Mode>> tactics';
                 case 2
                     this.gameMode = 'Game Mode>> agilety';
-                    this.numberMode = 0;
                 otherwise
                     this.numberMode = 1;
             end

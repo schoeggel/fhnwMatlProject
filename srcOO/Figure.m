@@ -1,3 +1,20 @@
+%%  Header
+%
+%   Title: createFigure.m
+%
+%   Precondition:   nothing
+%
+%   Postcondition: 
+%   Erzeugt ein Grafikfenster in dem das Spiel Abläuft
+%
+%   Call: 
+%
+%	Variables:
+%
+%   Modified:
+%
+%   
+
 classdef Figure < handle
     %FIGURE Summary of this class goes here
     %   Detailed explanation goes here
@@ -7,8 +24,8 @@ classdef Figure < handle
     end
     
     properties (Access = private)
-        fig;    % Figure Object
-        title;  % Titeltext als String
+        fig;            % Figure Object
+        title;          % Titeltext als String
         gameParameter;
         gameStates;
         btnPlayerCount;
@@ -120,11 +137,112 @@ classdef Figure < handle
             this.fig.Visible = 'on';                  
         end
         
-        function [processed] = redrawFigure()
-            
+        function [] = drawGamescreen(this)
+
+        %% CONSTANTS                                
+        % #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+        % TODO ersetzen durc Klass
+         FIGURE_FULLSCREEN = true;
+         FIGURE_WIDTH = 950;     % pixels
+         FIGURE_HEIGHT = 650;
+         FIGURE_COLOR = [.15, .15, .15];
+         AXIS_COLOR = [0.6 0.9 1]; % Hellblau Himmel
+         FONT = 'Courier'; 
+         MESSAGE_SPACE = 15; %spacing between message lines
+         LARGE_TEXT = 18; %text sizes
+         SMALL_TEXT = 14;
+         TINY_TEXT = 13;
+         TITLE_COLOR = [.0,.8,.0];
+         %FIGURE_COLOR = [.15, .15, .15]; %program background
+         %FIGURE_COLOR = [0.6 0.9 1] % Hellblau Himmel
+
+        %% Setup der Anzeige
+            % Ermitteln der Bildschirmgrösse
+            screenSize = get(0,'ScreenSize');
+
+            % in die linke obere ecke stzen
+            fig = figure('units','normalized','outerposition',[0 0 1 1]);
+            set(fig, 'Name', 'Artillery');
+
+        %     fig = figure('Position',[(screenSize(3)-FIGURE_WIDTH)/2,...
+        %       (screenSize(4)-FIGURE_HEIGHT)/2, ...
+        %       FIGURE_WIDTH, ...
+        %       FIGURE_HEIGHT]);
+        %       %custom close function.
+
+        % set(fig,'CloseRequestFcn',@my_closefcn);
+
+            %set background color for figure
+            set(fig, 'color', FIGURE_COLOR);
+
+            %make custom mouse pointer
+            pointer = NaN(16, 16);
+            pointer(8, 1:16) = 1;
+            pointer(1:16, 8) = 1;
+            pointer(8, 8) = 2;
+            set(fig, 'Pointer', 'Custom');
+            set(fig, 'PointerShapeHotSpot', [4, 4]);
+            set(fig, 'PointerShapeCData', pointer);
+
+        %     %register keydown and keyup listeners
+        %     set(fig,'KeyPressFcn',@keyDownListener)
+        %     %set(fig, 'KeyReleaseFcn', @keyUpListener);
+        %     set(fig,'WindowButtonDownFcn', @mouseDownListener);
+        %     set(fig,'WindowButtonUpFcn', @mouseUpListener);
+        %     set(fig,'WindowButtonMotionFcn', @mouseMoveListener);
+
+            %figure can't be resized
+           % set(fig, 'Resize', 'off');
+
+            mainAxis = axes(); %handle for axis
+            axis(this.gameParameter.axisArray);
+            axis manual; %axis wont be resized
+
+            %set color for the court, hide axis ticks.
+            % Himmelblau machen
+            set(mainAxis, 'color', AXIS_COLOR, 'YTick', [], 'XTick', []);
+            %handles to title for displaying wave, score
+            axisTitle = title('Artillery');
+            set(axisTitle, 'FontName', FONT,'FontSize', LARGE_TEXT);
+            set(axisTitle, 'Color', TITLE_COLOR);
+
+            colormap(0.4*summer+0.4*flipud(pink)+0.1*flipud(winter));
+
+            hold on;
+            fighandler=gcf;
         end
         
- 
+        function [] = drawInScreen(this,terrain)
+            shapeX = terrain(1,:);
+            shapeY = terrain(2,:);
+            shapeC = terrain(1,:);
+            p = patch(shapeX,shapeY, shapeC,'EdgeColor','interp','MarkerFaceColor','flat');
+            colormap(0.4*summer+0.4*flipud(pink)+0.1*flipud(winter));
+            axis(this.gameParameter.axisArray);
+        end
+        
+        function [p] = drawElement(this, shape)
+                color = [0 0 0];
+                p = this.drawElementCol(shape, color);
+        end
+       function [p] = drawElementCol(this,shape,color)
+             polygonX = shape(1,:);
+             polygonY = shape(2,:);
+             p = patch(polygonX, polygonY, color);
+       end
+       function [] = deleteElement(this,p)
+             p.delete;
+       end
+       function [] = updateElement(this,p,shape)
+            color = p.FaceColor;
+            this.deleteElement(p);
+            this.drawElementCol(shape,color);
+       end
+       function [] = updateElementCol(this,p,shape,color)
+            this.deleteElement(p);
+            this.drawElementCol(shape,color);
+       end
+            
         function [] = updateState(this,GameStates)       
            this.gameState = GameStates;
         end
@@ -134,6 +252,9 @@ classdef Figure < handle
         
         function [GameParameter] = getParameters(this)
             GameParameter = this.gameParameter;
+        end
+        function [fig] = getFig(this)
+            fig = this.fig;
         end
         
         function btnPlayerCountClick(this,source,eventdata)
@@ -163,6 +284,7 @@ classdef Figure < handle
         end;
         function btnStartClick(this,source,eventdata)
             this.gameStates.setMenueProccessed(1);
+            close(this.fig)
         end;
         
     end
