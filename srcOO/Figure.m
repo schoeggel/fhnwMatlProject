@@ -142,57 +142,53 @@ classdef Figure < handle
         %% CONSTANTS                                
         % #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
         % TODO ersetzen durc Klass
-         FIGURE_FULLSCREEN = true;
-         FIGURE_WIDTH = 950;     % pixels
-         FIGURE_HEIGHT = 650;
-         FIGURE_COLOR = [.15, .15, .15];
-         AXIS_COLOR = [0.6 0.9 1]; % Hellblau Himmel
-         FONT = 'Courier'; 
-         MESSAGE_SPACE = 15; %spacing between message lines
-         LARGE_TEXT = 18; %text sizes
-         SMALL_TEXT = 14;
-         TINY_TEXT = 13;
-         TITLE_COLOR = [.0,.8,.0];
-         %FIGURE_COLOR = [.15, .15, .15]; %program background
-         %FIGURE_COLOR = [0.6 0.9 1] % Hellblau Himmel
 
-        %% Setup der Anzeige
-            % Ermitteln der Bildschirmgrösse
-            screenSize = get(0,'ScreenSize');
+             FIGURE_COLOR = this.gameStates.BACK_BLACK;
+             AXIS_COLOR = this.gameStates.SKY;
+             FONT = this.gameStates.FONT; 
+             LARGE_TEXT = this.gameStates.TITLE_SIZE; %text sizes
+             TITLE_COLOR = this.gameStates.TITLE_COLOR;
 
             % in die linke obere ecke stzen
-            fig = figure('units','normalized','outerposition',[0 0 1 1]);
-            set(fig, 'Name', 'Artillery');
+            %fig = figure('units','normalized','outerposition',[0 0 1 1])
+            this.fig.Units = 'normalized';
+            this.fig.Name = 'Artillery';
+            this.fig.MenuBar = 'none';
+            this.fig.ToolBar = 'none';
+            this.fig.NumberTitle = 'off';
+            this.fig.Position = this.gameStates.GAME_POSITION;
+            this.fig.Color = this.gameStates.BLACK;
+            
+            % Fullscreen
+            % Quelle 
+            % http://stackoverflow.com/questions/15286458/automatically-maximize-figure-in-matlab
+            % http://www.mathworks.com/matlabcentral/answers/98331-is-it-possible-to-maximize-minimize-or-get-the-state-of-my-figure-programmatically-in-matlab
+            % vom 28.12.2015
+             this.fig.Visible = 'on'; 
+             pause(0.1)
+             jFrame = get(handle(this.fig), 'JavaFrame');
+             jFrame.setMaximized(1);
+             pause(0.1)
+             this.fig.Resize = 'off';
 
-        %     fig = figure('Position',[(screenSize(3)-FIGURE_WIDTH)/2,...
-        %       (screenSize(4)-FIGURE_HEIGHT)/2, ...
-        %       FIGURE_WIDTH, ...
-        %       FIGURE_HEIGHT]);
-        %       %custom close function.
-
-        % set(fig,'CloseRequestFcn',@my_closefcn);
-
-            %set background color for figure
-            set(fig, 'color', FIGURE_COLOR);
-
-            %make custom mouse pointer
+            % Eigener Mousepointer
             pointer = NaN(16, 16);
             pointer(8, 1:16) = 1;
             pointer(1:16, 8) = 1;
             pointer(8, 8) = 2;
-            set(fig, 'Pointer', 'Custom');
-            set(fig, 'PointerShapeHotSpot', [4, 4]);
-            set(fig, 'PointerShapeCData', pointer);
-
-        %     %register keydown and keyup listeners
-        %     set(fig,'KeyPressFcn',@keyDownListener)
-        %     %set(fig, 'KeyReleaseFcn', @keyUpListener);
-        %     set(fig,'WindowButtonDownFcn', @mouseDownListener);
-        %     set(fig,'WindowButtonUpFcn', @mouseUpListener);
-        %     set(fig,'WindowButtonMotionFcn', @mouseMoveListener);
-
-            %figure can't be resized
-           % set(fig, 'Resize', 'off');
+            this.fig.Pointer = 'Custom';
+            this.fig.PointerShapeHotSpot = [4, 4];
+            this.fig.PointerShapeCData = pointer;
+            this.fig.PointerShapeCData = pointer;
+            
+            %     %register keydown and keyup listeners
+            %     set(fig,'KeyPressFcn',@keyDownListener)
+            %     %set(fig, 'KeyReleaseFcn', @keyUpListener);
+            %     set(fig,'WindowButtonDownFcn', @mouseDownListener);
+            %     set(fig,'WindowButtonUpFcn', @mouseUpListener);
+            %     set(fig,'WindowButtonMotionFcn', @mouseMoveListener);
+            %   figure can't be resized
+               % set(fig, 'Resize', 'off');
 
             mainAxis = axes(); %handle for axis
             axis(this.gameParameter.axisArray);
@@ -207,12 +203,115 @@ classdef Figure < handle
             set(axisTitle, 'Color', TITLE_COLOR);
 
             colormap(0.4*summer+0.4*flipud(pink)+0.1*flipud(winter));
-
+            
+            this.fig.Resize = 'off';
             hold on;
-            fighandler=gcf;
+
         end
         
-        function [] = drawInScreen(this,terrain)
+        function [] = drawGameButtons(this)
+            axes = this.gameParameter.axisArray;
+            leftBorder = (this.gameStates.SCREEN_WIDTH - (axes(1,2)+100)) / 2 ;
+            fromleftBorder = 10;
+            fromTop = this.gameStates.SCREEN_HIGH - 75;
+            
+            % Player
+            this.title = uicontrol;
+            this.title.Style = 'text';
+            this.title.String = 'Player >> ';
+            this.title.Position = [fromleftBorder, fromTop - 50, leftBorder , 50];
+            this.title.ForegroundColor = this.gameStates.TITLE_COLOR;
+            this.title.BackgroundColor = this.gameStates.BLACK;
+            this.title.FontName = this.gameStates.FONT;
+            this.title.FontSize = this.gameStates.TEXT_SIZE ;
+            
+            %% Feuer Befehl     
+            this.btnPlayerCount = uicontrol;
+            this.btnPlayerCount.Style = 'pushbutton';
+            this.btnPlayerCount.String = '!FIRE!';
+            this.btnPlayerCount.Position = [fromleftBorder, fromTop - 550,leftBorder,50];
+            this.btnPlayerCount.ForegroundColor = this.gameStates.RED;
+            this.btnPlayerCount.BackgroundColor = this.gameStates.BLACK;
+            this.btnPlayerCount.FontName = this.gameStates.FONT;
+            this.btnPlayerCount.FontSize = this.gameStates.TEXT_SIZE;
+            this.btnPlayerCount.Callback = @this.btnPlayerCountClick;
+            
+            % Anzeige des Winkels
+            this.title = uicontrol;
+            this.title.Style = 'text';
+            this.title.String = 'Angle >> ';
+            this.title.Position = [fromleftBorder, fromTop - 250, leftBorder , 50];
+            this.title.ForegroundColor = this.gameStates.YELLOW;
+            this.title.BackgroundColor = this.gameStates.BLACK;
+            this.title.FontName = this.gameStates.FONT;
+            this.title.FontSize = this.gameStates.TEXT_SIZE ;
+            
+            %% Einstellen des Winkels     
+            this.btnPlayerCount = uicontrol;
+            this.btnPlayerCount.Style = 'slider';
+            this.btnPlayerCount.String = 'ANGLE';
+            this.btnPlayerCount.Position = [fromleftBorder, fromTop - 275,leftBorder,50];
+            this.btnPlayerCount.ForegroundColor = this.gameStates.GREEN;
+            this.btnPlayerCount.BackgroundColor = this.gameStates.BLACK;
+            this.btnPlayerCount.FontName = this.gameStates.FONT;
+            this.btnPlayerCount.FontSize = this.gameStates.TEXT_SIZE;
+            this.btnPlayerCount.Callback = @this.btnPlayerCountClick;
+            
+            
+            % Anzeige des POWER
+            this.title = uicontrol;
+            this.title.Style = 'text';
+            this.title.String = 'POWER >> ';
+            this.title.Position = [fromleftBorder, fromTop - 425, leftBorder , 50];
+            this.title.ForegroundColor = this.gameStates.ORANGE;
+            this.title.BackgroundColor = this.gameStates.BLACK;
+            this.title.FontName = this.gameStates.FONT;
+            this.title.FontSize = this.gameStates.TEXT_SIZE;  
+            
+            %% Einstellen der POWER   
+            this.btnPlayerCount = uicontrol;
+            this.btnPlayerCount.Style = 'slider';
+            this.btnPlayerCount.String = 'POWER';
+            this.btnPlayerCount.Position = [fromleftBorder, fromTop - 450 ,leftBorder,50];
+            this.btnPlayerCount.ForegroundColor = this.gameStates.GREEN;
+            this.btnPlayerCount.BackgroundColor = this.gameStates.BLACK;
+            this.btnPlayerCount.FontName = this.gameStates.FONT;
+            this.btnPlayerCount.FontSize = this.gameStates.TEXT_SIZE;
+            this.btnPlayerCount.Callback = @this.btnPlayerCountClick;
+        end
+        
+        
+        function [] = drawPowerBar(this)
+            axes = this.gameParameter.axisArray;
+            leftBorder = (this.gameStates.SCREEN_WIDTH - (axes(1,2)+100)) / 2 ;
+            fromleftBorder = 10;
+            fromTop = this.gameStates.SCREEN_HIGH - 75;
+            
+            % Player
+            this.title = uicontrol;
+            this.title.Style = 'text';
+            this.title.String = 'Player >> ';
+            this.title.Position = [fromleftBorder, fromTop - 50, leftBorder , 50];
+            this.title.ForegroundColor = this.gameStates.TITLE_COLOR;
+            this.title.BackgroundColor = this.gameStates.BLACK;
+            this.title.FontName = this.gameStates.FONT;
+            this.title.FontSize = this.gameStates.TEXT_SIZE ; 
+            
+            this.updatePowerBar(0);
+        end
+        
+        %% Fire in the hole!
+        function [] = updatePowerBar(this,power)
+        % zeichnet die powerbar
+            blueX = [350,650,650,350];
+            blueY = [700,700,720,720];
+            pbarX = [350, 350+300*min(power,1), 350+300*min(power,1), 350];
+            pbarY = blueY;
+            patch(blueX,blueY,[0.6 0.9 1]); % Hellblau Himmel;
+            patch(pbarX,pbarY,'R');
+        end
+        
+        function [p] = drawInScreen(this,terrain)
             shapeX = terrain(1,:);
             shapeY = terrain(2,:);
             shapeC = terrain(1,:);
@@ -225,20 +324,20 @@ classdef Figure < handle
                 color = [0 0 0];
                 p = this.drawElementCol(shape, color);
         end
-       function [p] = drawElementCol(this,shape,color)
+        function [p] = drawElementCol(this,shape,color)
              polygonX = shape(1,:);
              polygonY = shape(2,:);
              p = patch(polygonX, polygonY, color);
-       end
-       function [] = deleteElement(this,p)
+        end
+        function [] = deleteElement(this,p)
              p.delete;
-       end
-       function [] = updateElement(this,p,shape)
+        end
+        function [] = updateElement(this,p,shape)
             color = p.FaceColor;
             this.deleteElement(p);
             this.drawElementCol(shape,color);
-       end
-       function [] = updateElementCol(this,p,shape,color)
+        end
+        function [] = updateElementCol(this,p,shape,color)
             this.deleteElement(p);
             this.drawElementCol(shape,color);
        end

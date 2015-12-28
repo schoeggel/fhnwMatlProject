@@ -26,6 +26,7 @@ waitfor(screen.getFig());
     % Taktik oder Geschicklichkeit
     
         %% Loop Speieler Erstellen und Zeicjnen
+        
     for iCount = 1 : 1 : param.playerQuantety
         player(iCount) = Player(iCount, ['CrashTestDummy>> ', num2str(iCount)], 'artillery', param );
         player(iCount).genTank;
@@ -44,17 +45,24 @@ waitfor(screen.getFig());
     weth.updateWether;
     gameScreen.updateElementCol(windShape, weth.getWindShape,weth.getWindShapeColor);
     %% Zug ermitteln
-    round(rand * param.playerQuantety)
+    round(rand * param.playerQuantety);
     
     %% Spieler Anzeigen
+    if param.numberMode == 1;
+    gameScreen.drawGameButtons();
+    else
+    gameScreen.drawPowerBar();
+    end
     
     %% Warten auf eingabe
     
     %% Schuss Rechnen
     shot = FlightPath();
-    coordinate =   shot.calcCoordinates(4000,45,weth,lndsc,player(state.getActualPlayer));
+    coordinate = shot.calcCoordinates(1000, 90 , weth,lndsc,player(2));
+    %state.getActualPlayer
     comet(coordinate(1,:),coordinate(2,:));
     %% Treffer ermitteln
+    shot.isHit(player,2)
     
     %% Schuss Zeichnen
     

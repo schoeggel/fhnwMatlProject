@@ -17,6 +17,10 @@ classdef GameStates < handle
            BLACK = [.01, .01, .01]; %% Black for Backround 
            BACK_BLACK = [.01, .01, .01]; %% Black for Backround
            RED = [0.8,0.1,0.15];
+           ORANGE = [0.9,0.4,0.1];
+           YELLOW = [0.9,0.9,0.1];
+           MAGENTA = [1,0,1];
+           SKY = [0.6 0.9 1]; % Hellblau Himmel
                                             
            varScreenSize = get(0,'ScreenSize');
            SCREEN_WIDTH;
@@ -29,23 +33,6 @@ classdef GameStates < handle
            GAME_HIGH;
            GAME_WIDTH;
            GAME_POSITION;
-
-           
-%          FIGURE_FULLSCREEN = true;
-%          FIGURE_WIDTH = 950;     % pixels
-%          FIGURE_HEIGHT = 650;
-%          FIGURE_COLOR = [.15, .15, .15]; % RGB
-%          AXIS_COLOR = [0.6 0.9 1]; % Hellblau Himmel
-%          PLOT_W = 1000; %width in plot units. this will be main units for program
-%          PLOT_H = 750; %height
-%          FONT = 'Courier'; 
-%          MESSAGE_SPACE = 15; %spacing between message lines
-%          LARGE_TEXT = 18; %text sizes
-%          SMALL_TEXT = 14;
-%          TINY_TEXT = 13;
-%          TITLE_COLOR = [.0,.8,.0];
-%          %FIGURE_COLOR = [.15, .15, .15]; %program background
-%          %FIGURE_COLOR = [0.6 0.9 1] % Hellblau Himmel
     end
     
     properties (Access = private)
@@ -63,7 +50,7 @@ classdef GameStates < handle
            this.SCREEN_WIDTH = this.varScreenSize(3);
            this.SCREEN_HIGH = this.varScreenSize(4);
                                                          
-           this.MENUE_HIGH= this.SCREEN_HIGH/8*5;
+           this.MENUE_HIGH = this.SCREEN_HIGH/8*5;
            this.MENUE_WIDTH = this.MENUE_HIGH/8*5;
            
            this.MENUE_POSITION = [this.SCREEN_WIDTH/2-this.MENUE_WIDTH/2, ...
