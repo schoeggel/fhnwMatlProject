@@ -34,17 +34,17 @@ classdef  FlightPath < handle
             %
             masseProjektil = 1;
             energieTreibladung = energie;
-            wirkungsGradKanone = 0.8;
+            wirkungsGradKanone = 1;
             masseKanone = 10000;
             g = 9.81;
             
-            vStart = sqrt(2*energieTreibladung*wirkungsGradKanone/masseProjektil);
+            vStart = sqrt( 2 * energieTreibladung * wirkungsGradKanone / masseProjektil);
             vxStart = cos(angRad) * vStart;
             vyStart = sin(angRad) * vStart;
             tmax = 30;
 
-            dichteMedium =1.3;
-            koeffzient = 0.01;
+            dichteMedium = 1.3;
+            koeffzient = 0.001;
             deltaT = 0.001;
 
             vx = (vxStart);
@@ -56,10 +56,10 @@ classdef  FlightPath < handle
 
             for t = 0 : deltaT : tmax
 
-                ve = [vx, vy]/sqrt(vx^2 + vy^2);
-                fVector = ve * (sqrt(vx^2 + vy^2)^2*koeffzient*dichteMedium)*deltaT;
-                vx = vx - fVector(:,1)*deltaT - Wether.wind * koeffzient * dichteMedium*deltaT;
-                vy = vy - g * deltaT - fVector(:,2)*deltaT;
+                ve = [vx, vy] / sqrt(vx^2 + vy^2);
+                fVector = ve * (sqrt(vx^2 + vy^2)^2 * koeffzient * dichteMedium);
+                vx = vx - fVector(1,1)*deltaT - (Wether.wind + vx) * abs(Wether.wind + vx) * koeffzient * dichteMedium * deltaT;
+                vy = vy - g * deltaT - fVector(1,2)*deltaT;
 
                 x(n+1) = x(n)+vx * deltaT;
                 y(n+1) = y(n)+vy * deltaT;

@@ -41,6 +41,7 @@ classdef GameParameter < handle
         FELSUEBERGANG=[50 70];% zwischen 60 und 90 Höhe passiert der Felsübergang, keine Glättung mehr
         max_iterations=6;       % auf 6 stehen lassen! Erzeugt polygon mit (3+2^max_iterations) Ecken
         
+        detonationRadius = 20;
         
         PLOT_W = 1000; %width in plot units. this will be main units for program
         PLOT_H = 750; %height

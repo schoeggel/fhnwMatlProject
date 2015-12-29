@@ -28,12 +28,19 @@ classdef Figure < handle
         title;          % Titeltext als String
         gameParameter;
         gameStates;
+        terrainhandler;
         btnPlayerCount;
         btnMode;
         btnWind;
         btnMountain;
         btnPlanet;
         btnStart;
+        player;
+        fire;
+        angle;
+        angleSlider;
+        power;
+        powerSlider;
     end    
     
     methods
@@ -208,6 +215,21 @@ classdef Figure < handle
             hold on;
 
         end
+        function [] = drawActualPlayer(this, GameState)
+            axes = this.gameParameter.axisArray;
+            leftBorder = (this.gameStates.SCREEN_WIDTH - (axes(1,2)+100)) / 2 ;
+            fromleftBorder = 10;
+            fromTop = this.gameStates.SCREEN_HIGH - 75;
+        % Player
+            this.player = uicontrol;
+            this.player.Style = 'text';
+            this.player.String =  ['Player >> ', num2str(GameState.getActualPlayer)];
+            this.player.Position = [fromleftBorder, fromTop - 50, leftBorder , 50];
+            this.player.ForegroundColor = this.gameStates.TITLE_COLOR;
+            this.player.BackgroundColor = this.gameStates.BLACK;
+            this.player.FontName = this.gameStates.FONT;
+            this.player.FontSize = this.gameStates.TEXT_SIZE ;
+        end
         
         function [] = drawGameButtons(this)
             axes = this.gameParameter.axisArray;
@@ -215,71 +237,60 @@ classdef Figure < handle
             fromleftBorder = 10;
             fromTop = this.gameStates.SCREEN_HIGH - 75;
             
-            % Player
-            this.title = uicontrol;
-            this.title.Style = 'text';
-            this.title.String = 'Player >> ';
-            this.title.Position = [fromleftBorder, fromTop - 50, leftBorder , 50];
-            this.title.ForegroundColor = this.gameStates.TITLE_COLOR;
-            this.title.BackgroundColor = this.gameStates.BLACK;
-            this.title.FontName = this.gameStates.FONT;
-            this.title.FontSize = this.gameStates.TEXT_SIZE ;
-            
             %% Feuer Befehl     
-            this.btnPlayerCount = uicontrol;
-            this.btnPlayerCount.Style = 'pushbutton';
-            this.btnPlayerCount.String = '!FIRE!';
-            this.btnPlayerCount.Position = [fromleftBorder, fromTop - 550,leftBorder,50];
-            this.btnPlayerCount.ForegroundColor = this.gameStates.RED;
-            this.btnPlayerCount.BackgroundColor = this.gameStates.BLACK;
-            this.btnPlayerCount.FontName = this.gameStates.FONT;
-            this.btnPlayerCount.FontSize = this.gameStates.TEXT_SIZE;
-            this.btnPlayerCount.Callback = @this.btnPlayerCountClick;
+            this.fire = uicontrol;
+            this.fire.Style = 'pushbutton';
+            this.fire.String = '!!!FIRE!!!';
+            this.fire.Position = [fromleftBorder, fromTop - 550,leftBorder,50];
+            this.fire.ForegroundColor = this.gameStates.RED;
+            this.fire.BackgroundColor = this.gameStates.BLACK;
+            this.fire.FontName = this.gameStates.FONT;
+            this.fire.FontSize = this.gameStates.TEXT_SIZE;
+            this.fire.Callback = @this.btnFireClick;
             
             % Anzeige des Winkels
-            this.title = uicontrol;
-            this.title.Style = 'text';
-            this.title.String = 'Angle >> ';
-            this.title.Position = [fromleftBorder, fromTop - 250, leftBorder , 50];
-            this.title.ForegroundColor = this.gameStates.YELLOW;
-            this.title.BackgroundColor = this.gameStates.BLACK;
-            this.title.FontName = this.gameStates.FONT;
-            this.title.FontSize = this.gameStates.TEXT_SIZE ;
+            this.angle = uicontrol;
+            this.angle.Style = 'text';
+            this.angle.String = 'Angle >> ';
+            this.angle.Position = [fromleftBorder, fromTop - 250, leftBorder , 50];
+            this.angle.ForegroundColor = this.gameStates.YELLOW;
+            this.angle.BackgroundColor = this.gameStates.BLACK;
+            this.angle.FontName = this.gameStates.FONT;
+            this.angle.FontSize = this.gameStates.TEXT_SIZE ;
             
             %% Einstellen des Winkels     
-            this.btnPlayerCount = uicontrol;
-            this.btnPlayerCount.Style = 'slider';
-            this.btnPlayerCount.String = 'ANGLE';
-            this.btnPlayerCount.Position = [fromleftBorder, fromTop - 275,leftBorder,50];
-            this.btnPlayerCount.ForegroundColor = this.gameStates.GREEN;
-            this.btnPlayerCount.BackgroundColor = this.gameStates.BLACK;
-            this.btnPlayerCount.FontName = this.gameStates.FONT;
-            this.btnPlayerCount.FontSize = this.gameStates.TEXT_SIZE;
-            this.btnPlayerCount.Callback = @this.btnPlayerCountClick;
+            this.angleSlider = uicontrol;
+            this.angleSlider.Style = 'slider';
+            this.angleSlider.String = 'ANGLE';
+            this.angleSlider.Position = [fromleftBorder, fromTop - 275,leftBorder,50];
+            this.angleSlider.ForegroundColor = this.gameStates.GREEN;
+            this.angleSlider.BackgroundColor = this.gameStates.BLACK;
+            this.angleSlider.FontName = this.gameStates.FONT;
+            this.angleSlider.FontSize = this.gameStates.TEXT_SIZE;
+            this.angleSlider.Callback = @this.btnAngleClick;
             
             
             % Anzeige des POWER
-            this.title = uicontrol;
-            this.title.Style = 'text';
-            this.title.String = 'POWER >> ';
-            this.title.Position = [fromleftBorder, fromTop - 425, leftBorder , 50];
-            this.title.ForegroundColor = this.gameStates.ORANGE;
-            this.title.BackgroundColor = this.gameStates.BLACK;
-            this.title.FontName = this.gameStates.FONT;
-            this.title.FontSize = this.gameStates.TEXT_SIZE;  
+            this.power = uicontrol;
+            this.power.Style = 'text';
+            this.power.String = 'POWER >> ';
+            this.power.Position = [fromleftBorder, fromTop - 425, leftBorder , 50];
+            this.power.ForegroundColor = this.gameStates.ORANGE;
+            this.power.BackgroundColor = this.gameStates.BLACK;
+            this.power.FontName = this.gameStates.FONT;
+            this.power.FontSize = this.gameStates.TEXT_SIZE;  
             
             %% Einstellen der POWER   
-            this.btnPlayerCount = uicontrol;
-            this.btnPlayerCount.Style = 'slider';
-            this.btnPlayerCount.String = 'POWER';
-            this.btnPlayerCount.Position = [fromleftBorder, fromTop - 450 ,leftBorder,50];
-            this.btnPlayerCount.ForegroundColor = this.gameStates.GREEN;
-            this.btnPlayerCount.BackgroundColor = this.gameStates.BLACK;
-            this.btnPlayerCount.FontName = this.gameStates.FONT;
-            this.btnPlayerCount.FontSize = this.gameStates.TEXT_SIZE;
-            this.btnPlayerCount.Callback = @this.btnPlayerCountClick;
-        end
-        
+            this.powerSlider = uicontrol;
+            this.powerSlider.Style = 'slider';
+            this.powerSlider.String = 'POWER';
+            this.powerSlider.Position = [fromleftBorder, fromTop - 450 ,leftBorder,50];
+            this.powerSlider.ForegroundColor = this.gameStates.GREEN;
+            this.powerSlider.BackgroundColor = this.gameStates.BLACK;
+            this.powerSlider.FontName = this.gameStates.FONT;
+            this.powerSlider.FontSize = this.gameStates.TEXT_SIZE;
+            this.powerSlider.Callback = @this.btnAngleClick;
+        end        
         
         function [] = drawPowerBar(this)
             axes = this.gameParameter.axisArray;
@@ -287,20 +298,8 @@ classdef Figure < handle
             fromleftBorder = 10;
             fromTop = this.gameStates.SCREEN_HIGH - 75;
             
-            % Player
-            this.title = uicontrol;
-            this.title.Style = 'text';
-            this.title.String = 'Player >> ';
-            this.title.Position = [fromleftBorder, fromTop - 50, leftBorder , 50];
-            this.title.ForegroundColor = this.gameStates.TITLE_COLOR;
-            this.title.BackgroundColor = this.gameStates.BLACK;
-            this.title.FontName = this.gameStates.FONT;
-            this.title.FontSize = this.gameStates.TEXT_SIZE ; 
-            
             this.updatePowerBar(0);
-        end
-        
-        %% Fire in the hole!
+        end              
         function [] = updatePowerBar(this,power)
         % zeichnet die powerbar
             blueX = [350,650,650,350];
@@ -310,6 +309,16 @@ classdef Figure < handle
             patch(blueX,blueY,[0.6 0.9 1]); % Hellblau Himmel;
             patch(pbarX,pbarY,'R');
         end
+        function [angle] = getAngle(this, Player)
+            px = Player.positionXY(1,1);
+            py = Player.positionXY(2,1);
+            
+            mouseposition = get(this.fig, 'CurrentPoint');
+            
+            mx  = max(mouseposition(1,1),px);   % max limitiert den winkel auf 0-90°
+            my  = max(mouseposition(1,2),py);   % max limitiert den winkeln auf 0-90°
+            angle=asind((my-py)/sqrt((my-py)^2 + (mx-px)^2));
+        end
         
         function [p] = drawInScreen(this,terrain)
             shapeX = terrain(1,:);
@@ -318,6 +327,13 @@ classdef Figure < handle
             p = patch(shapeX,shapeY, shapeC,'EdgeColor','interp','MarkerFaceColor','flat');
             colormap(0.4*summer+0.4*flipud(pink)+0.1*flipud(winter));
             axis(this.gameParameter.axisArray);
+            this.terrainhandler = p;
+            uistack(this.terrainhandler, 'bottom')
+        end
+        
+        function [p] = updateInScreen(this, terrain)
+            this.terrainhandler.delete;
+             p = this.drawInScreen(terrain);
         end
         
         function [p] = drawElement(this, shape)
@@ -340,8 +356,111 @@ classdef Figure < handle
         function [] = updateElementCol(this,p,shape,color)
             this.deleteElement(p);
             this.drawElementCol(shape,color);
-       end
+        end
             
+        function [] = drawShockwave(this, impact)
+            r = this.gameParameter.detonationRadius;
+            
+            % rechnet den explosionsradius und die explosion, macht einen fadeout 
+            % löscht sie wieder, bevor die funktion zurückkehrt
+            alpha = linspace( 0,2*pi,100);        % Intervall
+            shockX=3*r*cos(alpha)+impact(1,1);      % Kreis
+            shockY=3*r*sin(alpha)+impact(2,1);      % Kreis
+            blast2 = patch(shockX,shockY,'w');    % Kreis zeichnen, handler=blast2
+            blast2.LineStyle='none';             % Kreislinie nicht zeichnen        
+            uistack(this.terrainhandler, 'top')      %terrain nach ganz vorne bringen, Blast Radius ist nur in der Luft.
+
+            shockX=0.99*r*cos(alpha)+impact(1,1);
+            shockY=0.99*r*sin(alpha)+impact(2,1); 
+            blast0=patch(shockX,shockY,[0.6 0.9 1]); % Hellblau Himmel;  % hintergrund "patchen" mit hellblau, das richtige loch wird erst später reingegerechnet.
+            blast1=patch(shockX,shockY,'r');         % roter Explosionsradius darüber zeichnen
+            blast0.LineStyle='none';
+            blast1.LineStyle='none';
+        
+            ptime = 0.015;                           % pause zeit zwischen den animationsschritten
+            for fadesteps = 0.5:-0.03:0             % animation deckkraft von 0.5 bis 0
+               pause(ptime);
+               blast1.FaceAlpha=max(0,fadesteps*8-3);% der Explosionsradius rot klingt schneller ab
+               blast2.FaceAlpha=fadesteps;
+            end   
+            delete(blast2);                      % Die Animation ist fertig, alle
+            delete(blast1);                     % benutzten Elemente löschen
+            delete(blast0);  
+   
+            uistack(this.terrainhandler, 'bottom')
+        end       
+        function [newTerrain] = drawImpactCircle(this, terrain, impact)        
+            
+            x1arr = terrain(1,:);
+            y1arr = terrain(2,:);
+            centerX = impact(1,1) ;
+            centerY = impact(2,1);
+            
+            r = this.gameParameter.detonationRadius;
+            
+            % Landschaftspunkte ausserhalb des Radius holen:
+            intersections = this.getOuterIntersections( x1arr, y1arr, centerX, centerY, r);
+
+            %Für die Verständlichkeit:
+            outerLeftX  =   x1arr(intersections(1));
+            outerLeftY  =   y1arr(intersections(1));
+            outerRightX =   x1arr(intersections(2));
+            outerRightY =   y1arr(intersections(2));
+            craterSteps =   intersections(2)-intersections(1)-1;
+            craterSteps =   20;   % Anzahl Koordinatenpaare für den Bogen
+
+            %Kreissegment Start und Endpunkte rechnen in Bogenmass
+            % mit complex-zahlen machen, sonst gibts noch
+            % QuadrantenFallunterscheidung! Dazu muss aber der Einschlagpunkt die 
+            % Koordinate 0+0i haben
+            z= outerLeftX - centerX + (outerLeftY-centerY) * i;
+            circleStart=angle(z);
+
+            z= outerRightX - centerX + (outerRightY-centerY) * i;
+            circleEnd=angle(z);
+
+            % der Bogen muss zwingend im Gegenuhrzeigersinn erfolgen, sonst gibts
+            % Hügel und andere Fehler.
+            if circleEnd<circleStart 
+                circleEnd=circleEnd+2*pi;
+            end
+            
+            % Schockwelle zeichnen (Animation, dauert einen Moment)
+            this.drawShockwave(impact)
+
+            % rechnet den Explosions-Bogen in n=craterSteps Schritten
+            phi=linspace(circleStart, circleEnd, craterSteps);
+            arcX=r*cos(phi);
+            arcY=r*sin(phi);
+            x =arcX + centerX;
+            y =arcY + centerY;
+
+            %Terrain-Matrizen anpassen, ein Stück davon ersetzen
+            partXbefore = x1arr(1:intersections(1));
+            partXafter = x1arr(intersections(2):end);
+            partYbefore =y1arr(1:intersections(1));
+            partYafter = y1arr(intersections(2):end);
+            terrainshapeX = [partXbefore, x, partXafter];  
+            terrainshapeY = [partYbefore, y, partYafter];
+            newTerrain = [terrainshapeX; terrainshapeY];
+            
+        end
+        
+        function [intersections] = getOuterIntersections(this, x1arr, y1arr, centerX, centerY,r)
+            % intersections = [left,right]
+            % Erstelle Array mit distanzen zum Kreismittelpunkt 
+            % normaler pythagoras
+            distance=(((x1arr - centerX).^2 + (y1arr-centerY).^2).^0.5);
+
+            %finde den ersten Punkt *vor* dem Radius (Krater soll nicht
+            %eingzackt sein, sondern eher gegen aussen gerissen.
+            withinRadius=distance<r;
+            isect1=max(1,find(withinRadius,1,'first')-1);
+            %finde den letzten Punkt *nach* dem Radius
+            isect2=min(size(x1arr,2),find(withinRadius,1,'last')+1);
+            intersections = [isect1, isect2];
+        end
+
         function [] = updateState(this,GameStates)       
            this.gameState = GameStates;
         end
@@ -385,6 +504,60 @@ classdef Figure < handle
             this.gameStates.setMenueProccessed(1);
             close(this.fig)
         end;
+        
+        function btnFireClick(this,source,eventdata)
+            this.gameStates.setMenueProccessed(1);
+            close(this.fig)
+        end;
+        function btnAngleClick(this,source,eventdata)
+            this.gameStates.setMenueProccessed(1);
+            close(this.fig)
+        end;
+        function btnPowerClick(this,source,eventdata)
+            this.gameStates.setMenueProccessed(1);
+            close(this.fig)
+        end;
+        
+        %% Mouse Callbacks 
+        function myMouseDownCallBack(hObject,~)
+            % quelle: http://stackoverflow.com/questions/2769249/matlab-how-to-get-the-current-mouse-position-on-a-click-by-using-callbacks
+            % set(f,'WindowButtonDownFcn',@mytestcallback)
+            % function mytestcallback(hObject,~)
+            % pos=get(hObject,'CurrentPoint');
+            % disp(['You clicked X:',num2str(pos(1)),', Y:',num2str(pos(2))]);
+            % end
+            % Quelle :http://stackoverflow.com/questions/14684577/matlab-how-to-get-mouse-click-coordinates
+            % set(imageHandle,'ButtonDownFcn',@ImageClickCallback);
+            % function ImageClickCallback ( objectHandle , eventData )
+            % axesHandle  = get(objectHandle,'Parent');
+            % coordinates = get(axesHandle,'CurrentPoint'); 
+            % coordinates = coordinates(1,1:2);
+            % message     = sprintf('x: %.1f , y: %.1f',coordinates (1) ,coordinates (2));
+            % helpdlg(message);
+            % end
+            if  GAMESTATE_PLAYERINPUT
+                mouseposition = get(gca, 'CurrentPoint');
+                mx  = mouseposition(1,1);
+                my  = mouseposition(1,2);
+                disp(['You clicked X:',num2str(mx),', Y:',num2str(my)]);
+                mousedown = true;
+                tic
+            end
+        end      
+        function myMouseUpCallBack(hObject,~)
+            if GAMESTATE_PLAYERINPUT
+                mouseposition = get(gca, 'CurrentPoint');
+                mx  = mouseposition(1,1);
+                my  = mouseposition(1,2);
+                disp(['You released button X:',num2str(mx),', Y:',num2str(my), ' Time elapesed: ', num2str(POWERTIMER)]);
+                mousedown=false;
+                GAMESTATE_FIRE = true
+            end
+        end
+
+
+
+
         
     end
     

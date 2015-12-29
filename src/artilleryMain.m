@@ -84,16 +84,16 @@ set(fig,'WindowButtonUpFcn',@mymouseupcallback)
 POWERTIMER=0;
 GAMESTATE_PLAYERINPUT=1;
 
-while GAMESTATE_PLAYERINPUT && strcmp(fig.Name,'Artillery')
+while GAMESTATE_PLAYERINPUT && strcmp(fig.Name , 'Artillery')
     pause(0.01);
     if mousedown
-       POWERTIMER=POWERTIMER*1.02 + 1.5;
+       POWERTIMER = POWERTIMER * 1.02 + 1.5;
        updatePowerBar(POWERTIMER/180);
     end
     
     if GAMESTATE_FIRE
         GAMESTATE_PLAYERINPUT = false;
-        FIREPOWER=min(POWERTIMER/180,1)
+        FIREPOWER = min(POWERTIMER/180,1);
         fireAngle=getAngle();
         [impactposX, impactposY, hit] = gunfire(1,player1.posY+10,fireAngle,FIREPOWER);
         if impactposX ~= (-1)    % Einschläge ausserhalb des Spielfeldes nicht beachten
@@ -120,8 +120,8 @@ end
 
 
 function [angle] = getAngle(playernr)
-    px=player1.posX;
-    py=player1.posY;
+    px =player1.posX;
+    py =player1.posY;
     mouseposition = get(gca, 'CurrentPoint');
     mx  = max(mouseposition(1,1),px);   % max limitiert den winkel auf 0-90°
     my  = max(mouseposition(1,2),py);   % max limitiert den winkeln auf 0-90°
@@ -242,137 +242,137 @@ delete(terrainhandler); % altes Terrain löschen, danach neues zeichnen, wieder g
     terrainhandler=patch(terrainshapeX,terrainshapeY, terrainshapeY,'EdgeColor','interp','MarkerFaceColor','flat');
 end
 
-    function [intersections] = getOuterIntersections(x1arr,y1arr,centerX,centerY,r)
-        % intersections = [left,right]
-        % Erstelle Array mit distanzen zum Kreismittelpunkt 
-        % normaler pythagoras
-        distance=(((x1arr-centerX).^2 + (y1arr-centerY).^2).^0.5);
-    
-        %finde den ersten Punkt *vor* dem Radius (Krater soll nicht
-        %eingzackt sein, sondern eher gegen aussen gerissen.
-        withinRadius=distance<r;
-        isect1=max(1,find(withinRadius,1,'first')-1);
-        %finde den letzten Punkt *nach* dem Radius
-        isect2=min(size(x1arr,2),find(withinRadius,1,'last')+1);
-        intersections = [isect1, isect2];
-    end
-
-
-    function [x2arr, y2arr] = calcCirlce(x1arr, y1arr, centerX, centerY, r);
-        % Landschaftspunkte ausserhalb des Radius holen:
-        intersections = getOuterIntersections(x1arr,y1arr,centerX,centerY,r);
-
-        %Für die Verständlichkeit:
-        outerLeftX  =   x1arr(intersections(1));
-        outerLeftY  =   y1arr(intersections(1));
-        outerRightX =   x1arr(intersections(2));
-        outerRightY =   y1arr(intersections(2));
-        craterSteps =   intersections(2)-intersections(1)-1;
-        craterSteps =   20;   % Anzahl Koordinatenpaare für den Bogen
-
-        %Kreissegment Start und Endpunkte rechnen in Bogenmass
-        % mit complex-zahlen machen, sonst gibts noch
-        % QuadrantenFallunterscheidung! Dazu muss aber der Einschlagpunkt die 
-        % Koordinate 0+0i haben
-        z= outerLeftX - centerX + (outerLeftY-centerY) * i;
-        circleStart=angle(z);
-
-        z= outerRightX - centerX + (outerRightY-centerY) * i;
-        circleEnd=angle(z);
-
-        % der Bogen muss zwingend im Gegenuhrzeigersinn erfolgen, sonst gibts
-        % Hügel und andere Fehler.
-        if circleEnd<circleStart 
-            circleEnd=circleEnd+2*pi;
-end
-
-        % Schockwelle zeichnen (Animation, dauert einen Moment)
-        drawShockwave()
-        
-        % rechnet den Explosions-Bogen in n=craterSteps Schritten
-        phi=linspace(circleStart, circleEnd, craterSteps);
-        arcX=r*cos(phi);
-        arcY=r*sin(phi);
-        x=arcX + centerX;
-        y=arcY + centerY;
-
-        %Terrain-Matrizen anpassen, ein Stück davon ersetzen
-        partXbefore=x1arr(1:intersections(1));
-        partXafter= x1arr(intersections(2):end);
-        partYbefore=y1arr(1:intersections(1));
-        partYafter= y1arr(intersections(2):end);
-        x2arr=[partXbefore, x, partXafter];  
-        y2arr=[partYbefore, y, partYafter];
-
-       
-        function  drawShockwave
-        % rechnet den explosionsradius und die explosion, macht einen fadeout 
-        % löscht sie wieder, bevor die funktion zurückkehrt
-        alpha=linspace( 0,2*pi,100);        % Intervall
-        shockX=3*r*cos(alpha)+centerX;      % Kreis
-        shockY=3*r*sin(alpha)+centerY;      % Kreis
-        blast2=patch(shockX,shockY,'w')     % Kreis zeichnen, handler=blast2
-        blast2.LineStyle='none'             % Kreislinie nicht zeichnen        
-        uistack(terrainhandler, 'top')      %terrain nach ganz vorne bringen, Blast Radius ist nur in der Luft.
-       
-        shockX=0.99*r*cos(alpha)+centerX;
-        shockY=0.99*r*sin(alpha)+centerY; 
-        blast0=patch(shockX,shockY,[0.6 0.9 1]); % Hellblau Himmel;  % hintergrund "patchen" mit hellblau, das richtige loch wird erst später reingegerechnet.
-        blast1=patch(shockX,shockY,'r');         % roter Explosionsradius darüber zeichnen
-        blast0.LineStyle='none';
-        blast1.LineStyle='none';
-        
-        ptime = 0.015                           % pause zeit zwischen den animationsschritten
-        for fadesteps = 0.5:-0.03:0             % animation deckkraft von 0.5 bis 0
-           pause(ptime);
-           blast1.FaceAlpha=max(0,fadesteps*8-3);% der Explosionsradius rot klingt schneller ab
-           blast2.FaceAlpha=fadesteps;
-        end   
-            delete(blast2);                     % Die Animation ist fertig, alle
-            delete(blast1);                     % benutzten Elemente löschen
-            delete(blast0);     
-        end
-    end
-
-function mymousedowncallback(hObject,~)
-    if GAMESTATE_PLAYERINPUT
-        mouseposition = get(gca, 'CurrentPoint');
-        mx  = mouseposition(1,1);
-        my  = mouseposition(1,2);
-        disp(['You clicked X:',num2str(mx),', Y:',num2str(my)]);
-        mousedown=true;
-        tic
-    end
-end
-
-%% Mouse Callbacks 
-function mymouseupcallback(hObject,~)
-    if GAMESTATE_PLAYERINPUT
-        mouseposition = get(gca, 'CurrentPoint');
-        mx  = mouseposition(1,1);
-        my  = mouseposition(1,2);
-        disp(['You released button X:',num2str(mx),', Y:',num2str(my), ' Time elapesed: ', num2str(POWERTIMER)]);
-        mousedown=false;
-        GAMESTATE_FIRE = true
-    end
-end
-
-% quelle: http://stackoverflow.com/questions/2769249/matlab-how-to-get-the-current-mouse-position-on-a-click-by-using-callbacks
-% set(f,'WindowButtonDownFcn',@mytestcallback)
-% function mytestcallback(hObject,~)
-% pos=get(hObject,'CurrentPoint');
-% disp(['You clicked X:',num2str(pos(1)),', Y:',num2str(pos(2))]);
+%     function [intersections] = getOuterIntersections(x1arr,y1arr,centerX,centerY,r)
+%         % intersections = [left,right]
+%         % Erstelle Array mit distanzen zum Kreismittelpunkt 
+%         % normaler pythagoras
+%         distance=(((x1arr-centerX).^2 + (y1arr-centerY).^2).^0.5);
+%     
+%         %finde den ersten Punkt *vor* dem Radius (Krater soll nicht
+%         %eingzackt sein, sondern eher gegen aussen gerissen.
+%         withinRadius=distance<r;
+%         isect1=max(1,find(withinRadius,1,'first')-1);
+%         %finde den letzten Punkt *nach* dem Radius
+%         isect2=min(size(x1arr,2),find(withinRadius,1,'last')+1);
+%         intersections = [isect1, isect2];
+%     end
+% 
+% 
+%     function [x2arr, y2arr] = calcCirlce(x1arr, y1arr, centerX, centerY, r);
+%         % Landschaftspunkte ausserhalb des Radius holen:
+%         intersections = getOuterIntersections(x1arr,y1arr,centerX,centerY,r);
+% 
+%         %Für die Verständlichkeit:
+%         outerLeftX  =   x1arr(intersections(1));
+%         outerLeftY  =   y1arr(intersections(1));
+%         outerRightX =   x1arr(intersections(2));
+%         outerRightY =   y1arr(intersections(2));
+%         craterSteps =   intersections(2)-intersections(1)-1;
+%         craterSteps =   20;   % Anzahl Koordinatenpaare für den Bogen
+% 
+%         %Kreissegment Start und Endpunkte rechnen in Bogenmass
+%         % mit complex-zahlen machen, sonst gibts noch
+%         % QuadrantenFallunterscheidung! Dazu muss aber der Einschlagpunkt die 
+%         % Koordinate 0+0i haben
+%         z= outerLeftX - centerX + (outerLeftY-centerY) * i;
+%         circleStart=angle(z);
+% 
+%         z= outerRightX - centerX + (outerRightY-centerY) * i;
+%         circleEnd=angle(z);
+% 
+%         % der Bogen muss zwingend im Gegenuhrzeigersinn erfolgen, sonst gibts
+%         % Hügel und andere Fehler.
+%         if circleEnd<circleStart 
+%             circleEnd=circleEnd+2*pi;
 % end
-
-% Quelle :http://stackoverflow.com/questions/14684577/matlab-how-to-get-mouse-click-coordinates
-% set(imageHandle,'ButtonDownFcn',@ImageClickCallback);
-% function ImageClickCallback ( objectHandle , eventData )
-% axesHandle  = get(objectHandle,'Parent');
-% coordinates = get(axesHandle,'CurrentPoint'); 
-% coordinates = coordinates(1,1:2);
-% message     = sprintf('x: %.1f , y: %.1f',coordinates (1) ,coordinates (2));
-% helpdlg(message);
+% 
+%         % Schockwelle zeichnen (Animation, dauert einen Moment)
+%         drawShockwave()
+%         
+%         % rechnet den Explosions-Bogen in n=craterSteps Schritten
+%         phi=linspace(circleStart, circleEnd, craterSteps);
+%         arcX=r*cos(phi);
+%         arcY=r*sin(phi);
+%         x=arcX + centerX;
+%         y=arcY + centerY;
+% 
+%         %Terrain-Matrizen anpassen, ein Stück davon ersetzen
+%         partXbefore=x1arr(1:intersections(1));
+%         partXafter= x1arr(intersections(2):end);
+%         partYbefore=y1arr(1:intersections(1));
+%         partYafter= y1arr(intersections(2):end);
+%         x2arr=[partXbefore, x, partXafter];  
+%         y2arr=[partYbefore, y, partYafter];
+% 
+%        
+%         function  drawShockwave
+%         % rechnet den explosionsradius und die explosion, macht einen fadeout 
+%         % löscht sie wieder, bevor die funktion zurückkehrt
+%         alpha=linspace( 0,2*pi,100);        % Intervall
+%         shockX=3*r*cos(alpha)+centerX;      % Kreis
+%         shockY=3*r*sin(alpha)+centerY;      % Kreis
+%         blast2=patch(shockX,shockY,'w')     % Kreis zeichnen, handler=blast2
+%         blast2.LineStyle='none'             % Kreislinie nicht zeichnen        
+%         uistack(terrainhandler, 'top')      %terrain nach ganz vorne bringen, Blast Radius ist nur in der Luft.
+%        
+%         shockX=0.99*r*cos(alpha)+centerX;
+%         shockY=0.99*r*sin(alpha)+centerY; 
+%         blast0=patch(shockX,shockY,[0.6 0.9 1]); % Hellblau Himmel;  % hintergrund "patchen" mit hellblau, das richtige loch wird erst später reingegerechnet.
+%         blast1=patch(shockX,shockY,'r');         % roter Explosionsradius darüber zeichnen
+%         blast0.LineStyle='none';
+%         blast1.LineStyle='none';
+%         
+%         ptime = 0.015                           % pause zeit zwischen den animationsschritten
+%         for fadesteps = 0.5:-0.03:0             % animation deckkraft von 0.5 bis 0
+%            pause(ptime);
+%            blast1.FaceAlpha=max(0,fadesteps*8-3);% der Explosionsradius rot klingt schneller ab
+%            blast2.FaceAlpha=fadesteps;
+%         end   
+%             delete(blast2);                     % Die Animation ist fertig, alle
+%             delete(blast1);                     % benutzten Elemente löschen
+%             delete(blast0);     
+%         end
+%     end
+% 
+% function mymousedowncallback(hObject,~)
+%     if GAMESTATE_PLAYERINPUT
+%         mouseposition = get(gca, 'CurrentPoint');
+%         mx  = mouseposition(1,1);
+%         my  = mouseposition(1,2);
+%         disp(['You clicked X:',num2str(mx),', Y:',num2str(my)]);
+%         mousedown=true;
+%         tic
+%     end
 % end
+% 
+% %% Mouse Callbacks 
+% function mymouseupcallback(hObject,~)
+%     if GAMESTATE_PLAYERINPUT
+%         mouseposition = get(gca, 'CurrentPoint');
+%         mx  = mouseposition(1,1);
+%         my  = mouseposition(1,2);
+%         disp(['You released button X:',num2str(mx),', Y:',num2str(my), ' Time elapesed: ', num2str(POWERTIMER)]);
+%         mousedown=false;
+%         GAMESTATE_FIRE = true
+%     end
+% end
+% 
+% % quelle: http://stackoverflow.com/questions/2769249/matlab-how-to-get-the-current-mouse-position-on-a-click-by-using-callbacks
+% % set(f,'WindowButtonDownFcn',@mytestcallback)
+% % function mytestcallback(hObject,~)
+% % pos=get(hObject,'CurrentPoint');
+% % disp(['You clicked X:',num2str(pos(1)),', Y:',num2str(pos(2))]);
+% % end
+% 
+% % Quelle :http://stackoverflow.com/questions/14684577/matlab-how-to-get-mouse-click-coordinates
+% % set(imageHandle,'ButtonDownFcn',@ImageClickCallback);
+% % function ImageClickCallback ( objectHandle , eventData )
+% % axesHandle  = get(objectHandle,'Parent');
+% % coordinates = get(axesHandle,'CurrentPoint'); 
+% % coordinates = coordinates(1,1:2);
+% % message     = sprintf('x: %.1f , y: %.1f',coordinates (1) ,coordinates (2));
+% % helpdlg(message);
+% % end
 
 end
 

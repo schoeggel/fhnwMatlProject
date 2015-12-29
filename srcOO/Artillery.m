@@ -23,7 +23,7 @@ waitfor(screen.getFig());
     gameScreen.drawInScreen(terrain);
     
     %% Spielelemente Erzeugen
-    % Taktik oder Geschicklichkeit
+    
     
         %% Loop Speieler Erstellen und Zeicjnen
         
@@ -47,24 +47,51 @@ waitfor(screen.getFig());
     %% Zug ermitteln
     round(rand * param.playerQuantety);
     
-    %% Spieler Anzeigen
+    % Taktik oder Geschicklichkeit
+    % Mode Laden + Anzeigen
     if param.numberMode == 1;
-    gameScreen.drawGameButtons();
+        gameScreen.drawGameButtons();
     else
-    gameScreen.drawPowerBar();
+        gameScreen.drawPowerBar();
     end
     
-    %% Warten auf eingabe
+    fire = 0;
+    if param.numberMode == 1;
+        waitFor(gameScreen.Fire)
+        gameScreen.getPower;
+        gameScreen.getAngle;
+    else   
+        %% Warten auf eingabe
+        %Polling schleife. Falls Mouse down, zählt die Powerbar nach oben
+       while fire == 0 
+            powertimer = 0;
+            pause(0.01);
+            if mousedown
+               powertimer = powertimer * 1.02 + 1.5;
+               updatePowerBar(POWERTIMER/180);
+            end
+            if mouseUp
+                angle = gameScreen.getAngle();
+                power = powertimer;
+                fire = 1;
+            end
+        end
+             
+    end
     
     %% Schuss Rechnen
     shot = FlightPath();
-    coordinate = shot.calcCoordinates(1000, 90 , weth,lndsc,player(2));
+    coordinate = shot.calcCoordinates(power, angle , weth,lndsc, player(1));
     %state.getActualPlayer
     comet(coordinate(1,:),coordinate(2,:));
     %% Treffer ermitteln
     shot.isHit(player,2)
     
     %% Schuss Zeichnen
+    lndsc.terrainArray = gameScreen.drawImpactCircle(lndsc.getLandscape, shot.impact);
+    terrain =  lndsc.getLandscape();
+    gameScreen.updateInScreen(terrain);
+     
     
 end
 

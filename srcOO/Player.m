@@ -10,6 +10,8 @@ classdef Player < handle
         tankType;
         positionXY;
         tankArray;
+        
+        
     end
     
     methods

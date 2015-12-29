@@ -3,7 +3,7 @@ classdef Landscape < handle
     %   Detailed explanation goes here
     
     properties
-        landscapeArray = [0,1];
+        %landscapeArray = [0,1];
         gameParameter;
         terrainArray;
     end
@@ -134,7 +134,7 @@ classdef Landscape < handle
             % make polygon 
             terrainshapeY = [0, (contour_mix), 0];                                              % die interssante zeile übernehmen vorne ein und hinten zwei 0 als y-wert 
             terrainshapeX = [0, 0:1:size(terrainshapeY,2)-3, size(terrainshapeY,2)-3 ];      % die X-werte füllen, am schluss wieder auf x=0 weil für polygon
-            c=terrainshapeY;
+            c = terrainshapeY;
             terrain=[terrainshapeX terrainshapeY];
 
 
