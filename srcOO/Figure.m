@@ -1,6 +1,7 @@
-%%  Header
+classdef Figure < handle
+%%  Class Header
 %
-%   Title: createFigure.m
+%   Title: Figure.m
 %
 %   Precondition:   nothing
 %
@@ -13,14 +14,11 @@
 %
 %   Modified:
 %
-%   
-
-classdef Figure < handle
-    %FIGURE Summary of this class goes here
-    %   Detailed explanation goes here
+%  
     
     properties
         screenSize = get(0,'ScreenSize');
+        fireEvent  = 0;
     end
     
     properties (Access = private)
@@ -37,9 +35,9 @@ classdef Figure < handle
         btnStart;
         player;
         fire;
-        angle;
+        angleText;
         angleSlider;
-        power;
+        powerText;
         powerSlider;
     end    
     
@@ -215,7 +213,8 @@ classdef Figure < handle
             hold on;
 
         end
-        function [] = drawActualPlayer(this, GameState)
+        
+        function [p] = drawActualPlayer(this, GameState)
             axes = this.gameParameter.axisArray;
             leftBorder = (this.gameStates.SCREEN_WIDTH - (axes(1,2)+100)) / 2 ;
             fromleftBorder = 10;
@@ -232,16 +231,17 @@ classdef Figure < handle
         end
         
         function [] = drawGameButtons(this)
-            axes = this.gameParameter.axisArray;
-            leftBorder = (this.gameStates.SCREEN_WIDTH - (axes(1,2)+100)) / 2 ;
-            fromleftBorder = 10;
-            fromTop = this.gameStates.SCREEN_HIGH - 75;
+            
+            buttonWidth = 150;
+            buttonHigh = 50;
+            fromleftBorder = (this.gameStates.SCREEN_WIDTH - buttonWidth)/2 ;
+            fromBot = 10;
             
             %% Feuer Befehl     
             this.fire = uicontrol;
             this.fire.Style = 'pushbutton';
             this.fire.String = '!!!FIRE!!!';
-            this.fire.Position = [fromleftBorder, fromTop - 550,leftBorder,50];
+            this.fire.Position = [fromleftBorder, fromBot , buttonWidth , buttonHigh];
             this.fire.ForegroundColor = this.gameStates.RED;
             this.fire.BackgroundColor = this.gameStates.BLACK;
             this.fire.FontName = this.gameStates.FONT;
@@ -249,47 +249,46 @@ classdef Figure < handle
             this.fire.Callback = @this.btnFireClick;
             
             % Anzeige des Winkels
-            this.angle = uicontrol;
-            this.angle.Style = 'text';
-            this.angle.String = 'Angle >> ';
-            this.angle.Position = [fromleftBorder, fromTop - 250, leftBorder , 50];
-            this.angle.ForegroundColor = this.gameStates.YELLOW;
-            this.angle.BackgroundColor = this.gameStates.BLACK;
-            this.angle.FontName = this.gameStates.FONT;
-            this.angle.FontSize = this.gameStates.TEXT_SIZE ;
+            this.angleText = uicontrol;
+            this.angleText.Style = 'text';
+            this.angleText.String = 'Angle >> ';
+            this.angleText.Position = [(fromleftBorder - buttonWidth - 30), fromBot + buttonHigh, buttonWidth , buttonHigh];
+            this.angleText.ForegroundColor = this.gameStates.YELLOW;
+            this.angleText.BackgroundColor = this.gameStates.BLACK;
+            this.angleText.FontName = this.gameStates.FONT;
+            this.angleText.FontSize = this.gameStates.TEXT_SIZE ;
             
             %% Einstellen des Winkels     
             this.angleSlider = uicontrol;
             this.angleSlider.Style = 'slider';
             this.angleSlider.String = 'ANGLE';
-            this.angleSlider.Position = [fromleftBorder, fromTop - 275,leftBorder,50];
+            this.angleSlider.Position = [(fromleftBorder - buttonWidth - 30), fromBot , buttonWidth , buttonHigh];
             this.angleSlider.ForegroundColor = this.gameStates.GREEN;
             this.angleSlider.BackgroundColor = this.gameStates.BLACK;
             this.angleSlider.FontName = this.gameStates.FONT;
             this.angleSlider.FontSize = this.gameStates.TEXT_SIZE;
             this.angleSlider.Callback = @this.btnAngleClick;
-            
-            
+              
             % Anzeige des POWER
-            this.power = uicontrol;
-            this.power.Style = 'text';
-            this.power.String = 'POWER >> ';
-            this.power.Position = [fromleftBorder, fromTop - 425, leftBorder , 50];
-            this.power.ForegroundColor = this.gameStates.ORANGE;
-            this.power.BackgroundColor = this.gameStates.BLACK;
-            this.power.FontName = this.gameStates.FONT;
-            this.power.FontSize = this.gameStates.TEXT_SIZE;  
+            this.powerText = uicontrol;
+            this.powerText.Style = 'text';
+            this.powerText.String = 'POWER >> ';
+            this.powerText.Position = [fromleftBorder + buttonWidth + 30, fromBot + buttonHigh, buttonWidth , buttonHigh];
+            this.powerText.ForegroundColor = this.gameStates.ORANGE;
+            this.powerText.BackgroundColor = this.gameStates.BLACK;
+            this.powerText.FontName = this.gameStates.FONT;
+            this.powerText.FontSize = this.gameStates.TEXT_SIZE;  
             
             %% Einstellen der POWER   
             this.powerSlider = uicontrol;
             this.powerSlider.Style = 'slider';
             this.powerSlider.String = 'POWER';
-            this.powerSlider.Position = [fromleftBorder, fromTop - 450 ,leftBorder,50];
+            this.powerSlider.Position = [fromleftBorder + buttonWidth + 30, fromBot ,buttonWidth,buttonHigh];
             this.powerSlider.ForegroundColor = this.gameStates.GREEN;
             this.powerSlider.BackgroundColor = this.gameStates.BLACK;
             this.powerSlider.FontName = this.gameStates.FONT;
             this.powerSlider.FontSize = this.gameStates.TEXT_SIZE;
-            this.powerSlider.Callback = @this.btnAngleClick;
+            this.powerSlider.Callback = @this.btnPowerClick;
         end        
         
         function [] = drawPowerBar(this)
@@ -309,7 +308,7 @@ classdef Figure < handle
             patch(blueX,blueY,[0.6 0.9 1]); % Hellblau Himmel;
             patch(pbarX,pbarY,'R');
         end
-        function [angle] = getAngle(this, Player)
+        function [angle] = getAngleMouse(this, Player)
             px = Player.positionXY(1,1);
             py = Player.positionXY(2,1);
             
@@ -329,8 +328,7 @@ classdef Figure < handle
             axis(this.gameParameter.axisArray);
             this.terrainhandler = p;
             uistack(this.terrainhandler, 'bottom')
-        end
-        
+        end        
         function [p] = updateInScreen(this, terrain)
             this.terrainhandler.delete;
              p = this.drawInScreen(terrain);
@@ -348,7 +346,7 @@ classdef Figure < handle
         function [] = deleteElement(this,p)
              p.delete;
         end
-        function [] = updateElement(this,p,shape)
+        function [] = updateElement(this,p, shape)
             color = p.FaceColor;
             this.deleteElement(p);
             this.drawElementCol(shape,color);
@@ -475,6 +473,13 @@ classdef Figure < handle
             fig = this.fig;
         end
         
+        function [power] = getPower(this)
+            power = this.powerSlider.Value * this.gameParameter.maxPower;
+        end
+        function [angel] = getAngle(this)
+            angel = this.angleSlider.Value * this.gameParameter.maxAngle;
+        end
+        
         function btnPlayerCountClick(this,source,eventdata)
             if this.gameParameter.playerQuantety < this.gameParameter.maxPlayerQuantety
             this.gameParameter = this.gameParameter.setPlayerQuantety(this.gameParameter.playerQuantety+1);
@@ -482,12 +487,13 @@ classdef Figure < handle
             this.gameParameter = this.gameParameter.setPlayerQuantety(2);
             end
             this.btnPlayerCount.String = ['N off Players >> ',  num2str(this.gameParameter.playerQuantety)];
-        end;  
+        end
         
         function btnGameModeClick(this,source,eventdata)
             this.gameParameter = this.gameParameter.nextMode;
             this.btnMode.String = this.gameParameter.gameMode;
-        end;
+        end
+        
         function btnWindClick(this,source,eventdata)
             this.gameParameter = this.gameParameter.nextWind;
             this.btnWind.String = this.gameParameter.wind;
@@ -505,17 +511,16 @@ classdef Figure < handle
             close(this.fig)
         end;
         
-        function btnFireClick(this,source,eventdata)
-            this.gameStates.setMenueProccessed(1);
-            close(this.fig)
+        function [] = btnFireClick(this,source,eventdata)
+            this.fireEvent = 1;
         end;
         function btnAngleClick(this,source,eventdata)
-            this.gameStates.setMenueProccessed(1);
-            close(this.fig)
+            value = this.angleSlider.Value * this.gameParameter.maxAngle;
+            this.angleText.String = ['Angle >>   ', num2str(value)];
         end;
         function btnPowerClick(this,source,eventdata)
-            this.gameStates.setMenueProccessed(1);
-            close(this.fig)
+            value = this.powerSlider.Value * this.gameParameter.maxPower;
+            this.powerText.String = ['Power >>   ', num2str(value)];
         end;
         
         %% Mouse Callbacks 

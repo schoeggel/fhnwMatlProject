@@ -93,7 +93,7 @@ classdef  FlightPath < handle
            
         end
         
-        function [percentDamage] = isHit(this,PlayerArray, playerNr)
+        function [percentDamage] = isHit(this, PlayerArray, playerNr)
            
             tempPsXY = PlayerArray(playerNr).tankArray;
             if this.impact(1,1) > min(tempPsXY(1,:)) && this.impact(1,1) < max(tempPsXY(1,:))

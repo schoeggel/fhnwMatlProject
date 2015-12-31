@@ -42,6 +42,9 @@ classdef GameParameter < handle
         max_iterations=6;       % auf 6 stehen lassen! Erzeugt polygon mit (3+2^max_iterations) Ecken
         
         detonationRadius = 20;
+        maxAngle = 180;
+        maxPower = 100000;
+        powerLimit = 100000;
         
         PLOT_W = 1000; %width in plot units. this will be main units for program
         PLOT_H = 750; %height

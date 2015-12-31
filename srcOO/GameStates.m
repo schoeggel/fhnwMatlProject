@@ -41,7 +41,8 @@ classdef GameStates < handle
       
       
       %%
-      actualPlayer=1;
+      actualPlayer = 1;
+      playerInGame;
     end
     
     methods
@@ -68,20 +69,37 @@ classdef GameStates < handle
         function state = getProcessState(this)
             state = this.menueProcessed;
         end
+        function [] = setPlayerInGame(this, number)
+            this.playerInGame = number ;
+        end
+        function [playerInGame] = decreasePlayerInGame(this)
+            this.playerInGame = this.playerInGame - 1;
+            playerInGame = this.playerInGame;
+        end   
+        function [playerInGame] = getPlayerInGame(this)
+            playerInGame = this.playerInGame;
+        end  
         
         function [] = setActualPlayer(this,number)
             this.actualPlayer = number;
         end
         function [actPlayer] = getActualPlayer(this)
-           actPlayer= this.actualPlayer;
+           actPlayer = this.actualPlayer;
         end      
-        function [] = nextPlayer(this, GameParameter)
+        function [] = nextPlayer(this, GameParameter, PlayerArray)
             if GameParameter.playerQuantety == this.actualPlayer
                 this.actualPlayer = 1;
             else
-            this.actualPlayer = this.actualPlayer + 1;
+                if PlayerArray(this.actualPlayer + 1).livePoints > 0
+                    this.actualPlayer = this.actualPlayer + 1;
+                else
+                   this.actualPlayer = this.actualPlayer + 1;
+                   this.nextPlayer(GameParameter, PlayerArray);
+                end
             end
         end
+        
+        
     end
 end
 

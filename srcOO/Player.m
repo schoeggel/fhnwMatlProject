@@ -9,9 +9,8 @@ classdef Player < handle
         score;
         tankType;
         positionXY;
-        tankArray;
-        
-        
+        tankArray;     
+        tankHandler;
     end
     
     methods
