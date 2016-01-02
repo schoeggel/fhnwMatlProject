@@ -102,6 +102,7 @@ classdef  FlightPath < handle
                 percentDamage = 0;
             end
         end
+        
     end
     
 end

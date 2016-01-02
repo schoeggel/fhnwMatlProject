@@ -43,6 +43,8 @@ classdef GameStates < handle
       %%
       actualPlayer = 1;
       playerInGame;
+      
+      gameRound = 1;
     end
     
     methods
@@ -99,6 +101,17 @@ classdef GameStates < handle
             end
         end
         
+        function [gameRound] = getGameRound(this)
+            gameRound = this.gameRound;
+        end
+        
+        function [gameRound] = nextGameRound(this, GameParameter)
+            this.gameRound = this.gameRound + 1;
+            if  this.gameRound > GameParameter.numberRounds
+                this.gameRound = 'End';
+            end
+            gameRound = this.gameRound;
+        end
         
     end
 end

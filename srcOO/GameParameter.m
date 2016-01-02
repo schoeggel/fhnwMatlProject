@@ -22,6 +22,8 @@ classdef GameParameter < handle
         mountain = 'Mountains>> medium';
         numberMountain = 2;
         
+        numberRounds = 10;
+        
         %% Landscape Constants
         % resolution = [x] <== auf diese x-auflösung wird gestreckt/interpoliert.
         % Iteration muss zwingend >= 1 sein. im ersten Druchlauf werden 3
@@ -50,7 +52,7 @@ classdef GameParameter < handle
         PLOT_H = 750; %height
         axisArray = [0 1000 0 750];
         
-        maxTankPos = 0.2 %% in welchem berech der Arraylänge der tank plaziert werden darf
+        maxTankPos = 0.3 %% in welchem berech der Arraylänge der tank plaziert werden darf
     
     end
     

@@ -45,7 +45,16 @@ classdef Player < handle
             this.tankArray = [x;y];
         
         end
-        
+        function [color] = getTankColor(this)
+                pk = this.number + 8;
+                r = dec2bin(pk);
+                r = bin2dec(r(4));
+                g = dec2bin(pk);
+                g = bin2dec(g(3));
+                b = dec2bin(pk);
+                b = bin2dec(b(2));
+                color =[r,g,b];
+        end
         
         function [] = posTank(this, Landscape, GameParameter)
             terrain = Landscape.getLandscape();
@@ -62,6 +71,11 @@ classdef Player < handle
         
         function  [tankArray]= getTank(this)
             tankArray = this.tankArray;
+        end
+        
+        function [angle] = calcAngle(this, mouseX, mouseY)
+            angle = atan((mouseY - this.positionXY(1,1))/(mouseX - this.positionXY(1,1)));
+            angle = (angle*180)/(pi())
         end
         
     end

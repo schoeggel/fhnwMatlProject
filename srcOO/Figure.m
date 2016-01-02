@@ -19,6 +19,9 @@ classdef Figure < handle
     properties
         screenSize = get(0,'ScreenSize');
         fireEvent  = 0;
+        mousedown;
+        mouseX;
+        mouseY;
     end
     
     properties (Access = private)
@@ -32,6 +35,8 @@ classdef Figure < handle
         btnWind;
         btnMountain;
         btnPlanet;
+        txtRounds;
+        sldRounds;
         btnStart;
         player;
         fire;
@@ -39,6 +44,9 @@ classdef Figure < handle
         angleSlider;
         powerText;
         powerSlider;
+        playerPoints;
+        gameRound;
+
     end    
     
     methods
@@ -120,18 +128,39 @@ classdef Figure < handle
             this.btnPlanet = uicontrol;
             this.btnPlanet.Style = 'pushbutton';
             this.btnPlanet.String = [this.gameParameter.planet];
-            this.btnPlanet.Position = [0,this.gameStates.MENUE_HIGH-295,this.gameStates.MENUE_WIDTH,25];
+            this.btnPlanet.Position = [0,this.gameStates.MENUE_HIGH-385,this.gameStates.MENUE_WIDTH,25];
             this.btnPlanet.ForegroundColor = this.gameStates.GREEN;
             this.btnPlanet.BackgroundColor = this.gameStates.BLACK;
             this.btnPlanet.FontName = this.gameStates.FONT;
             this.btnPlanet.FontSize = this.gameStates.TEXT_SIZE;
             this.btnPlanet.Callback = @this.btnPlanetClick;
+                                 
+            %% Anzahl Runden 
+            this.txtRounds = uicontrol;
+            this.txtRounds.Style = 'text';
+            this.txtRounds.String = ['Rounds >> ', num2str(this.gameParameter.numberRounds)];
+            this.txtRounds.Position = [0,this.gameStates.MENUE_HIGH-295,this.gameStates.MENUE_WIDTH,25];
+            this.txtRounds.ForegroundColor = this.gameStates.GREEN;
+            this.txtRounds.BackgroundColor = this.gameStates.BLACK;
+            this.txtRounds.FontName = this.gameStates.FONT;
+            this.txtRounds.FontSize = this.gameStates.TEXT_SIZE;
+            
+            %% Anzahl Runden 
+            this.sldRounds = uicontrol;
+            this.sldRounds.Style = 'slider';
+            this.sldRounds.String = 'Rounds';
+            this.sldRounds.Position = [0,this.gameStates.MENUE_HIGH-340,this.gameStates.MENUE_WIDTH,25];;
+            this.sldRounds.ForegroundColor = this.gameStates.RED;
+            this.sldRounds.BackgroundColor = this.gameStates.BLACK;
+            this.sldRounds.FontName = this.gameStates.FONT;
+            this.sldRounds.FontSize = this.gameStates.TEXT_SIZE;
+            this.sldRounds.Callback = @this.sldRoundsChange;
             
             
             %% Start 
             this.btnStart = uicontrol;
             this.btnStart.Style = 'pushbutton';
-            this.btnStart.String = '>> Start the f...... Game >>';
+            this.btnStart.String = '>> Start the best Game >>';
             this.btnStart.Position = [0, 0,this.gameStates.MENUE_WIDTH,25];
             this.btnStart.ForegroundColor = this.gameStates.RED;
             this.btnStart.BackgroundColor = this.gameStates.BLACK;
@@ -214,20 +243,60 @@ classdef Figure < handle
 
         end
         
-        function [p] = drawActualPlayer(this, GameState)
+        function [] = drawActualPlayer(this, GameState, color)
             axes = this.gameParameter.axisArray;
             leftBorder = (this.gameStates.SCREEN_WIDTH - (axes(1,2)+100)) / 2 ;
             fromleftBorder = 10;
-            fromTop = this.gameStates.SCREEN_HIGH - 75;
+            fromTop = this.gameStates.SCREEN_HIGH - 160;
         % Player
             this.player = uicontrol;
             this.player.Style = 'text';
             this.player.String =  ['Player >> ', num2str(GameState.getActualPlayer)];
-            this.player.Position = [fromleftBorder, fromTop - 50, leftBorder , 50];
-            this.player.ForegroundColor = this.gameStates.TITLE_COLOR;
+            this.player.Position = [fromleftBorder, fromTop, leftBorder , 50];
+            this.player.ForegroundColor = color;
             this.player.BackgroundColor = this.gameStates.BLACK;
             this.player.FontName = this.gameStates.FONT;
             this.player.FontSize = this.gameStates.TEXT_SIZE ;
+        end
+        function [] = drawPlayserPoints(this, GameParameter, Player)
+            axes = this.gameParameter.axisArray;
+            leftBorder = (this.gameStates.SCREEN_WIDTH - (axes(1,2)+100)) / 2 ;
+            fromleftBorder = 10;
+            fromTop = this.gameStates.SCREEN_HIGH - 200;
+            high = 50;
+            space = 25;
+            
+        % Player Pints
+            for pk = 1 : 1 : GameParameter.playerQuantety
+                playerPoints(pk) = uicontrol;
+                playerPoints(pk).Style = 'text';
+                playerPoints(pk).String =  ['Player ', num2str(pk), ' >> ', num2str(Player(pk).score)];
+                playerPoints(pk).Position = [fromleftBorder, fromTop - space * pk, leftBorder , high];
+                playerPoints(pk).ForegroundColor = Player(pk).getTankColor;
+                playerPoints(pk).BackgroundColor = this.gameStates.BLACK;
+                playerPoints(pk).FontName = this.gameStates.FONT;
+                playerPoints(pk).FontSize = this.gameStates.TEXT_SIZE_TINY ;  
+            end
+                this.playerPoints = playerPoints;
+        end
+        function [] = drawGameRound(this, GameParameter, GameState)
+            axes = this.gameParameter.axisArray;
+            width = (this.gameStates.SCREEN_WIDTH - (axes(1,2)+100));
+            fromleftBorder = 10;
+            fromTop = this.gameStates.SCREEN_HIGH - 110;
+            high = 30;
+            
+        % Player Pints
+            for pk = 1 : 1 : GameParameter.playerQuantety
+                this.gameRound = uicontrol;
+                this.gameRound.Style = 'text';
+                this.gameRound.String =  ['Round >> ', num2str(GameState.getGameRound), ' of ', num2str(GameParameter.numberRounds)];
+                this.gameRound.Position = [fromleftBorder, fromTop, width , high];
+                this.gameRound.ForegroundColor = GameState.TITLE_COLOR;
+                this.gameRound.BackgroundColor = this.gameStates.BLACK;
+                this.gameRound.FontName = this.gameStates.FONT;
+                this.gameRound.FontSize = this.gameStates.TEXT_SIZE_SMALL;  
+            end   
         end
         
         function [] = drawGameButtons(this)
@@ -291,14 +360,12 @@ classdef Figure < handle
             this.powerSlider.Callback = @this.btnPowerClick;
         end        
         
-        function [] = drawPowerBar(this)
-            axes = this.gameParameter.axisArray;
-            leftBorder = (this.gameStates.SCREEN_WIDTH - (axes(1,2)+100)) / 2 ;
-            fromleftBorder = 10;
-            fromTop = this.gameStates.SCREEN_HIGH - 75;
-            
+        function [] = drawPowerBar(this)       
             this.updatePowerBar(0);
-        end              
+            set(this.fig,'WindowButtonDownFcn', @this.myMouseDownCallBack)
+            set(this.fig,'WindowButtonUpFcn', @this.myMouseUpCallBack)   
+        end 
+        
         function [] = updatePowerBar(this,power)
         % zeichnet die powerbar
             blueX = [350,650,650,350];
@@ -307,16 +374,6 @@ classdef Figure < handle
             pbarY = blueY;
             patch(blueX,blueY,[0.6 0.9 1]); % Hellblau Himmel;
             patch(pbarX,pbarY,'R');
-        end
-        function [angle] = getAngleMouse(this, Player)
-            px = Player.positionXY(1,1);
-            py = Player.positionXY(2,1);
-            
-            mouseposition = get(this.fig, 'CurrentPoint');
-            
-            mx  = max(mouseposition(1,1),px);   % max limitiert den winkel auf 0-90°
-            my  = max(mouseposition(1,2),py);   % max limitiert den winkeln auf 0-90°
-            angle=asind((my-py)/sqrt((my-py)^2 + (mx-px)^2));
         end
         
         function [p] = drawInScreen(this,terrain)
@@ -501,19 +558,23 @@ classdef Figure < handle
         function btnMountainClick(this,source,eventdata)
             this.gameParameter = this.gameParameter.nextMountain;
             this.btnMountain.String = this.gameParameter.mountain;
-        end;
+        end
         function btnPlanetClick(this,source,eventdata)
             this.gameParameter = this.gameParameter.nextPlanet;
             this.btnPlanet.String = this.gameParameter.planet;
-        end;
+        end
+        function sldRoundsChange(this,source,eventdata)
+            this.gameParameter.numberRounds = this.sldRounds.Value * 100;
+            this.txtRounds.String = ['Rounds >> ', num2str(this.gameParameter.numberRounds)];
+        end
         function btnStartClick(this,source,eventdata)
             this.gameStates.setMenueProccessed(1);
             close(this.fig)
-        end;
+        end
         
         function [] = btnFireClick(this,source,eventdata)
             this.fireEvent = 1;
-        end;
+        end
         function btnAngleClick(this,source,eventdata)
             value = this.angleSlider.Value * this.gameParameter.maxAngle;
             this.angleText.String = ['Angle >>   ', num2str(value)];
@@ -523,8 +584,8 @@ classdef Figure < handle
             this.powerText.String = ['Power >>   ', num2str(value)];
         end;
         
-        %% Mouse Callbacks 
-        function myMouseDownCallBack(hObject,~)
+        % Mouse Callbacks 
+        function myMouseDownCallBack(this,hObject,~)
             % quelle: http://stackoverflow.com/questions/2769249/matlab-how-to-get-the-current-mouse-position-on-a-click-by-using-callbacks
             % set(f,'WindowButtonDownFcn',@mytestcallback)
             % function mytestcallback(hObject,~)
@@ -540,24 +601,16 @@ classdef Figure < handle
             % message     = sprintf('x: %.1f , y: %.1f',coordinates (1) ,coordinates (2));
             % helpdlg(message);
             % end
-            if  GAMESTATE_PLAYERINPUT
                 mouseposition = get(gca, 'CurrentPoint');
-                mx  = mouseposition(1,1);
-                my  = mouseposition(1,2);
-                disp(['You clicked X:',num2str(mx),', Y:',num2str(my)]);
-                mousedown = true;
-                tic
-            end
+                this.mouseX   = mouseposition(1,1);
+                this.mouseY  = mouseposition(1,2);
+                this.mousedown = 1;
         end      
-        function myMouseUpCallBack(hObject,~)
-            if GAMESTATE_PLAYERINPUT
+        function myMouseUpCallBack(this,hObject,~)
                 mouseposition = get(gca, 'CurrentPoint');
-                mx  = mouseposition(1,1);
-                my  = mouseposition(1,2);
-                disp(['You released button X:',num2str(mx),', Y:',num2str(my), ' Time elapesed: ', num2str(POWERTIMER)]);
-                mousedown=false;
-                GAMESTATE_FIRE = true
-            end
+                this.mouseX  = mouseposition(1,1);
+                this.mouseY  = mouseposition(1,2);
+                this.mousedown = 0; 
         end
 
 

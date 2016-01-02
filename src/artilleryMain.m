@@ -77,8 +77,8 @@ patch(player2.polygonX, player2.polygonY,'y')
 updatePowerBar(0);
 
 % Enable Mouse interaction
-set(fig,'WindowButtonDownFcn',@mymousedowncallback)
-set(fig,'WindowButtonUpFcn',@mymouseupcallback)
+set(fig,'WindowButtonDownFcn', @mymousedowncallback)
+set(fig,'WindowButtonUpFcn', @mymouseupcallback)
 
 %Polling schleife. Falls Mouse down, zählt die Powerbar nach oben
 POWERTIMER=0;
