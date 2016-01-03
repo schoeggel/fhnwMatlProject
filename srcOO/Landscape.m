@@ -1,35 +1,100 @@
 classdef Landscape < handle
-    %UNTITLED Summary of this class goes here
-    %   Detailed explanation goes here
+%%  Class Header
+%
+%   Class Name: Landscape.m
+%   Call: name = Landscape(GameParameter)
+%
+%   Zweck: In der Instanz dieser Klasse werdird die Landschaft erzeugt und gespeichert 
+%
+%% Changelog
+% Version 00.00.04  16.10.15  Joel Koch             Erstes Gui entworfen
+% Version 00.00.05  17.10.15  Joel Koch             Lanschaft Algorithmus
+% implementiert
+% Version 00.00.11  28.10.15  Joel Koch Code Aufgeräumt
+% Version 00.01.00  22.11.15  Raphael Waltenspül    Umbau in
+% Objektoriert erfogt
+% Version 00.01.04  11.12.15  Raphael Waltenspül   Implementieren der
+% Funktionen des Landscapes in Handle Class Landscape
+% Version 00.01.11  02.01.16  Raphael Waltenspül   Aufräumen fertigstellen
+% Gameablauf
+% Version 01.00.00b  03.01.16  Raphael Waltenspül   Buglist Testen
+% Kommentieren Dokumentieren
+
+%%  Input und Output: für Methoden, siehe Methoden
+%   Konstruktor:   >> GameParameter
+%                  << Figure Instanz
+%   Precondition:  GameParameter ist dem Konstruktor übergeben
+%
+%   Postcondition: Ein Landscape Instanz ist erstellt
+%   
+%	Variables:
+%       Für Instanzvariabeln siehe Properties
+%
+%%   Implementierte Methoden
+%       this = Landscape(GameParameter)
+%       this = genLandscape(this)
+%       terrainArray = getLandscape(this)
+
+%% Buglist TODO / this
+%   #1
+%  TODO: 
+%  das Programm hat noch bugs mit den Arrays Landscape und
+%  Flighpath zu vergleichen. Dies insbesonder wenn aus dem Bild
+%  geschossen wird. Es kann ein IndexExceedsMatrixDimensions
+%  Exeption geworfen werden. Behandelt wird diese momentran noch, in dem der nächste Spielr am zug ist...
     
     properties
-        %landscapeArray = [0,1];
-        gameParameter;
-        terrainArray;
+        gameParameter;  % Instanz der Gameparameter
+        terrainArray;   % variable des Terrainarrays
     end
     
     methods
+        %% Landscape Kostruktor      
+        % Zweck: Erstellt eine Landscape Instanz und speicher die
+        % Gamparameter
+        %
+        % Pre: Instanz Gameparameter ist erstellt
+        %
+        % Post: Instanz von Landscape ist erstellt
+        %
+        % Input: GameParameter
+        %
+        % Output: void
+        %
         function this = Landscape(GameParameter)
             this.gameParameter = GameParameter;
         end
         
+        %% Landscape genLandscape      
+        % Zweck: Erstellt ein zufälliges Landscape Array
+        %
+        % Pre: Instanz Landscape ist erstellt
+        %
+        % Post: Landscape Array ist berechnet und in der Instanzvariabel
+        % terrainArray gespeichert
+        %
+        % Input: GameParameter
+        %
+        % Output: void
+        %
+        % Modifizierte InstanzVraiabeln: terrainArray
+        %
         function this = genLandscape(this)
-            %[fittingTerrainX, fittingTerrainY]
 
             %% Limits für max_iterations durchsetzten
             max_iterations = floor(this.gameParameter.max_iterations);
             if (max_iterations < 1) 
-                iterations = 1; 
+                max_iterations  = 1; 
             end
             if (max_iterations > 9) 
-                iterations = 9; 
+                max_iterations  = 9; 
             end  % 1+2^9 Punkte reichen aus!
 
             %% Vektor initialisieren                   
             terrain = zeros(max_iterations,2^max_iterations+1);
 
             %% Start und Ende  und mittelpunkt setzen
-            terrain (1,2) = rand*1.5*this.gameParameter.JITTER + this.gameParameter.BERGOFFSET;    % Mittenwert (der Berg)
+            terrain (1,2) = rand*1.5*this.gameParameter.JITTER + this.gameParameter.BERGOFFSET; % Mittenwert (der Berg)
             terrain (1,1) = rand*50;   % Startwert (Linker Rand)
             terrain (1,3) = rand*50;   % Endwert (rechter Rand)  
 
@@ -123,19 +188,11 @@ classdef Landscape < handle
                 end
             end
 
-
-
-
-
-
-            %plot (contour_mix)
-
-
             % make polygon 
             terrainshapeY = [0, (contour_mix), 0];                                              % die interssante zeile übernehmen vorne ein und hinten zwei 0 als y-wert 
             terrainshapeX = [0, 0:1:size(terrainshapeY,2)-3, size(terrainshapeY,2)-3 ];      % die X-werte füllen, am schluss wieder auf x=0 weil für polygon
             c = terrainshapeY;
-            terrain=[terrainshapeX terrainshapeY];
+            terrain = [terrainshapeX terrainshapeY];
 
 
             %% Stretch Y
@@ -153,7 +210,19 @@ classdef Landscape < handle
 
             this.terrainArray=[fittingTerrainX; fittingTerrainY];
         end
-                      
+        
+        %% Landscape getLandscape      
+        % Zweck: getter für die LandscapeVaraiable
+        %
+        % Pre: Instanz Landscape ist erstellt
+        % LandscapeVaraiable berechnet
+        %
+        % Post: Landscape Array ist ausgegeben
+        %
+        % Input: Landsacpe Instanz, Instanzvariabel
+        %
+        % Output: terrainArray -- Zufälliges Landscape Array
+        %
         function terrainArray = getLandscape(this)
             terrainArray = this.terrainArray;
         end
