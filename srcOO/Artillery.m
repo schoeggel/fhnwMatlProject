@@ -374,10 +374,10 @@ end
             % Näcshter spieler mit mehr als 0 lebenspunkten wird ermittrelt
             % Ist nur noch ein spieler vorhanden Erhält der verbleibende
             % einen Punkt
-            if state.getPlayerInGame > 1 
+            if state.getPlayerInGame > 1
                 state.nextPlayer(param, player); 
             else
-                state.nextPlayer(param, player); 
+                state.nextPlayer(param, player);
                 %Punkt für den letzten verbleibenden Spiler vergeben
                 player(state.getActualPlayer).score = player(state.getActualPlayer).score+1;
             end
@@ -388,7 +388,7 @@ end
         for iCount = 1 : 1 : param.playerQuantety % rücksetzen aller lebenspunkte
             player(iCount).livePoints = param.getStandardLivePoints;
         end
-        
+
         %   löschen des Screens wird anschlissend neu gezeichnet
         fig = gameScreen.getFig();
         fig.delete;
