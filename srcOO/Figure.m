@@ -964,7 +964,7 @@ classdef Figure < handle
         % Output:   void
         % 
         function sldRoundsChange(this,source,eventdata)
-            this.gameParameter.numberRounds = this.sldRounds.Value * 100;
+            this.gameParameter.numberRounds = round(this.sldRounds.Value * 99)+1;
             this.txtRounds.String = ['Rounds >> ', num2str(this.gameParameter.numberRounds)];
         end
         %% Eventhandler btnStartClick

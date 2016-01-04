@@ -219,7 +219,7 @@ end
     %% 03 Start des Spieles
     % in der Folgenden Whileschleife verbleibt das Spiel bis alle
     % SpielRunden (ganzes Spiel) beendet wird.
-    while state.getGameRound < param.numberRounds
+    while state.getGameRound <= param.numberRounds
         
         %% Speilfeld Erzeugen
         gameScreen = Figure(state,param); % Instanz Figure erzeugen
@@ -390,6 +390,9 @@ end
         end
 
         %   löschen des Screens wird anschlissend neu gezeichnet
+        if state.getGameRound > param.numberRounds    
+        pause(13);
+        end
         fig = gameScreen.getFig();
         fig.delete;
     end

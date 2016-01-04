@@ -266,16 +266,20 @@ classdef GameStates < handle
         %   this.actualPlayer --
         %
         function [] = nextPlayer(this, GameParameter, PlayerArray)
-            if GameParameter.playerQuantety == this.actualPlayer && PlayerArray(1).livePoints > 0
+            
+            if GameParameter.playerQuantety == this.actualPlayer
                 this.actualPlayer = 1;
             else
-                this.actualPlayer = 1;
-                if PlayerArray(this.actualPlayer + 1).livePoints > 0
-                    this.actualPlayer = this.actualPlayer + 1;
+                this.actualPlayer = this.actualPlayer + 1;
+            end
+            watchdog = 0;
+            while PlayerArray(this.actualPlayer).livePoints <= 0 || watchdog < 2 * GameParameter.playerQuantety 
+                if GameParameter.playerQuantety == this.actualPlayer
+                    this.actualPlayer = 1;
                 else
-                   this.actualPlayer = this.actualPlayer + 1;
-                   this.nextPlayer(GameParameter, PlayerArray);
+                    this.actualPlayer = this.actualPlayer + 1;
                 end
+                watchdog = watchdog + 1;
             end
         end
         %% GameState getGameRound      
