@@ -182,7 +182,7 @@ classdef GameStates < handle
             this.playerInGame = number ;
         end
         %% GameState decreasePlayerInGame
-        % Zweck: Reduziert die Aktuelle anzahl Spieler im Spiel und giebt
+        % Zweck: Reduziert die Aktuelle anzahl Spieler im Spiel und gibt
         % die neue Anzahl an Spieler zurück.
         %
         % Pre: Instanz GameState ist erstellt

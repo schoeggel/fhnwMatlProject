@@ -54,6 +54,7 @@ function [] = Artillery()
 % Version 00.01.11  02.01.16  Raphael Waltenspül   Aufräumen fertigstellen
 % Gameablauf
 % Version 01.00.00b  03.01.16  Raphael Waltenspül   Buglist Testen
+
 % Kommentieren Dokumentieren
 %
 %% Inputs und Outputs: Keine
@@ -107,21 +108,21 @@ function [] = Artillery()
 %   lndsc.terrainArray -- Enthält das Array der ALndschaft
 %   
 %%   Verwendete Instanz Methoden
-%   screen.getFig()      -- giebt den figurehandler zurück (figure)
+%   screen.getFig()      -- gibt den figurehandler zurück (figure)
 %   screen.drawMenue()   -- zeichnet das Menue ([])
 %
-%   state.getGameRound -- Giebt die Aktuelle spielrunde zurück (double)
+%   state.getGameRound -- gibt die Aktuelle spielrunde zurück (double)
 %   state.setPlayerInGame() -- Setzt die anzahl Spielern im Spiel
 %   state.setActualPlayer() -- Setzt den Spiler welcher am zug ist.
 %   state.nextPlayer() -- Setzt den Spiler welcher als nächster am zug ist
 %   unter berücksichtigung der aktuellen Lebenpunkte
 %   state.decreasePlayerInGame -- Reduziert die Anzahl Spieler im Spiel
-%   giebt die Verbleibende Anzahl zurück (double)
-%   state.getPlayerInGame() -- giebt die Verbleibende Anzahl Spieler zurück (double)
+%   gibt die verbleibende Anzahl zurück (double)
+%   state.getPlayerInGame() -- gibt die Verbleibende Anzahl Spieler zurück (double)
 %   state.nextGameRound() -- nächste Spielrunde, wenn nicht Maximum
 %   erreicht, sonst game Ende
 %
-%   param.getStandardLivePoints --  giebt die standard Lebenspunkte zurück
+%   param.getStandardLivePoints --  gibt die standard Lebenspunkte zurück
 %
 %   gameScreen.drawGamescreen() -- Zeichnet das Spielfeld
 %   gameScreen.drawInScreen() --Landschaft in Spielfeld Zeichnen
@@ -139,9 +140,9 @@ function [] = Artillery()
 %   gameScreen.getPower -- Auslesen der Schussenergie Taktik
 %   gameScreen.getAngle -- Auslesen des Schusswinkels Taktik
 %   gameScreen.updatePowerBar() -- der Powerbalken wird aktualisiert
-%   gameScreen.drawImpactCircle() -- Zeichnet den einschalg und giebt das
+%   gameScreen.drawImpactCircle() -- Zeichnet den einschalg und gibt das
 %   Modifizierte Tarrainarray zurück.
-%   gameScreen.getFig() -- Giebt den Figurehandler zurück
+%   gameScreen.getFig() -- gibt den Figurehandler zurück
 %
 %   player(x).genTank() -- Tank Berechnen ([])
 %   player(x).posTank() -- Tank Positioniren ([])
@@ -157,7 +158,7 @@ function [] = Artillery()
 %   weth.getWindShapeColor    -- Farbe des Pfeilshapes
 %
 %   shot.calcCoordinates()    --
-%   shot.isHit()              -- Giebt die Trefferenergie 0, 100 zurück (double), 
+%   shot.isHit()              -- gibt die Trefferenergie 0, 100 zurück (double), 
 %   momentan nur 100 spätere Versionen des Spiels können den Tank nur beschädigen 0 bis 99.
 %
 %   fig.delete                -- Matlab Methode, löschen einer fig instanz
@@ -235,7 +236,7 @@ end
         lndsc.genLandscape();       % Landschaft berechnen
         terrain =  lndsc.getLandscape(); % Lanschaftsarray erhalten
         gameScreen.drawInScreen(terrain);   % Landschaft in Spielfeld Zeichnen
-
+        
         gameScreen.drawPlayerPoints(param, player); % Zeichnet Die Aktuellen Punktestände
         gameScreen.drawGameRound(param, state); % Zeichnet die Aktueller Runde
 
@@ -318,7 +319,7 @@ end
 
             %% Schuss Rechnen
             % Hier Wird der Schuss berechnet
-            shot = FlightPath(); % Instand des Schusses erstellen
+            shot = FlightPath(); % Instanz des Schusses erstellen
             % Wenn Spielernummer Gerade, wird der Abschusswinkel gespiegelt
             if mod(state.getActualPlayer, 2) == 0
                 angle = 180 - angle;
@@ -326,13 +327,15 @@ end
             
             % Berechnen der Flugbahn
             % TODO: #1 try catch entfernen
-            % das Programm hat noch bugs mit den Arrays Landscape und
+            % das Programm hat noch bugs mit den Arrays Landscape und 
             % Flighpath zu vergleichen. Dies insbesonder wenn aus dem Bild
             % geschossen wird. Es kann ein IndexExceedsMatrixDimensions
             % Exeption geworfen werden. Behandelt wird diese momentran noch, in dem der nächste Spielr am zug ist... 
+            % Joel Koch 4.1.16: Problem behoben.
+            
             try 
                 coordinate = shot.calcCoordinates(power, angle , weth, lndsc, player(state.getActualPlayer));
-            catch
+            catch       
             end
 
             %% Schuss Zeichnen
@@ -340,7 +343,12 @@ end
             % TODO: #2 Für kurze flugbahnen wird der Schuss sehr Langsam
             % gezeichnet.
             % Workaround erstellen
-            comet(coordinate(1,:),coordinate(2,:));
+            % comet(coordinate(1,:),coordinate(2,:));
+            
+            tmpX= (coordinate(1,:));
+            tmpY= (coordinate(2,:));
+            fprintf('\nDebug Info Arraysize Comet Coord = %d \n', length(tmpX));
+            comet(tmpX,tmpY);
             
             %% Treffer ermitteln
             % Hier Wird ermittelt ob der einschlagpunkt auf einem der

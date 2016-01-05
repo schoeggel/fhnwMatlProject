@@ -133,7 +133,8 @@ classdef  FlightPath < handle
             koeffzient = 1; % koeffizient des Geschosses
             
             deltaT = 0.001; % Schrittweite für die Numerische Berechnung
-
+            deltaT = 0.002; % Schrittweite für die Numerische Berechnung geändert Joel Koch 4.1.16: Sonst reichts nicht beim vertikalen Schuss zurück auf den boden.
+            
             vx = (vxStart); % Startgeschwindigkeit in X Richtung speichern
             vy = (vyStart); % Startgeschwindigkeit in Y Richtung speichern
             n=1; % Schleifenzähler auf eins
@@ -162,18 +163,34 @@ classdef  FlightPath < handle
             
             landArray = Landscape.getLandscape; % Speichern des Landscapes Array
             
-            finalLength = 13000; % Die Finale Länge des Arrays
+            %finalLength = 13000; % Die Finale Länge des Arrays (JOKO: welches Array?? coordinates wäre ja 300000 lang)
+            finalLength = 30000;
             
             for ak = 1 : 1 : length(coordinates)
                 xcor = round(coordinates(1,ak)); % gerundter x Wert an stelle ak im Array
                 ycor = coordinates(2,ak); % y Wert an stelle ak im Array
                 
                 % Wenn nun an der Stelle X der Y Wert der Flugbahn kleiner ist als der Y Wert der Landscape so ist dies ein einschlag 
-                if  ycor < landArray(2, xcor) 
+                % Weil die Array-Grösse des LAndscape-Polygons variabel ist
+                % (Krater), muss di Prüfung mit "inpoygon" erfolgen:
+                
+                % alter Code:
+                %if  ycor < landArray(2, xcor) 
+                %    this.impact = [xcor; ycor];
+                %    finalLength = ak; % Die länge der Flugbahn wird begrenzt
+                %    break
+                %end 
+                
+                in = inpolygon(xcor,ycor,landArray(1,:), landArray(2,:));
+                if in ~= 0 
                     this.impact = [xcor; ycor];
                     finalLength = ak; % Die länge der Flugbahn wird begrenzt
+                    fprintf('   => ak limit =  %d' , ak) 
                     break
-                end 
+                end
+                    
+                
+                               
                 % Wenn nun die Stelle X grösser ist als 1000 wurde aus dem
                 % bild gefeuert
                 if xcor > 999

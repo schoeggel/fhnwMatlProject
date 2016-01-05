@@ -36,7 +36,7 @@ classdef Figure < handle
 %   GameStates,GameParameter sind dem Konstruktor übergeben
 %
 %   Postcondition: 
-%   Erzeugt ein Grafikfenster in dem das Spiel Abläuft, giebt eine Figure
+%   Erzeugt ein Grafikfenster in dem das Spiel Abläuft, gibt eine Figure
 %   Instanz zurücck
 %   
 %	Variables:
@@ -327,8 +327,9 @@ classdef Figure < handle
             set(axisTitle, 'FontName', FONT,'FontSize', LARGE_TEXT);
             set(axisTitle, 'Color', TITLE_COLOR);
              
-            %FarbSchema erstellen
-            colormap(0.4*summer+0.4*flipud(pink)+0.1*flipud(winter));
+            %FarbSchema erstellen Joel Koch 4.1.16: (hier) nicht notwendig.
+            %colormap(0.4*summer+0.4*flipud(pink)+0.1*flipud(winter));
+            
             
             % Verhindern Das der Bildschirm verändert wird
             this.fig.Resize = 'off';
@@ -337,7 +338,7 @@ classdef Figure < handle
         end
         
         %% Zeichnen Spieler welcher am zug ist auf das Spielfeld
-        % Zweck: Zeichnen eines Textes der Angiebt, welcher Spieler am Zug
+        % Zweck: Zeichnen eines Textes der Angibt, welcher Spieler am Zug
         % ist
         % Pre: Instanz erstellt, Spielfeld erstellt
         % Post: test ist gezeichnet
@@ -366,7 +367,7 @@ classdef Figure < handle
             this.player.FontSize = this.gameStates.TEXT_SIZE ;
         end
         %% Zeichnen Spieler welcher am zug ist auf das Spielfeld
-        % Zweck: Zeichnen eines Textes für jeden Spieler, der Angiebt,
+        % Zweck: Zeichnen eines Textes für jeden Spieler, der Angibt,
         % welcher Spieler wieviele Siegespunkte hat.
         % 
         % Pre: Instanz erstellt, Spielfeld erstellt, Spieler erstellt
@@ -404,7 +405,7 @@ classdef Figure < handle
                 this.playerPoints = playerPointsloc;
         end
         %% Zeichnen Aktuelle Spielrunde auf das Spielfeld
-        % Zweck: Zeichnen eines Textes für die Spielrunde, der angiebt,
+        % Zweck: Zeichnen eines Textes für die Spielrunde, der angibt,
         % welche Spielrunde aktuell am laufen ist
         % 
         % Pre: Instanz erstellt, Spielfeld erstellt, Spieler erstellt,
@@ -557,7 +558,7 @@ classdef Figure < handle
         function [p] = drawInScreen(this,terrain)
             shapeX = terrain(1,:); % Xwerte des Arrays
             shapeY = terrain(2,:); % Ywerte des Array
-            shapeC = terrain(1,:); % Cwerte des Array
+            shapeC = terrain(2,:); % Cwerte des Array 
             p = patch(shapeX,shapeY, shapeC,'EdgeColor','interp','MarkerFaceColor','flat'); % Zeichnen
             colormap(0.4*summer+0.4*flipud(pink)+0.1*flipud(winter)); % Farbe 
             axis(this.gameParameter.axisArray); % Achsen definieren
@@ -653,31 +654,31 @@ classdef Figure < handle
             
             % rechnet den explosionsradius und die explosion, macht einen fadeout 
             % löscht sie wieder, bevor die funktion zurückkehrt
-            alpha = linspace( 0,2*pi,100);        % Intervall
+            alpha = linspace( 0,2*pi,100);          % Intervall
             shockX=3*r*cos(alpha)+impact(1,1);      % Kreis
             shockY=3*r*sin(alpha)+impact(2,1);      % Kreis
-            blast2 = patch(shockX,shockY,'w');    % Kreis zeichnen, handler=blast2
-            blast2.LineStyle='none';             % Kreislinie nicht zeichnen        
-            uistack(this.terrainhandler, 'top')      %terrain nach ganz vorne bringen, Blast Radius ist nur in der Luft.
+            blast2 = patch(shockX,shockY,'w');      % Kreis zeichnen, handler=blast2
+            blast2.LineStyle='none';                % Kreislinie nicht zeichnen        
+            uistack(this.terrainhandler, 'top')     % terrain nach ganz vorne bringen, Blast Radius ist nur in der Luft.
 
             shockX=0.99*r*cos(alpha)+impact(1,1);
             shockY=0.99*r*sin(alpha)+impact(2,1); 
-            blast0=patch(shockX,shockY,[0.6 0.9 1]); % Hellblau Himmel;  % hintergrund "patchen" mit hellblau, das richtige loch wird erst später reingegerechnet.
-            blast1=patch(shockX,shockY,'r');         % roter Explosionsradius darüber zeichnen
+            blast0=patch(shockX,shockY,[0.6 0.9 1]);% Hellblau Himmel;  % hintergrund "patchen" mit hellblau, das richtige loch wird erst später reingegerechnet.
+            blast1=patch(shockX,shockY,'r');        % roter Explosionsradius darüber zeichnen
             blast0.LineStyle='none';
             blast1.LineStyle='none';
         
-            ptime = 0.015;                           % pause zeit zwischen den animationsschritten
+            ptime = 0.015;                          % pause zeit zwischen den animationsschritten
             for fadesteps = 0.5:-0.03:0             % animation deckkraft von 0.5 bis 0
                pause(ptime);
                blast1.FaceAlpha=max(0,fadesteps*8-3);% der Explosionsradius rot klingt schneller ab
                blast2.FaceAlpha=fadesteps;
             end   
-            delete(blast2);                      % Die Animation ist fertig, alle
-            delete(blast1);                     % benutzten Elemente löschen
+            delete(blast2);                         % Die Animation ist fertig, alle
+            delete(blast1);                         % benutzten Elemente löschen
             delete(blast0);  
    
-            uistack(this.terrainhandler, 'bottom') % Terrain wieder nach hinten bringen
+            uistack(this.terrainhandler, 'bottom')  % Terrain wieder nach hinten bringen
         end 
         %% Zeichnen und animieren eines neuen Terrains
         % Zweck: Zeichnet an einer Einschlagstelle einen Krater
@@ -808,7 +809,7 @@ classdef Figure < handle
         function [] = updateParameters(this,GameParameter)       
            this.gameParameter = GameParameter;
         end
-        %% Giebt das Prameterobjektes aus
+        %% gibt das Prameterobjektes aus
         % Zweck: Erhalten eines durch das Menue modifizierte Prameterobjektes
         %
         % Pre: Instanz erstellt, Prameterobjekt vorhanden
@@ -822,7 +823,7 @@ classdef Figure < handle
         function [GameParameter] = getParameters(this)
             GameParameter = this.gameParameter;
         end
-        %% Giebt den figurehandler der aktuellen Figure Instanz zurück
+        %% Gibt den figurehandler der aktuellen Figure Instanz zurück
         % Zweck: erhalten eines figurehandlers zum Manipulieren (löschen
         % etc,)
         %

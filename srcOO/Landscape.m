@@ -202,10 +202,10 @@ classdef Landscape < handle
             %add support for player
             %bei den punkten x(5)( und x(62) ist die supportmitte, geht jeweils 1 nach
             %vorne und 1 nach hinten
-            offset=40; % wie weit vom Bildrand entfernt ist der Support-Mittelpunkt?
-            fittingTerrainY(1, offset-15:offset+15)=max(fittingTerrainY(1,offset-15:offset+15));
-            offset=1000-offset;
-            fittingTerrainY(1, offset-15:offset+15)=max(fittingTerrainY(1,offset-15:offset+15));
+            %offset=40; % wie weit vom Bildrand entfernt ist der Support-Mittelpunkt?
+            %fittingTerrainY(1, offset-15:offset+15)=max(fittingTerrainY(1,offset-15:offset+15));
+            %offset=1000-offset;
+            %fittingTerrainY(1, offset-15:offset+15)=max(fittingTerrainY(1,offset-15:offset+15));
 
 
             this.terrainArray=[fittingTerrainX; fittingTerrainY];
