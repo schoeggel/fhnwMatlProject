@@ -280,7 +280,7 @@ end
             % Hier wird das Wetter neu berechnet, der wind ändert sich
             % leicht (normalverteilter zufall)
             weth.updateWether; % neu berechnen
-            gameScreen.updateElementCol(windShape, weth.getWindShape,weth.getWindShapeColor); %windShape neu zeichnen
+            windShape = gameScreen.updateElementCol(windShape, weth.getWindShape,weth.getWindShapeColor); %windShape neu zeichnen
 
             gameScreen.drawActualPlayer(state, player(state.getActualPlayer).getTankColor); %Zeichnet den Text wer aktuell am Zug ist
             

@@ -127,12 +127,12 @@ classdef  FlightPath < handle
             vyStart = sin(angRad) * vStart; %Startgeschwindigkeit in Y Richtung
             
             % Die Maximale zeit für die Berechnung
-            tmax = 30;
+            tmax = 60;
      
             dichteMedium = 1.2 *10^(-3); % Dichte der Athmosphäre Variable erst in späteren Versionen veränderbar (Wenn Planten implementiert)
             koeffzient = 1; % koeffizient des Geschosses
             
-            deltaT = 0.001; % Schrittweite für die Numerische Berechnung
+            %deltaT = 0.001; % Schrittweite für die Numerische Berechnung
             deltaT = 0.002; % Schrittweite für die Numerische Berechnung geändert Joel Koch 4.1.16: Sonst reichts nicht beim vertikalen Schuss zurück auf den boden.
             
             vx = (vxStart); % Startgeschwindigkeit in X Richtung speichern
