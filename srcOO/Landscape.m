@@ -1,26 +1,26 @@
-classdef Landscape < handle
 %%  Class Header
-%
+
 %   Class Name: Landscape.m
 %   Call: name = Landscape(GameParameter)
 %
 %   Zweck: In der Instanz dieser Klasse werdird die Landschaft erzeugt und gespeichert 
 %
 %% Changelog
-% Version 00.00.04  16.10.15  Joel Koch             Erstes Gui entworfen
-% Version 00.00.05  17.10.15  Joel Koch             Lanschaft Algorithmus
+% * Version 00.00.04  16.10.15  Joel Koch             Erstes Gui entworfen
+% * Version 00.00.05  17.10.15  Joel Koch             Lanschaft Algorithmus
 % implementiert
-% Version 00.00.11  28.10.15  Joel Koch Code Aufgeräumt
-% Version 00.01.00  22.11.15  Raphael Waltenspül    Umbau in
+% * Version 00.00.11  28.10.15  Joel Koch Code Aufgeräumt
+% * Version 00.01.00  22.11.15  Raphael Waltenspül    Umbau in
 % Objektoriert erfogt
-% Version 00.01.04  11.12.15  Raphael Waltenspül   Implementieren der
+% * Version 00.01.04  11.12.15  Raphael Waltenspül   Implementieren der
 % Funktionen des Landscapes in Handle Class Landscape
-% Version 00.01.11  02.01.16  Raphael Waltenspül   Aufräumen fertigstellen
+% * Version 00.01.11  02.01.16  Raphael Waltenspül   Aufräumen fertigstellen
 % Gameablauf
-% Version 01.00.00b  03.01.16  Raphael Waltenspül   Buglist Testen
+% * Version 01.00.00b  03.01.16  Raphael Waltenspül   Buglist Testen
 % Kommentieren Dokumentieren
 
 %%  Input und Output: für Methoden, siehe Methoden
+
 %   Konstruktor:   >> GameParameter
 %                  << Figure Instanz
 %   Precondition:  GameParameter ist dem Konstruktor übergeben
@@ -31,18 +31,14 @@ classdef Landscape < handle
 %       Für Instanzvariabeln siehe Properties
 %
 %%   Implementierte Methoden
+
 %       this = Landscape(GameParameter)
 %       this = genLandscape(this)
 %       terrainArray = getLandscape(this)
 
 %% Buglist TODO / this
-%   #1
-%  TODO: 
-%  das Programm hat noch bugs mit den Arrays Landscape und
-%  Flighpath zu vergleichen. Dies insbesonder wenn aus dem Bild
-%  geschossen wird. Es kann ein IndexExceedsMatrixDimensions
-%  Exeption geworfen werden. Behandelt wird diese momentran noch, in dem der nächste Spielr am zug ist...
-    
+%% Properties
+classdef Landscape < handle
     properties
         gameParameter;  % Instanz der Gameparameter
         terrainArray;   % variable des Terrainarrays
@@ -52,7 +48,7 @@ classdef Landscape < handle
         %% Landscape Kostruktor      
         % Zweck: Erstellt eine Landscape Instanz und speicher die
         % Gamparameter
-        %
+        
         % Pre: Instanz Gameparameter ist erstellt
         %
         % Post: Instanz von Landscape ist erstellt
@@ -67,7 +63,7 @@ classdef Landscape < handle
         
         %% Landscape genLandscape      
         % Zweck: Erstellt ein zufälliges Landscape Array
-        %
+        
         % Pre: Instanz Landscape ist erstellt
         %
         % Post: Landscape Array ist berechnet und in der Instanzvariabel
@@ -102,11 +98,13 @@ classdef Landscape < handle
             DAEMPFUNG = this.gameParameter.DAEMPFUNG;
             JITTERBALANCE = this.gameParameter.JITTERBALANCE;
             PLATFORMOFFSET = this.gameParameter.PLATFORMOFFSET;
-            % die Terrainpunkte werden in einer Matrix erstellt. ähnlich wie bei der 
-            % erstellung des pascalschen Dreiecks. Zu Beginn sind nur in der ersten
-            % Zeile die Werte von Links,JITTER Rechts und der Mitte (Berg). Jede Iteration
-            % erzeugt die Werte in eine nächste Zeile und fügt dort die neuen Punkte
-            % ein. start bei 2, weil die erste bereits gesetzt (die 3 Startpunkte).
+            
+% die Terrainpunkte werden in einer Matrix erstellt. ähnlich wie bei der 
+% erstellung des pascalschen Dreiecks. Zu Beginn sind nur in der ersten
+% Zeile die Werte von Links,JITTER Rechts und der Mitte (Berg). Jede Iteration
+% erzeugt die Werte in eine nächste Zeile und fügt dort die neuen Punkte
+% ein. start bei 2, weil die erste bereits gesetzt (die 3 Startpunkte).
+
             for rowindex=2:1:this.gameParameter.max_iterations   %für jede iteration gibts eine neue Zeile  in der Matrix
                for colindex=1:1:2^rowindex+1   %Jede Zeile hat mehr Werte als die letzte
                     if mod(colindex, 2) > 0    %ungerade zeilen übernehmen bestehende werte (verschoben)
@@ -114,21 +112,22 @@ classdef Landscape < handle
                     else    %gerade Zeilen berechnen einen neuen mittelwert +- random
                         left= terrain(rowindex-1, (colindex)/2);
                         right= terrain(rowindex-1, (colindex+2)/2);
-                        % Die Dämpfung wichtig: Einerseits soll die Gesamtlandschaft
-                        % nicht zu flach sein, andernseits müssen die
-                        % Zufallshöhenunterschiede bei fortschreitenden Detailgraden
-                        % immer kleiner werden. Um zu Beginn wenig zu dämpfen und
-                        % später sehr stark, wird die DAEMPFUNG^ITERATION verwendet.
-                        % die Korrektur an der Iteration (rowidex-1.8) stellt quasi den
-                        % Arbeitspunkt der Dämpfung ein.    
+                        
+% Die Dämpfung wichtig: Einerseits soll die Gesamtlandschaft
+% nicht zu flach sein, andernseits müssen die
+% Zufallshöhenunterschiede bei fortschreitenden Detailgraden
+% immer kleiner werden. Um zu Beginn wenig zu dämpfen und
+% später sehr stark, wird die DAEMPFUNG^ITERATION verwendet.
+% die Korrektur an der Iteration (rowidex-1.8) stellt quasi den
+% Arbeitspunkt der Dämpfung ein.    
                         terrain(rowindex,colindex)= (left+right)/2 +...
                             (rand*JITTER-(JITTER*(1-JITTERBALANCE)))/DAEMPFUNG^((rowindex-2.4)*DAEMPFUNG^2.2);
                     end
                end
 
 
-               % *Ein paar Korrekturen für die Positionierung, es geht
-               % am einfachsten in der 4. Iteration, wenn 17 Punkte gesetzt sind:
+% *Ein paar Korrekturen für die Positionierung, es geht
+% am einfachsten in der 4. Iteration, wenn 17 Punkte gesetzt sind:
                 if rowindex == 4 % Beide Spieler  etwas nach unten.
                     terrain(4,2) = max(terrain(4,2) + PLATFORMOFFSET,5);
                     terrain(4,16)= max(terrain(4,16) + PLATFORMOFFSET,5);
@@ -149,20 +148,17 @@ classdef Landscape < handle
             lowestpoint=min(terrain(max_iterations,:));
             terrain=terrain-lowestpoint+YLIMITS(1);
             
-            %neuen höchsten Punkt suchen, wenn höher als limite, wird das ganze terrain
-            %zusammengestaucht
+            %neuen höchsten Punkt suchen, wenn höher als 
+            %limite, wird das ganze terrain zusammengestaucht
             highestpoint=max(terrain(max_iterations,:));
             if highestpoint > YLIMITS(2)
                 terrain=terrain/(highestpoint/YLIMITS(2));
             end
 
-
             % auf 1000 punkte aufblasen
             terrain= imresize(terrain,[max_iterations, 1001], 'Method','bilinear');
 
-
-
-            %% Glättung:
+            %% Glättung
             contour_raw=terrain(max_iterations,:);  %relevante letzte zeile aus den generierten Terrain Daten kopieren
             contour_soft=contour_raw;               %Diese Version wird geglättet
             contour_mix=contour_raw;                %Diese Version wird die gemischte
@@ -176,6 +172,7 @@ classdef Landscape < handle
                 end
             end
             FELSUEBERGANG  = this.gameParameter.FELSUEBERGANG;
+            
             %Mix raw und soft anhand der Parameter FELSUEBERGANG(1)  und (2)
             for colindex=1:1:size(contour_raw,2)
                if  contour_raw(colindex) < FELSUEBERGANG(1)     % Nur Berge
@@ -199,21 +196,12 @@ classdef Landscape < handle
             fittingTerrainX=terrainshapeX;
             fittingTerrainY=terrainshapeY.*3.5;
 
-            %add support for player
-            %bei den punkten x(5)( und x(62) ist die supportmitte, geht jeweils 1 nach
-            %vorne und 1 nach hinten
-            %offset=40; % wie weit vom Bildrand entfernt ist der Support-Mittelpunkt?
-            %fittingTerrainY(1, offset-15:offset+15)=max(fittingTerrainY(1,offset-15:offset+15));
-            %offset=1000-offset;
-            %fittingTerrainY(1, offset-15:offset+15)=max(fittingTerrainY(1,offset-15:offset+15));
-
-
             this.terrainArray=[fittingTerrainX; fittingTerrainY];
         end
         
         %% Landscape getLandscape      
         % Zweck: getter für die LandscapeVaraiable
-        %
+        
         % Pre: Instanz Landscape ist erstellt
         % LandscapeVaraiable berechnet
         %

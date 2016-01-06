@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>FlightPath</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-12-27"><meta name="DC.source" content="FlightPath.m"><style type="text/css">
+      --><title>FlightPath</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-01-06"><meta name="DC.source" content="FlightPath.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,88 +66,306 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Parameter</a></li><li><a href="#3">Berechnung der Abbschussgeschwindigkeit</a></li></ul></div><pre class="codeinput"><span class="keyword">classdef</span> FlightPath
-    <span class="comment">%UNTITLED Summary of this class goes here</span>
-    <span class="comment">%   Detailed explanation goes here</span>
-
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Class Header</a></li><li><a href="#2">Changelog</a></li><li><a href="#3">Input und Output:</a></li><li><a href="#4">Implementierte Methoden</a></li><li><a href="#5">Buglist TODO / this</a></li><li><a href="#6">Berechnen der Flugbahn</a></li><li><a href="#7">FlightPath Konstruktor</a></li><li><a href="#8">FlightPath calcCoordinates</a></li><li><a href="#10">Parameter</a></li><li><a href="#11">Berechnung der Abbschussgeschwindigkeit</a></li><li><a href="#12">Schleife zur Numerischen berechnung der Flugparabel</a></li><li><a href="#14">FlightPath isHit</a></li></ul></div><h2>Class Header<a name="1"></a></h2><pre class="codeinput"><span class="comment">%   Class Name: FlightPath.m</span>
+<span class="comment">%   Call: name = FlightPath()</span>
+<span class="comment">%</span>
+<span class="comment">%   Zweck: In der Instanz dieser klasse findet die berechnung der Flugbahn</span>
+<span class="comment">%   statt. Wieter stellen Instanzen dieser klasse die methode zur</span>
+<span class="comment">%   trefferermittlung zu verf&uuml;gung</span>
+<span class="comment">%</span>
+</pre><h2>Changelog<a name="2"></a></h2><div><ul><li>Version 00.00.01  07.10.15  Raphael Waltensp&uuml;l    Erstellt des Main Objekts, noch nicht Objekt Orientiert.</li><li>Version 00.00.07  19.10.15  Joel Koch             Einschlag implementier</li><li>Version 00.00.08  21.10.15  Raphael Waltensp&uuml;l    Flugparabel berechnung erster entwurf</li><li>Version 00.00.09  22.10.15  Raphael Waltensp&uuml;l    Koordinaten der Flugparabel berechnen und ausgeben</li><li>Version 00.01.00  22.11.15  Raphael Waltensp&uuml;l    Umbau in Objektoriert erfogt</li><li>Version 00.01.04  11.12.15  Raphael Waltensp&uuml;l   Implementieren der Funktionen des Landscapes in Handle Class Landscape</li><li>Version 00.01.06  28.12.15  Raphael Waltensp&uuml;l   Trefferermittlung</li><li>Version 00.01.08  31.12.15  Raphael Waltensp&uuml;l   Trefferermittlung</li><li>Version 00.01.11  02.01.16  Raphael Waltensp&uuml;l   Aufr&auml;umen fertigstellen Gameablauf</li><li>Version 01.00.00b  03.01.16  Raphael Waltensp&uuml;l   Buglist Testen Kommentieren Dokumentieren</li></ul></div><h2>Input und Output:<a name="3"></a></h2><p>f&uuml;r Methoden, siehe Methoden</p><pre class="codeinput"><span class="comment">%   Konstruktor:   void</span>
+<span class="comment">%   Precondition:</span>
+<span class="comment">%</span>
+<span class="comment">%   Postcondition: Instanz von FlightPath ist erstellt</span>
+<span class="comment">%</span>
+<span class="comment">%	Variables:</span>
+<span class="comment">%       F&uuml;r Instanzvariabeln siehe Properties</span>
+<span class="comment">%</span>
+</pre><h2>Implementierte Methoden<a name="4"></a></h2><pre class="codeinput"><span class="comment">% [this]= FlightPath()</span>
+<span class="comment">% [retCoordinates] = calcCoordinates(this, energie, winkel, Wether, Landscape, Player)</span>
+<span class="comment">% [percentDamage] = isHit(this, PlayerArray, playerNr)</span>
+<span class="comment">%</span>
+</pre><h2>Buglist TODO / this<a name="5"></a></h2><h2>Berechnen der Flugbahn<a name="6"></a></h2><pre class="codeinput"><span class="keyword">classdef</span>  FlightPath &lt; handle
     <span class="keyword">properties</span>
-
+        impact; <span class="comment">% Einschlagkoordinatn [x;y]</span>
     <span class="keyword">end</span>
 
     <span class="keyword">methods</span>
+</pre><h2>FlightPath Konstruktor<a name="7"></a></h2><p>Zweck: Instanz von GameStates ist erzeugt</p><pre class="codeinput">            <span class="comment">% Pre:</span>
+            <span class="comment">%</span>
+            <span class="comment">% Post: FlightPath ist erstellt</span>
+            <span class="comment">%</span>
+            <span class="comment">% Input: void</span>
+            <span class="comment">%</span>
+            <span class="comment">% Output: Instanz FlightPath</span>
+            <span class="comment">%</span>
+            <span class="comment">% Modifizierte Instanzvariable</span>
         <span class="keyword">function</span> [this]= FlightPath()
 
         <span class="keyword">end</span>
-        <span class="keyword">function</span> [] = calcCoordinates(this, energie, winkel, Wether, Landscape, Player)
-</pre><h2>Parameter<a name="2"></a></h2><p>Der Winkel in Grad und Rad</p><p><img src="FlightPath_eq00424894623942283172.png" alt="$$ang_{rad} = \pi  \frac{ang_{deg}}{180}$$"></p><pre class="codeinput">            angle = 45;
+</pre><pre class="codeoutput">
+ans = 
+
+  FlightPath with properties:
+
+    impact: []
+
+</pre><h2>FlightPath calcCoordinates<a name="8"></a></h2><p>Zweck: Berechnet die Koordinaten der Flugbahn numerisch Dies unter ber&uuml;cksichtigung von Wind und Lufztwiederstand</p><pre class="codeinput">            <span class="comment">% Pre: instanz FlightPath it erstellt</span>
+            <span class="comment">% energie ist zwischen 0 und 100000</span>
+            <span class="comment">% winkel ist zwischen 0 und 180 Grad</span>
+            <span class="comment">% Instanzen Wether, Landscape, Player sind erstellt</span>
+            <span class="comment">%</span>
+            <span class="comment">% Post: Flugbahnkoordinaten sind berechnet</span>
+            <span class="comment">%</span>
+            <span class="comment">% Input: instanz FlightPath</span>
+            <span class="comment">% energie</span>
+            <span class="comment">% winkel</span>
+            <span class="comment">% Wether</span>
+            <span class="comment">% Landscape</span>
+            <span class="comment">% Player</span>
+            <span class="comment">%</span>
+            <span class="comment">% Output: retCoordinates [x;y] -- Array mit den</span>
+            <span class="comment">% Flugbahnkoordinaten</span>
+            <span class="comment">%</span>
+        <span class="keyword">function</span> [retCoordinates] = calcCoordinates(this, energie, winkel, Wether, Landscape, Player)
+</pre><h2>Parameter<a name="10"></a></h2><pre class="codeinput">            <span class="comment">% Der Winkel in Grad und Rad</span>
+            <span class="comment">%</span>
+            <span class="comment">% $$ang_{rad} = \pi  \frac{ang_{deg}}{180}$$</span>
+            <span class="comment">%</span>
+            angle = winkel;
             angRad = pi() * angle/180;
-</pre><h2>Berechnung der Abbschussgeschwindigkeit<a name="3"></a></h2><p><img src="FlightPath_eq16007675882720686820.png" alt="$$Energie Projektil: E_{prj} \ Geschwindigkeit Projektil: v_{prj} \ Msse Projektil: m_{Projektil}$$"></p><p><img src="FlightPath_eq12063416024858751384.png" alt="$$Wirkungsgrad Kanon: n_{can} Energie Treibladung $$"></p><p><img src="FlightPath_eq01262878148396841377.png" alt="$$E_{prj} = \frac{m_{prj}}{2} v_{prj}^{2}$$"></p><p><img src="FlightPath_eq05601658893505298597.png" alt="$$E_{prj} = E_{trbl} * n_{can}$$"></p><p><img src="FlightPath_eq03972073451878719097.png" alt="$$v_{prj} = \sqrt{ \frac{2 E_{prj}}{m_{prj}}}$$"></p><pre class="codeinput">            masseProjektil = 1;
-            energieTreibladung = 20000;
-            wirkungsGradKanone = 0.2;
-            masseKanone = 10000;
-            g = 9.81;
+</pre><h2>Berechnung der Abbschussgeschwindigkeit<a name="11"></a></h2><pre class="codeinput">            <span class="comment">% $$Energie Projektil: E_{prj} \ Geschwindigkeit Projektil: v_{prj} \ Msse Projektil: m_{Projektil}$$</span>
+            <span class="comment">%</span>
+            <span class="comment">% $$Wirkungsgrad Kanon: n_{can} Energie Treibladung $$</span>
+            <span class="comment">%</span>
+            <span class="comment">% $$E_{prj} = \frac{m_{prj}}{2} v_{prj}^{2}$$</span>
+            <span class="comment">%</span>
+            <span class="comment">% $$E_{prj} = E_{trbl} * n_{can}$$</span>
+            <span class="comment">%</span>
+            <span class="comment">% $$v_{prj} = \sqrt{ \frac{2 E_{prj}}{m_{prj}}}$$</span>
 
-            vStart = sqrt(2*energieTreibladung*wirkungsGradKanone/masseProjektil);
-            vxStart = cos(angRad) * vStart;
-            vyStart = sin(angRad) * vStart;
-            tmax = 13;
+            masseProjektil = 1; <span class="comment">% Variable erst in sp&auml;teren Versionen ver&auml;nderbar</span>
+            energieTreibladung = energie; <span class="comment">% Variable erst in sp&auml;teren Versionen ver&auml;nderbar</span>
+            wirkungsGradKanone = 1; <span class="comment">% Variable erst in sp&auml;teren Versionen ver&auml;nderbar</span>
+            masseKanone = 10000; <span class="comment">% Variable erst in sp&auml;teren Versionen verwendet</span>
+            g = 9.81; <span class="comment">% Variable erst in sp&auml;teren Versionen ver&auml;nderbar (Wenn Planten implementiert)</span>
 
-            dichteMedium =1.3;
-            koeffzient = 10;
-            deltaT = 0.10;
+            <span class="comment">% Die Energie wird auf das Projektil gerechnet</span>
+            vStart = sqrt( 2 * energieTreibladung * wirkungsGradKanone / masseProjektil);
+            <span class="comment">% Die Startgeschwindigkeiten werden berechnet</span>
+            vxStart = cos(angRad) * vStart; <span class="comment">%Startgeschwindigkeit in X Richtung</span>
+            vyStart = sin(angRad) * vStart; <span class="comment">%Startgeschwindigkeit in Y Richtung</span>
 
-            vx = (vxStart);
-            vy = (vyStart);
-            n=1;
-            x(n)=1;
-            y(n)=1;
+            <span class="comment">% Die Maximale zeit f&uuml;r die Berechnung</span>
+            tmax = 60;
 
-            <span class="keyword">for</span> t = 0 : deltaT : tmax
+            dichteMedium = 1.2 *10^(-3); <span class="comment">% Dichte der Athmosph&auml;re Variable erst in sp&auml;teren Versionen ver&auml;nderbar (Wenn Planten implementiert)</span>
+            koeffzient = 1; <span class="comment">% koeffizient des Geschosses</span>
 
-                ve = [vx, vy]/sqrt(vx^2 + vy^2);
-                fVector = ve * (sqrt(vx^2 + vy^2)^2*koeffzient*dichteMedium)*deltaT;
-                vx = vx - fVector(:,1)*deltaT;
-                vy = vy - g * deltaT - fVector(:,2)*deltaT;
+            <span class="comment">%deltaT = 0.001; % Schrittweite f&uuml;r die Numerische Berechnung</span>
+            deltaT = 0.002; <span class="comment">% Schrittweite f&uuml;r die Numerische Berechnung ge&auml;ndert Joel Koch 4.1.16: Sonst reichts nicht beim vertikalen Schuss zur&uuml;ck auf den boden.</span>
 
+            vx = (vxStart); <span class="comment">% Startgeschwindigkeit in X Richtung speichern</span>
+            vy = (vyStart); <span class="comment">% Startgeschwindigkeit in Y Richtung speichern</span>
+            n=1; <span class="comment">% Schleifenz&auml;hler auf eins</span>
+
+            playerStartPos = Player.positionXY; <span class="comment">% Startposition speichern</span>
+            x(n) = playerStartPos(1,1);  <span class="comment">% Schuss X Startposition festlegen</span>
+            y(n) = playerStartPos(2,1)+10; <span class="comment">% Schuss Y Startposition festlegen</span>
+</pre><h2>Schleife zur Numerischen berechnung der Flugparabel<a name="12"></a></h2><pre class="codeinput">            <span class="keyword">for</span> t = 0 : deltaT : tmax
+                ve = [vx, vy] / sqrt(vx^2 + vy^2); <span class="comment">% Einsvektor f&uuml;r die Kraft des Flugluftwiederstandes</span>
+                fVector = ve * (sqrt(vx^2 + vy^2)^2 * koeffzient * dichteMedium); <span class="comment">% Kraft des Flugluftwiederstandes berechnen [Fx;Fy]</span>
+                <span class="comment">% &auml;nderung v in X richtung berechnen inklusive der</span>
+                <span class="comment">% Windrichtung</span>
+                vx = vx - fVector(1,1)*deltaT - (Wether.wind + vx) * abs(Wether.wind + vx) * koeffzient * dichteMedium * deltaT;
+                <span class="comment">% &auml;nderung v in Y richtung berechnen inklusive der</span>
+                vy = vy - g * deltaT - fVector(1,2)*deltaT;
+
+                <span class="comment">% Speichern der Parameter in einem Array</span>
                 x(n+1) = x(n)+vx * deltaT;
                 y(n+1) = y(n)+vy * deltaT;
                 n = n+1;
-
             <span class="keyword">end</span>
 
-            comet(x,y)
+            coordinates = [x;y]; <span class="comment">% Speichern der Koordinaten</span>
+
+            landArray = Landscape.getLandscape; <span class="comment">% Speichern des Landscapes Array</span>
+
+            <span class="comment">%finalLength = 13000; % Die Finale L&auml;nge des Arrays (JOKO: welches Array?? coordinates w&auml;re ja 300000 lang)</span>
+            finalLength = 30000;
+
+            <span class="keyword">for</span> ak = 1 : 1 : length(coordinates)
+                xcor = round(coordinates(1,ak)); <span class="comment">% gerundter x Wert an stelle ak im Array</span>
+                ycor = coordinates(2,ak); <span class="comment">% y Wert an stelle ak im Array</span>
+
+                <span class="comment">% Wenn nun an der Stelle X der Y Wert der Flugbahn kleiner ist als der Y Wert der Landscape so ist dies ein einschlag</span>
+                <span class="comment">% Weil die Array-Gr&ouml;sse des LAndscape-Polygons variabel ist</span>
+                <span class="comment">% (Krater), muss di Pr&uuml;fung mit "inpoygon" erfolgen:</span>
+
+                <span class="comment">% alter Code:</span>
+                <span class="comment">%if  ycor &lt; landArray(2, xcor)</span>
+                <span class="comment">%    this.impact = [xcor; ycor];</span>
+                <span class="comment">%    finalLength = ak; % Die l&auml;nge der Flugbahn wird begrenzt</span>
+                <span class="comment">%    break</span>
+                <span class="comment">%end</span>
+
+                in = inpolygon(xcor,ycor,landArray(1,:), landArray(2,:));
+                <span class="keyword">if</span> in ~= 0
+                    this.impact = [xcor; ycor];
+                    finalLength = ak; <span class="comment">% Die l&auml;nge der Flugbahn wird begrenzt</span>
+                    fprintf(<span class="string">'   =&gt; ak limit =  %d'</span> , ak)
+                    <span class="keyword">break</span>
+                <span class="keyword">end</span>
+
+
+
+                <span class="comment">% Wenn nun die Stelle X gr&ouml;sser ist als 1000 wurde aus dem</span>
+                <span class="comment">% bild gefeuert</span>
+                <span class="keyword">if</span> xcor &gt; 999
+                    this.impact = [1000; ycor];
+                    finalLength = ak;
+                    <span class="keyword">break</span>
+                <span class="keyword">end</span>
+                <span class="comment">% Wenn nun die Stelle X gr&ouml;sser ist als 4 wurde aus dem</span>
+                <span class="comment">% bild gefeuert</span>
+                <span class="keyword">if</span> xcor &lt; 4
+                    this.impact = [1; ycor];
+                    finalLength = ak;
+                    <span class="keyword">break</span>
+                <span class="keyword">end</span>
+            <span class="keyword">end</span>
+            retCoordinates = coordinates(:,1:finalLength); <span class="comment">% Die Koordinaten werden zur&uuml;ckgegeben</span>
 </pre><pre class="codeinput">        <span class="keyword">end</span>
-    <span class="keyword">end</span>
+</pre><h2>FlightPath isHit<a name="14"></a></h2><p>Zweck: Pr&uuml;fen ob ein Speiler getroffen wurde</p><pre class="codeinput">        <span class="comment">% Pre: instanz FlightPath it erstellt,</span>
+        <span class="comment">%  playerNr ist bekannt und &uuml;bergeben</span>
+        <span class="comment">%</span>
+        <span class="comment">% Post: Ermittelt ob der Spieler mit der playerNr getroffen wurde</span>
+        <span class="comment">% und der Schaden wurde zur&uuml;ckgegeben</span>
+        <span class="comment">%</span>
+        <span class="comment">% Input: instanz FlightPath</span>
+        <span class="comment">% PlayerArray --</span>
+        <span class="comment">% playerNr --</span>
+        <span class="comment">%</span>
+        <span class="comment">% Output: percentDamage-- Schaden am Spieler</span>
+        <span class="comment">%</span>
+        <span class="keyword">function</span> [percentDamage] = isHit(this, PlayerArray, playerNr)
+
+            tempPsXY = PlayerArray(playerNr).tankArray; <span class="comment">% Spieler wird gespeicher</span>
+            <span class="comment">% Pr&uuml;fen ob impaktkoordinaten iauf dem Spieler liegen</span>
+            <span class="keyword">if</span> this.impact(1,1) &gt; min(tempPsXY(1,:)) &amp;&amp; this.impact(1,1) &lt; max(tempPsXY(1,:))
+                percentDamage = 100; <span class="comment">% 100 prozent Schaden wenn getroffen</span>
+            <span class="keyword">else</span>
+                percentDamage = 0; <span class="comment">% 0 prozent Schaden wenn nicht getroffen</span>
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+</pre><pre class="codeinput">    <span class="keyword">end</span>
 
 <span class="keyword">end</span>
-</pre><pre class="codeoutput">ans = 
-  FlightPath with no properties.
 </pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
-classdef FlightPath
-    %UNTITLED Summary of this class goes here
-    %   Detailed explanation goes here
-    
-    properties
+%%  Class Header
 
+%   Class Name: FlightPath.m
+%   Call: name = FlightPath()
+%
+%   Zweck: In der Instanz dieser klasse findet die berechnung der Flugbahn
+%   statt. Wieter stellen Instanzen dieser klasse die methode zur
+%   trefferermittlung zu verfügung
+%
+%% Changelog
+% * Version 00.00.01  07.10.15  Raphael Waltenspül    Erstellt des Main
+% Objekts, noch nicht Objekt Orientiert.
+% * Version 00.00.07  19.10.15  Joel Koch             Einschlag implementier
+% * Version 00.00.08  21.10.15  Raphael Waltenspül    Flugparabel berechnung
+% erster entwurf
+% * Version 00.00.09  22.10.15  Raphael Waltenspül    Koordinaten der
+% Flugparabel berechnen und ausgeben
+% * Version 00.01.00  22.11.15  Raphael Waltenspül    Umbau in
+% Objektoriert erfogt
+% * Version 00.01.04  11.12.15  Raphael Waltenspül   Implementieren der
+% Funktionen des Landscapes in Handle Class Landscape
+% * Version 00.01.06  28.12.15  Raphael Waltenspül   Trefferermittlung
+% * Version 00.01.08  31.12.15  Raphael Waltenspül   Trefferermittlung
+% * Version 00.01.11  02.01.16  Raphael Waltenspül   Aufräumen fertigstellen
+% Gameablauf
+% * Version 01.00.00b  03.01.16  Raphael Waltenspül   Buglist Testen
+% Kommentieren Dokumentieren
+
+%%  Input und Output: 
+% für Methoden, siehe Methoden
+
+%   Konstruktor:   void
+%   Precondition:  
+%
+%   Postcondition: Instanz von FlightPath ist erstellt
+%   
+%	Variables:
+%       Für Instanzvariabeln siehe Properties
+%
+%%   Implementierte Methoden
+
+% [this]= FlightPath()
+% [retCoordinates] = calcCoordinates(this, energie, winkel, Wether, Landscape, Player)
+% [percentDamage] = isHit(this, PlayerArray, playerNr)
+%
+%% Buglist TODO / this
+
+%%  Berechnen der Flugbahn
+classdef  FlightPath < handle
+    properties
+        impact; % Einschlagkoordinatn [x;y]
     end
     
     methods
+            %% FlightPath Konstruktor 
+            % Zweck: Instanz von GameStates ist erzeugt
+            
+            % Pre: 
+            %
+            % Post: FlightPath ist erstellt
+            %
+            % Input: void
+            %
+            % Output: Instanz FlightPath
+            %
+            % Modifizierte Instanzvariable
         function [this]= FlightPath()
             
         end
-        function [] = calcCoordinates(this, energie, winkel, Wether, Landscape, Player)
+            %% FlightPath calcCoordinates 
+            % Zweck: Berechnet die Koordinaten der Flugbahn numerisch
+            % Dies unter berücksichtigung von Wind und Lufztwiederstand
+            
+            % Pre: instanz FlightPath it erstellt
+            % energie ist zwischen 0 und 100000
+            % winkel ist zwischen 0 und 180 Grad
+            % Instanzen Wether, Landscape, Player sind erstellt
+            %
+            % Post: Flugbahnkoordinaten sind berechnet
+            %
+            % Input: instanz FlightPath
+            % energie
+            % winkel 
+            % Wether 
+            % Landscape
+            % Player
+            %
+            % Output: retCoordinates [x;y] REPLACE_WITH_DASH_DASH Array mit den
+            % Flugbahnkoordinaten
+            %
+        function [retCoordinates] = calcCoordinates(this, energie, winkel, Wether, Landscape, Player)
 
             %% Parameter
+            
             % Der Winkel in Grad und Rad
             % 
             % $$ang_{rad} = \pi  \frac{ang_{deg}}{180}$$
             % 
-            angle = 45;
+            angle = winkel;
             angRad = pi() * angle/180;
             
             %% Berechnung der Abbschussgeschwindigkeit
-            % 
+             
             % $$Energie Projektil: E_{prj} \ Geschwindigkeit Projektil: v_{prj} \ Msse Projektil: m_{Projektil}$$
             % 
             % $$Wirkungsgrad Kanon: n_{can} Energie Treibladung $$
@@ -157,45 +375,129 @@ classdef FlightPath
             % $$E_{prj} = E_{trbl} * n_{can}$$
             %
             % $$v_{prj} = \sqrt{ \frac{2 E_{prj}}{m_{prj}}}$$
-            %
-            masseProjektil = 1;
-            energieTreibladung = 20000;
-            wirkungsGradKanone = 0.2;
-            masseKanone = 10000;
-            g = 9.81;
             
-            vStart = sqrt(2*energieTreibladung*wirkungsGradKanone/masseProjektil);
-            vxStart = cos(angRad) * vStart;
-            vyStart = sin(angRad) * vStart;
-            tmax = 13;
-
-            dichteMedium =1.3;
-            koeffzient = 10;
-            deltaT = 0.10;
-
-            vx = (vxStart);
-            vy = (vyStart);
-            n=1;
-            x(n)=1;
-            y(n)=1;
-
+            masseProjektil = 1; % Variable erst in späteren Versionen veränderbar
+            energieTreibladung = energie; % Variable erst in späteren Versionen veränderbar
+            wirkungsGradKanone = 1; % Variable erst in späteren Versionen veränderbar
+            masseKanone = 10000; % Variable erst in späteren Versionen verwendet
+            g = 9.81; % Variable erst in späteren Versionen veränderbar (Wenn Planten implementiert)
+            
+            % Die Energie wird auf das Projektil gerechnet
+            vStart = sqrt( 2 * energieTreibladung * wirkungsGradKanone / masseProjektil);
+            % Die Startgeschwindigkeiten werden berechnet
+            vxStart = cos(angRad) * vStart; %Startgeschwindigkeit in X Richtung
+            vyStart = sin(angRad) * vStart; %Startgeschwindigkeit in Y Richtung
+            
+            % Die Maximale zeit für die Berechnung
+            tmax = 60;
+     
+            dichteMedium = 1.2 *10^(-3); % Dichte der Athmosphäre Variable erst in späteren Versionen veränderbar (Wenn Planten implementiert)
+            koeffzient = 1; % koeffizient des Geschosses
+            
+            %deltaT = 0.001; % Schrittweite für die Numerische Berechnung
+            deltaT = 0.002; % Schrittweite für die Numerische Berechnung geändert Joel Koch 4.1.16: Sonst reichts nicht beim vertikalen Schuss zurück auf den boden.
+            
+            vx = (vxStart); % Startgeschwindigkeit in X Richtung speichern
+            vy = (vyStart); % Startgeschwindigkeit in Y Richtung speichern
+            n=1; % Schleifenzähler auf eins
+            
+            playerStartPos = Player.positionXY; % Startposition speichern
+            x(n) = playerStartPos(1,1);  % Schuss X Startposition festlegen
+            y(n) = playerStartPos(2,1)+10; % Schuss Y Startposition festlegen
+            
+            %% Schleife zur Numerischen berechnung der Flugparabel
             for t = 0 : deltaT : tmax
-
-                ve = [vx, vy]/sqrt(vx^2 + vy^2);
-                fVector = ve * (sqrt(vx^2 + vy^2)^2*koeffzient*dichteMedium)*deltaT;
-                vx = vx - fVector(:,1)*deltaT;
-                vy = vy - g * deltaT - fVector(:,2)*deltaT;
-
+                ve = [vx, vy] / sqrt(vx^2 + vy^2); % Einsvektor für die Kraft des Flugluftwiederstandes
+                fVector = ve * (sqrt(vx^2 + vy^2)^2 * koeffzient * dichteMedium); % Kraft des Flugluftwiederstandes berechnen [Fx;Fy]
+                % änderung v in X richtung berechnen inklusive der
+                % Windrichtung
+                vx = vx - fVector(1,1)*deltaT - (Wether.wind + vx) * abs(Wether.wind + vx) * koeffzient * dichteMedium * deltaT;
+                % änderung v in Y richtung berechnen inklusive der
+                vy = vy - g * deltaT - fVector(1,2)*deltaT;
+                
+                % Speichern der Parameter in einem Array
                 x(n+1) = x(n)+vx * deltaT;
                 y(n+1) = y(n)+vy * deltaT;
-                n = n+1;
-                
+                n = n+1;               
             end
-
-            comet(x,y)
-
             
+            coordinates = [x;y]; % Speichern der Koordinaten
+            
+            landArray = Landscape.getLandscape; % Speichern des Landscapes Array
+            
+            %finalLength = 13000; % Die Finale Länge des Arrays (JOKO: welches Array?? coordinates wäre ja 300000 lang)
+            finalLength = 30000;
+            
+            for ak = 1 : 1 : length(coordinates)
+                xcor = round(coordinates(1,ak)); % gerundter x Wert an stelle ak im Array
+                ycor = coordinates(2,ak); % y Wert an stelle ak im Array
+                
+                % Wenn nun an der Stelle X der Y Wert der Flugbahn kleiner ist als der Y Wert der Landscape so ist dies ein einschlag 
+                % Weil die Array-Grösse des LAndscape-Polygons variabel ist
+                % (Krater), muss di Prüfung mit "inpoygon" erfolgen:
+                
+                % alter Code:
+                %if  ycor < landArray(2, xcor) 
+                %    this.impact = [xcor; ycor];
+                %    finalLength = ak; % Die länge der Flugbahn wird begrenzt
+                %    break
+                %end 
+                
+                in = inpolygon(xcor,ycor,landArray(1,:), landArray(2,:));
+                if in ~= 0 
+                    this.impact = [xcor; ycor];
+                    finalLength = ak; % Die länge der Flugbahn wird begrenzt
+                    fprintf('   => ak limit =  %d' , ak) 
+                    break
+                end
+                    
+                
+                               
+                % Wenn nun die Stelle X grösser ist als 1000 wurde aus dem
+                % bild gefeuert
+                if xcor > 999
+                    this.impact = [1000; ycor];
+                    finalLength = ak;
+                    break
+                end
+                % Wenn nun die Stelle X grösser ist als 4 wurde aus dem
+                % bild gefeuert
+                if xcor < 4
+                    this.impact = [1; ycor];
+                    finalLength = ak;
+                    break
+                end
+            end
+            retCoordinates = coordinates(:,1:finalLength); % Die Koordinaten werden zurückgegeben
+           
         end
+        
+        %% FlightPath isHit 
+        % Zweck: Prüfen ob ein Speiler getroffen wurde
+        
+        % Pre: instanz FlightPath it erstellt,
+        %  playerNr ist bekannt und übergeben
+        %
+        % Post: Ermittelt ob der Spieler mit der playerNr getroffen wurde
+        % und der Schaden wurde zurückgegeben
+        %
+        % Input: instanz FlightPath
+        % PlayerArray REPLACE_WITH_DASH_DASH
+        % playerNr REPLACE_WITH_DASH_DASH
+        %
+        % Output: percentDamageREPLACE_WITH_DASH_DASH Schaden am Spieler
+        %
+        function [percentDamage] = isHit(this, PlayerArray, playerNr)
+           
+            tempPsXY = PlayerArray(playerNr).tankArray; % Spieler wird gespeicher
+            % Prüfen ob impaktkoordinaten iauf dem Spieler liegen
+            if this.impact(1,1) > min(tempPsXY(1,:)) && this.impact(1,1) < max(tempPsXY(1,:))
+                percentDamage = 100; % 100 prozent Schaden wenn getroffen
+            else
+                percentDamage = 0; % 0 prozent Schaden wenn nicht getroffen
+            end
+        end
+        
     end
     
 end

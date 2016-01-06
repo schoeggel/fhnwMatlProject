@@ -1,29 +1,30 @@
-classdef GameParameter < handle 
 %%  Class Header
-%
+
 %   Class Name: GameParameter.m
 %   Call: name = GameParameter()
 %
 %   Zweck: In der Instanz dieser Klasse werden alle vom Spieler
 %   veränderbaren (oder welche es einmal sein könnten) Parameter
-%   gespeichert. Die Modifikation der Parameter über das Menue erfolgt in
-%   Instanzen dieser Klasse
-%
+%   gespeichert. Die Modifikation der Parameter über das Menue 
+%   erfolgt in Instanzen dieser Klasse
+
 %% Changelog
-% Version 00.00.13  12.11.15  Raphael Waltenspül    Menu zur eingabe von
+% * Version 00.00.13  12.11.15  Raphael Waltenspül    Menu zur eingabe von
 % Parametern erstellt
-% Version 00.01.00  22.11.15  Raphael Waltenspül    Umbau in
+% * Version 00.01.00  22.11.15  Raphael Waltenspül    Umbau in
 % Objektoriert erfogt
-% Version 00.01.01  12.11.15  Raphael Waltenspül    Menu zur eingabe von
-% Parametern erwiter auf Objektorientiert
-% Version 00.01.02  10.12.15  Raphael Waltenspül   Neu Erstellen der
+% * Version 00.01.01  12.11.15  Raphael Waltenspül    Menu zur eingabe von
+% Parametern erweitert auf Objektorientiert
+% * Version 00.01.02  10.12.15  Raphael Waltenspül   Neu Erstellen der
 % Handle Classes GameParameter, Gamestates, Wether
-% Version 00.01.11  02.01.16  Raphael Waltenspül   Aufräumen fertigstellen
+% * Version 00.01.11  02.01.16  Raphael Waltenspül   Aufräumen fertigstellen
 % Gameablauf
-% Version 01.00.00b  03.01.16  Raphael Waltenspül   Buglist Testen
+% * Version 01.00.00b  03.01.16  Raphael Waltenspül   Buglist Testen
 % Kommentieren Dokumentieren
-%
-%%  Input und Output: für Methoden, siehe Methoden
+
+%%  Input und Output
+% für Methoden, siehe Methoden
+
 %   Konstruktor:   void
 %   Precondition:  
 %
@@ -33,6 +34,7 @@ classdef GameParameter < handle
 %       Für Instanzvariabeln siehe Properties
 %
 %%   Implementierte Methoden
+
 % [this] = GameParameter()
 % this = setPlanet(this)
 % this = nextPlanet(this)
@@ -43,8 +45,9 @@ classdef GameParameter < handle
 % [standardLivePoints] = getStandardLivePoints(this)
 %
 %% Buglist TODO / this
-%
-    
+
+%Classdef
+classdef GameParameter < handle 
     properties (GetAccess=public)
         standardLivepoints = 100; % Stadarwert der Lebenspunkte eines Spieler
         playerQuantety = 2; % Stadarwert der Anzahl Mitspieler
@@ -64,6 +67,7 @@ classdef GameParameter < handle
         numberRounds = 10; %% Stadarwert der gewählten anzah Spielrunden
         
         %% Landscape Constants
+        
         % resolution = [x] <== auf diese x-auflösung wird gestreckt/interpoliert.
         % Iteration muss zwingend >= 1 sein. im ersten Druchlauf werden 3
         % Ecken des Berges gesetzt (Linker Rand, Mitte(Berg) und  rechter Rand)

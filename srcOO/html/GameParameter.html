@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>GameParameter</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-12-09"><meta name="DC.source" content="GameParameter.m"><style type="text/css">
+      --><title>GameParameter</title><meta name="generator" content="MATLAB 8.6"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-01-06"><meta name="DC.source" content="GameParameter.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,78 +66,567 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><pre class="codeinput"><span class="keyword">classdef</span> GameParameter
-    <span class="comment">%UNTITLED3 Summary of this class goes here</span>
-    <span class="comment">%   Detailed explanation goes here</span>
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Class Header</a></li><li><a href="#2">Changelog</a></li><li><a href="#3">Input und Output</a></li><li><a href="#4">Implementierte Methoden</a></li><li><a href="#5">Buglist TODO / this</a></li><li><a href="#7">Landscape Constants</a></li><li><a href="#9">GameParameter konstruktor</a></li><li><a href="#10">GameParameter setPlanet</a></li><li><a href="#11">GameParameter nextPlanet</a></li><li><a href="#12">GameParameter nextWind</a></li><li><a href="#13">GameParameter nextMountain</a></li><li><a href="#14">GameParameter nextMode</a></li><li><a href="#15">GameParameter setPlayerQuantety</a></li><li><a href="#16">GameParameter getStandardLivePoints</a></li></ul></div><h2>Class Header<a name="1"></a></h2><pre class="codeinput"><span class="comment">%   Class Name: GameParameter.m</span>
+<span class="comment">%   Call: name = GameParameter()</span>
+<span class="comment">%</span>
+<span class="comment">%   Zweck: In der Instanz dieser Klasse werden alle vom Spieler</span>
+<span class="comment">%   ver&auml;nderbaren (oder welche es einmal sein k&ouml;nnten) Parameter</span>
+<span class="comment">%   gespeichert. Die Modifikation der Parameter &uuml;ber das Menue erfolgt in</span>
+<span class="comment">%   Instanzen dieser Klasse</span>
+<span class="comment">%</span>
+</pre><h2>Changelog<a name="2"></a></h2><div><ul><li>Version 00.00.13  12.11.15  Raphael Waltensp&uuml;l    Menu zur eingabe von Parametern erstellt</li><li>Version 00.01.00  22.11.15  Raphael Waltensp&uuml;l    Umbau in Objektoriert erfogt</li><li>Version 00.01.01  12.11.15  Raphael Waltensp&uuml;l    Menu zur eingabe von Parametern erweitert auf Objektorientiert</li><li>Version 00.01.02  10.12.15  Raphael Waltensp&uuml;l   Neu Erstellen der Handle Classes GameParameter, Gamestates, Wether</li><li>Version 00.01.11  02.01.16  Raphael Waltensp&uuml;l   Aufr&auml;umen fertigstellen Gameablauf</li><li>Version 01.00.00b  03.01.16  Raphael Waltensp&uuml;l   Buglist Testen Kommentieren Dokumentieren</li></ul></div><h2>Input und Output<a name="3"></a></h2><pre class="codeinput"><span class="comment">%f&uuml;r Methoden, siehe Methoden</span>
+<span class="comment">%   Konstruktor:   void</span>
+<span class="comment">%   Precondition:</span>
+<span class="comment">%</span>
+<span class="comment">%   Postcondition: Ein GameParameter Instanz ist erstellt</span>
+<span class="comment">%</span>
+<span class="comment">%	Variables:</span>
+<span class="comment">%       F&uuml;r Instanzvariabeln siehe Properties</span>
+<span class="comment">%</span>
+</pre><h2>Implementierte Methoden<a name="4"></a></h2><pre class="codeinput"><span class="comment">% [this] = GameParameter()</span>
+<span class="comment">% this = setPlanet(this)</span>
+<span class="comment">% this = nextPlanet(this)</span>
+<span class="comment">% this = nextWind(this)</span>
+<span class="comment">% this = nextMountain(this)</span>
+<span class="comment">% this = nextMode(this)</span>
+<span class="comment">% [this] = setPlayerQuantety(this, playerQuantety)</span>
+<span class="comment">% [standardLivePoints] = getStandardLivePoints(this)</span>
+<span class="comment">%</span>
+</pre><h2>Buglist TODO / this<a name="5"></a></h2><pre class="codeinput"><span class="comment">%Classdef</span>
+<span class="keyword">classdef</span> GameParameter &lt; handle
+    <span class="keyword">properties</span> (GetAccess=public)
+</pre><pre class="codeinput">        standardLivepoints = 100; <span class="comment">% Stadarwert der Lebenspunkte eines Spieler</span>
+        playerQuantety = 2; <span class="comment">% Stadarwert der Anzahl Mitspieler</span>
+        maxPlayerQuantety = 6; <span class="comment">% Stadarwert der maximalen Anzahl Mitspiele</span>
+        planet = <span class="string">'Planet&gt;&gt; earth'</span>; <span class="comment">% Stadarwert des gew&auml;hlten Planetes Text</span>
+        numberPlanet = 1; <span class="comment">% Stadarwert des gew&auml;hlten Planetes Nummer</span>
+        gForce = 9.81; <span class="comment">% Anziehung des gew&auml;hlten Planetes -- Wirksam in sp&auml;terer Version</span>
+        gameMode = <span class="string">'Game Mode&gt;&gt; tactics'</span>; <span class="comment">% Stadarwert des gew&auml;hlten Spielmodes Text</span>
+        numberMode = 1; <span class="comment">% Stadarwert des gew&auml;hlten Spielmodes Nummer</span>
+        wind = <span class="string">'Wind&gt;&gt; medium'</span>; <span class="comment">% Stadarwert des gew&auml;hlten Windst&auml;rke Text</span>
+        numberWind = 2; <span class="comment">% Stadarwert des gew&auml;hlten Windst&auml;rke Nummer</span>
+        windMultiplicator; <span class="comment">% f&uuml;r Planeten vorgesehen -- Wirksam in sp&auml;terer Version</span>
+        atmosphere;        <span class="comment">% f&uuml;r Planeten vorgesehen -- Wirksam in sp&auml;terer Version</span>
+        mountain = <span class="string">'Mountains&gt;&gt; medium'</span>; <span class="comment">%% Stadarwert der gew&auml;hlten Berh&ouml;he Text</span>
+        numberMountain = 2; <span class="comment">%% Stadarwert der gew&auml;hlten Berh&ouml;he Nummer</span>
 
-    <span class="keyword">properties</span>
+        numberRounds = 10; <span class="comment">%% Stadarwert der gew&auml;hlten anzah Spielrunden</span>
+</pre><h2>Landscape Constants<a name="7"></a></h2><p>resolution = [x] &lt;== auf diese x-aufl&ouml;sung wird gestreckt/interpoliert. Iteration muss zwingend &gt;= 1 sein. im ersten Druchlauf werden 3 Ecken des Berges gesetzt (Linker Rand, Mitte(Berg) und  rechter Rand) im 4. Durchlauf werden Korrekturen vorgenommen, Enden fl&auml;cher etc.</p><pre class="codeinput">        RESOLUTION = 1;
+        <span class="comment">% JITTER: Random Abweichung der zwischenschritte</span>
+        <span class="comment">% um diesen Zufallsbereich weicht der Gel&auml;ndepunkt vom Mittelwert der</span>
+        <span class="comment">% seiner Nachbarn ab (100 heisst, der Punkt kann um +- 50 abweichen)</span>
+        JITTER = 40;            <span class="comment">% maximalabweichung vom mittelwert der 2 nachbarn, wenn ein neuer punkt gerechent wird</span>
+        JITTERBALANCE = 0.75;   <span class="comment">% 0.5 bedeutet, der Jitter ist nach oben und unten gleich verteilt. 1= 100% nach oben.</span>
+        DAEMPFUNG= 1.4;         <span class="comment">%Jitter wird nach jeder iteration ged&auml;mpft</span>
+        BERGOFFSET = 55;        <span class="comment">% wie viel h&ouml;her ist die Bergspitze</span>
+        YLIMITS = [20 200];       <span class="comment">% Keine Punkte ausserhalb [von bis] zugelassen.</span>
+        PLATFORMOFFSET=+5;      <span class="comment">% die spieler-orte //</span>
+        POSTSMOOTHING= 10;      <span class="comment">% unterhalb bergrenze wird nachtr&auml;glich gegl&auml;ttet</span>
+        FELSUEBERGANG=[50 70];<span class="comment">% zwischen 60 und 90 H&ouml;he passiert der Fels&uuml;bergang, keine Gl&auml;ttung mehr</span>
+        max_iterations=6;       <span class="comment">% auf 6 stehen lassen! Erzeugt polygon mit (3+2^max_iterations) Ecken</span>
 
-    <span class="keyword">end</span>
+        detonationRadius = 20; <span class="comment">% Stadarwert des Detonationsradios -- Wird in Sp&auml;teren Versionen ev. ge&auml;ndert</span>
+        maxAngle = 180;        <span class="comment">% Stadarwert des maximal einstellbaren Kanonenwinkels</span>
+        maxPower = 100000;     <span class="comment">% Stadarwert der maximal einstellbaren Energie</span>
+        powerLimit = 100000;   <span class="comment">% Energie welche zur Zerst&ouml;rung der kanone f&uuml;hrt</span>
 
-    <span class="keyword">properties</span> (Access=private)
-        standardLivepoints = 100;
-        player = 2;
-        planet = earth;
-        gForce = 9.81;
-    <span class="keyword">end</span>
+        PLOT_W = 1000;  <span class="comment">% briete des Plots</span>
+        PLOT_H = 750;   <span class="comment">% H&ouml;he des Plots</span>
+        axisArray = [0 1000 0 750]; <span class="comment">% Achsen Array</span>
+
+        maxTankPos = 0.3 <span class="comment">%% in welchem Bereich der Arrayl&auml;nge der tank plaziert werden darf</span>
+</pre><pre class="codeinput">    <span class="keyword">end</span>
 
 
-    <span class="keyword">methods</span>
-        <span class="keyword">function</span> this = GameParameter()
+    methods
+</pre><h2>GameParameter konstruktor<a name="9"></a></h2><p>Zweck: Erstellt eine Instanz der GameParameter</p><p>Pre:</p><p>Post: Instanz GameParameter ist erstellt</p><p>Input: void</p><p>Output: this -- Instanz GameParameter</p><pre class="codeinput">        <span class="comment">%y</span>
+        <span class="comment">%</span>
+        <span class="keyword">function</span> [this] = GameParameter()
+
         <span class="keyword">end</span>
+</pre><pre class="codeoutput">
+ans = 
 
-        <span class="keyword">function</span> setPlanet(strPlanet)
-            <span class="keyword">switch</span> strPlanet
-                <span class="keyword">case</span> <span class="string">'earth'</span>
-                <span class="keyword">case</span> <span class="string">'moon'</span>
-                <span class="keyword">case</span> <span class="string">'mars'</span>
-                <span class="keyword">case</span> <span class="string">'europa'</span>
+  GameParameter with properties:
+
+    standardLivepoints: 100
+        playerQuantety: 2
+     maxPlayerQuantety: 6
+                planet: 'Planet&gt;&gt; earth'
+          numberPlanet: 1
+                gForce: 9.8100
+              gameMode: 'Game Mode&gt;&gt; tactics'
+            numberMode: 1
+                  wind: 'Wind&gt;&gt; medium'
+            numberWind: 2
+     windMultiplicator: []
+            atmosphere: []
+              mountain: 'Mountains&gt;&gt; medium'
+        numberMountain: 2
+          numberRounds: 10
+            RESOLUTION: 1
+                JITTER: 40
+         JITTERBALANCE: 0.7500
+             DAEMPFUNG: 1.4000
+            BERGOFFSET: 55
+               YLIMITS: [20 200]
+        PLATFORMOFFSET: 5
+         POSTSMOOTHING: 10
+         FELSUEBERGANG: [50 70]
+        max_iterations: 6
+      detonationRadius: 20
+              maxAngle: 180
+              maxPower: 100000
+            powerLimit: 100000
+                PLOT_W: 1000
+                PLOT_H: 750
+             axisArray: [0 1000 0 750]
+            maxTankPos: 0.3000
+
+</pre><h2>GameParameter setPlanet<a name="10"></a></h2><p>Zweck: Stellt den Planeten ein</p><p>Pre: Instanz GameParameter ist erstellt</p><p>Post: Planet ist eingestellt, Variabeln Modifiziert</p><p>Input: Instanz GameParameter, instanzvariabeln</p><p>Output: Instanz GameParameter, instanzvariabeln</p><p>Modifizierte InstanzVraiabeln:   this.planet   this.gForce   this.numberPlanet</p><pre class="codeinput">        <span class="keyword">function</span> this = setPlanet(this)
+            <span class="keyword">switch</span> this.numberPlanet
+                <span class="keyword">case</span> 1
+                    this.planet = <span class="string">'Planet&gt;&gt; Earth'</span>;
+                    this.gForce = 9.81;
+                <span class="keyword">case</span> 2
+                    this.planet = <span class="string">'Moon&gt;&gt; Moon'</span>;
+                    this.gForce = 9.81;
+                <span class="keyword">case</span> 3
+                    this.planet = <span class="string">'Planet&gt;&gt; Mars'</span>;
+                    this.gForce = 9.81;
+                <span class="keyword">case</span> 4
+                    this.planet = <span class="string">'Jupiter Moon&gt;&gt; Europa'</span>;
+                    this.gForce = 9.81;
+                <span class="keyword">case</span> 5
+                    this.planet = <span class="string">'Jupiter Moon&gt;&gt; Ganymed'</span>;
+                    this.gForce = 9.81;
+                <span class="keyword">case</span> 6
+                    this.planet = <span class="string">'Jupiter Moon&gt;&gt; Io'</span>;
+                    this.gForce = 9.81;
+                <span class="keyword">case</span> 7
+                    this.planet = <span class="string">'Jupiter Moon&gt;&gt; Callisto'</span>;
+                    this.gForce = 9.81;
+                <span class="keyword">case</span> 8
+                    this.planet = <span class="string">'Saturn Moon&gt;&gt; Iapetus'</span>;
+                    this.gForce = 9.81;
+                <span class="keyword">case</span> 9
+                    this.planet = <span class="string">'Saturn Moon&gt;&gt; Titan'</span>;
+                    this.gForce = 9.81;
+                <span class="keyword">case</span> 10
+                    this.planet = <span class="string">'Rosettas Comet&gt;&gt; Juri'</span>;
+                    this.gForce = 9.81;
+                <span class="keyword">case</span> 11
+                    this.planet = <span class="string">'Dwarfplanet&gt;&gt; Pluto'</span>;
+                    this.gForce = 9.81;
+                <span class="keyword">case</span> 12
+                    this.planet = <span class="string">'Exoplanet&gt;&gt; Ypsilon Andromedae c'</span>;
+                    this.gForce = 9.81;
+                <span class="keyword">case</span> 13 <span class="comment">%Gliese 1214 b</span>
+                    this.planet = <span class="string">'Exoplanet&gt;&gt; Gliese 1214 b'</span>;
+                    this.gForce = 9.81;
                 <span class="keyword">otherwise</span>
+                    this.numberPlanet = 0;
             <span class="keyword">end</span>
         <span class="keyword">end</span>
-
-        <span class="keyword">function</span> [standardLivePoints] = getStandardLivePoints(this)
-        standardLivePoints = this.standardLivepoints;
+</pre><h2>GameParameter nextPlanet<a name="11"></a></h2><p>Zweck: Stellt den Planeten um und ruft die Einstellungsmethode f&uuml;r den Planeten auf</p><p>Pre: Instanz GameParameter ist erstellt</p><p>Post: Planet ist umgestellt, Variabeln Modifiziert</p><p>Input: Instanz GameParameter, instanzvariabeln</p><p>Output: Instanz GameParameter, instanzvariabeln</p><p>Modifizierte InstanzVraiabeln:   this.numberPlanet</p><pre class="codeinput">        <span class="keyword">function</span> this = nextPlanet(this)
+            <span class="keyword">if</span> this.numberPlanet == 13
+               this.numberPlanet = 0;
+            <span class="keyword">end</span>
+            this.numberPlanet= this.numberPlanet+1;
+            this.setPlanet();
         <span class="keyword">end</span>
-    <span class="keyword">end</span>
+</pre><h2>GameParameter nextWind<a name="12"></a></h2><p>Zweck: Stellt den Wind um</p><p>Pre: Instanz GameParameter ist erstellt</p><p>Post: Wind ist umgestellt, Variabeln Modifiziert</p><p>Input: Instanz GameParameter, instanzvariabeln</p><p>Output: Instanz GameParameter, instanzvariabeln</p><p>Modifizierte InstanzVraiabeln:   this.wind   this.numberWind</p><pre class="codeinput">        <span class="keyword">function</span> this = nextWind(this)
+            <span class="keyword">if</span> this.numberWind == 3
+               this.numberWind = 0;
+            <span class="keyword">end</span>
+            this.numberWind = this.numberWind + 1;
+            <span class="keyword">switch</span> this.numberWind
+                <span class="keyword">case</span> 1
+                    this.wind = <span class="string">'Wind&gt;&gt; low'</span>;
+
+                <span class="keyword">case</span> 2
+                    this.wind = <span class="string">'Wind&gt;&gt; medium'</span>;
+
+                <span class="keyword">case</span> 3
+                    this.wind = <span class="string">'Wind&gt;&gt; high'</span>;
+                <span class="keyword">otherwise</span>
+                    this.numberWind = 0;
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+</pre><h2>GameParameter nextMountain<a name="13"></a></h2><p>Zweck: Stellt die Bergh&ouml;he um</p><p>Pre: Instanz GameParameter ist erstellt</p><p>Post: Bergh&ouml;he ist umgestellt, Variabeln Modifiziert</p><p>Input: Instanz GameParameter, instanzvariabeln</p><p>Output: Instanz GameParameter, instanzvariabeln</p><p>Modifizierte InstanzVraiabeln:   this.mountain   this.numberMountain   this.BERGOFFSET</p><pre class="codeinput">        <span class="keyword">function</span> this = nextMountain(this)
+            <span class="keyword">if</span> this.numberMountain == 3
+               this.numberMountain = 0;
+            <span class="keyword">end</span>
+            this.numberMountain = this.numberMountain + 1;
+            <span class="keyword">switch</span> this.numberMountain
+                <span class="keyword">case</span> 1
+                    this.mountain = <span class="string">'Mountains&gt;&gt; low'</span>;
+                    this.BERGOFFSET = 25;
+                <span class="keyword">case</span> 2
+                    this.mountain = <span class="string">'Mountains&gt;&gt; medium'</span>;
+                    this.BERGOFFSET = 75;
+                <span class="keyword">case</span> 3
+                    this.mountain = <span class="string">'Mountains&gt;&gt; high'</span>;
+                    this.BERGOFFSET = 115;
+                <span class="keyword">otherwise</span>
+                    this.numberMountain = 1;
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+</pre><h2>GameParameter nextMode<a name="14"></a></h2><p>Zweck: Stellt die Spielmodus um</p><p>Pre: Instanz GameParameter ist erstellt</p><p>Post: Spielmodus ist umgestellt, Variabeln Modifiziert</p><p>Input: Instanz GameParameter, instanzvariabeln</p><p>Output: Instanz GameParameter, instanzvariabeln</p><p>Modifizierte InstanzVraiabeln:   this.numberMode   this.gameMode</p><pre class="codeinput">        <span class="keyword">function</span> this = nextMode(this)
+            <span class="keyword">if</span> this.numberMode == 2
+               this.numberMode = 0;
+            <span class="keyword">end</span>
+            this.numberMode = this.numberMode + 1;
+            <span class="keyword">switch</span> this.numberMode
+                <span class="keyword">case</span> 1
+                    this.gameMode = <span class="string">'Game Mode&gt;&gt; tactics'</span>;
+                <span class="keyword">case</span> 2
+                    this.gameMode = <span class="string">'Game Mode&gt;&gt; agilety'</span>;
+                <span class="keyword">otherwise</span>
+                    this.numberMode = 1;
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+</pre><h2>GameParameter setPlayerQuantety<a name="15"></a></h2><p>Zweck: Stellt die Spieleranzahl ein</p><p>Pre: Instanz GameParameter ist erstellt</p><p>Post: Spieleranzahl ist eingestellt. Variabeln Modifiziert</p><p>Input: Instanz GameParameter, instanzvariabeln  playerQuantety -- Spieler anzahl</p><p>Output: Instanz GameParameter, instanzvariabeln</p><p>Modifizierte InstanzVraiabeln:   this.playerQuantety</p><pre class="codeinput">        <span class="keyword">function</span> [this] = setPlayerQuantety(this, playerQuantety)
+            this.playerQuantety = playerQuantety;
+        <span class="keyword">end</span>
+</pre><h2>GameParameter getStandardLivePoints<a name="16"></a></h2><p>Zweck: Stellt die Spieleranzahl ein</p><p>Pre: Instanz GameParameter ist erstellt</p><p>Post: standardLivePoints sind zur&uuml;ckgegeben</p><p>Input: Instanz GameParameter, instanzvariabeln</p><p>Output: Instanz GameParameter, instanzvariabeln   standardLivePoints -- Standardlebenspunkte</p><pre class="codeinput">        <span class="keyword">function</span> [standardLivePoints] = getStandardLivePoints(this)
+            standardLivePoints = this.standardLivepoints;
+        <span class="keyword">end</span>
+</pre><pre class="codeinput">    <span class="keyword">end</span>
 
 <span class="keyword">end</span>
-</pre><pre class="codeoutput error">Error using GameParameter
-Unable to update the class 'GameParameter' because the new definition contains an error:
- Undefined function or variable 'earth'.</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015b</a><br></p></div><!--
 ##### SOURCE BEGIN #####
-classdef GameParameter
-    %UNTITLED3 Summary of this class goes here
-    %   Detailed explanation goes here
-    
-    properties
+%%  Class Header
+
+%   Class Name: GameParameter.m
+%   Call: name = GameParameter()
+%
+%   Zweck: In der Instanz dieser Klasse werden alle vom Spieler
+%   veränderbaren (oder welche es einmal sein könnten) Parameter
+%   gespeichert. Die Modifikation der Parameter über das Menue erfolgt in
+%   Instanzen dieser Klasse
+%
+%% Changelog
+% * Version 00.00.13  12.11.15  Raphael Waltenspül    Menu zur eingabe von
+% Parametern erstellt
+% * Version 00.01.00  22.11.15  Raphael Waltenspül    Umbau in
+% Objektoriert erfogt
+% * Version 00.01.01  12.11.15  Raphael Waltenspül    Menu zur eingabe von
+% Parametern erweitert auf Objektorientiert
+% * Version 00.01.02  10.12.15  Raphael Waltenspül   Neu Erstellen der
+% Handle Classes GameParameter, Gamestates, Wether
+% * Version 00.01.11  02.01.16  Raphael Waltenspül   Aufräumen fertigstellen
+% Gameablauf
+% * Version 01.00.00b  03.01.16  Raphael Waltenspül   Buglist Testen
+% Kommentieren Dokumentieren
+%
+%%  Input und Output
+%für Methoden, siehe Methoden
+%   Konstruktor:   void
+%   Precondition:  
+%
+%   Postcondition: Ein GameParameter Instanz ist erstellt
+%   
+%	Variables:
+%       Für Instanzvariabeln siehe Properties
+%
+%%   Implementierte Methoden
+
+% [this] = GameParameter()
+% this = setPlanet(this)
+% this = nextPlanet(this)
+% this = nextWind(this)
+% this = nextMountain(this)
+% this = nextMode(this)
+% [this] = setPlayerQuantety(this, playerQuantety)
+% [standardLivePoints] = getStandardLivePoints(this)
+%
+%% Buglist TODO / this
+
+%Classdef
+classdef GameParameter < handle 
+    properties (GetAccess=public)
+        standardLivepoints = 100; % Stadarwert der Lebenspunkte eines Spieler
+        playerQuantety = 2; % Stadarwert der Anzahl Mitspieler
+        maxPlayerQuantety = 6; % Stadarwert der maximalen Anzahl Mitspiele
+        planet = 'Planet>> earth'; % Stadarwert des gewählten Planetes Text
+        numberPlanet = 1; % Stadarwert des gewählten Planetes Nummer
+        gForce = 9.81; % Anziehung des gewählten Planetes REPLACE_WITH_DASH_DASH Wirksam in späterer Version
+        gameMode = 'Game Mode>> tactics'; % Stadarwert des gewählten Spielmodes Text
+        numberMode = 1; % Stadarwert des gewählten Spielmodes Nummer
+        wind = 'Wind>> medium'; % Stadarwert des gewählten Windstärke Text
+        numberWind = 2; % Stadarwert des gewählten Windstärke Nummer
+        windMultiplicator; % für Planeten vorgesehen REPLACE_WITH_DASH_DASH Wirksam in späterer Version
+        atmosphere;        % für Planeten vorgesehen REPLACE_WITH_DASH_DASH Wirksam in späterer Version
+        mountain = 'Mountains>> medium'; %% Stadarwert der gewählten Berhöhe Text
+        numberMountain = 2; %% Stadarwert der gewählten Berhöhe Nummer
         
-    end
+        numberRounds = 10; %% Stadarwert der gewählten anzah Spielrunden
+        
+        %% Landscape Constants
+        % resolution = [x] <== auf diese x-auflösung wird gestreckt/interpoliert.
+        % Iteration muss zwingend >= 1 sein. im ersten Druchlauf werden 3
+        % Ecken des Berges gesetzt (Linker Rand, Mitte(Berg) und  rechter Rand)
+        % im 4. Durchlauf werden Korrekturen vorgenommen, Enden flächer etc.
+        RESOLUTION = 1;
+        % JITTER: Random Abweichung der zwischenschritte
+        % um diesen Zufallsbereich weicht der Geländepunkt vom Mittelwert der
+        % seiner Nachbarn ab (100 heisst, der Punkt kann um +- 50 abweichen)
+        JITTER = 40;            % maximalabweichung vom mittelwert der 2 nachbarn, wenn ein neuer punkt gerechent wird
+        JITTERBALANCE = 0.75;   % 0.5 bedeutet, der Jitter ist nach oben und unten gleich verteilt. 1= 100% nach oben.
+        DAEMPFUNG= 1.4;         %Jitter wird nach jeder iteration gedämpft        
+        BERGOFFSET = 55;        % wie viel höher ist die Bergspitze
+        YLIMITS = [20 200];       % Keine Punkte ausserhalb [von bis] zugelassen. 
+        PLATFORMOFFSET=+5;      % die spieler-orte // 
+        POSTSMOOTHING= 10;      % unterhalb bergrenze wird nachträglich geglättet
+        FELSUEBERGANG=[50 70];% zwischen 60 und 90 Höhe passiert der Felsübergang, keine Glättung mehr
+        max_iterations=6;       % auf 6 stehen lassen! Erzeugt polygon mit (3+2^max_iterations) Ecken
+        
+        detonationRadius = 20; % Stadarwert des Detonationsradios REPLACE_WITH_DASH_DASH Wird in Späteren Versionen ev. geändert
+        maxAngle = 180;        % Stadarwert des maximal einstellbaren Kanonenwinkels
+        maxPower = 100000;     % Stadarwert der maximal einstellbaren Energie
+        powerLimit = 100000;   % Energie welche zur Zerstörung der kanone führt
+        
+        PLOT_W = 1000;  % briete des Plots
+        PLOT_H = 750;   % Höhe des Plots
+        axisArray = [0 1000 0 750]; % Achsen Array
+        
+        maxTankPos = 0.3 %% in welchem Bereich der Arraylänge der tank plaziert werden darf
     
-    properties (Access=private)
-        standardLivepoints = 100;
-        player = 2;
-        planet = earth;
-        gForce = 9.81;
     end
     
 
     methods
-        function this = GameParameter()
+        %% GameParameter konstruktor   
+        % Zweck: Erstellt eine Instanz der GameParameter
+        %
+        % Pre:
+        %
+        % Post: Instanz GameParameter ist erstellt
+        %
+        % Input: void
+        %
+        % Output: this REPLACE_WITH_DASH_DASH Instanz GameParameter
+        %y
+        %
+        function [this] = GameParameter()
+            
         end
         
-        function setPlanet(strPlanet)
-            switch strPlanet
-                case 'earth'
-                case 'moon'
-                case 'mars'
-                case 'europa'   
+        %% GameParameter setPlanet      
+        % Zweck: Stellt den Planeten ein
+        %
+        % Pre: Instanz GameParameter ist erstellt
+        %
+        % Post: Planet ist eingestellt, Variabeln Modifiziert
+        %
+        % Input: Instanz GameParameter, instanzvariabeln
+        %
+        % Output: Instanz GameParameter, instanzvariabeln
+        %
+        % Modifizierte InstanzVraiabeln: 
+        %   this.planet
+        %   this.gForce
+        %   this.numberPlanet
+        %
+        function this = setPlanet(this)
+            switch this.numberPlanet
+                case 1
+                    this.planet = 'Planet>> Earth';
+                    this.gForce = 9.81;
+                case 2
+                    this.planet = 'Moon>> Moon';
+                    this.gForce = 9.81;
+                case 3
+                    this.planet = 'Planet>> Mars';
+                    this.gForce = 9.81;
+                case 4
+                    this.planet = 'Jupiter Moon>> Europa';
+                    this.gForce = 9.81;
+                case 5
+                    this.planet = 'Jupiter Moon>> Ganymed';
+                    this.gForce = 9.81;
+                case 6
+                    this.planet = 'Jupiter Moon>> Io';
+                    this.gForce = 9.81;
+                case 7
+                    this.planet = 'Jupiter Moon>> Callisto';
+                    this.gForce = 9.81;
+                case 8
+                    this.planet = 'Saturn Moon>> Iapetus';
+                    this.gForce = 9.81;
+                case 9 
+                    this.planet = 'Saturn Moon>> Titan';
+                    this.gForce = 9.81;
+                case 10
+                    this.planet = 'Rosettas Comet>> Juri';
+                    this.gForce = 9.81;
+                case 11 
+                    this.planet = 'Dwarfplanet>> Pluto';
+                    this.gForce = 9.81;   
+                case 12
+                    this.planet = 'Exoplanet>> Ypsilon Andromedae c';
+                    this.gForce = 9.81;
+                case 13 %Gliese 1214 b
+                    this.planet = 'Exoplanet>> Gliese 1214 b';
+                    this.gForce = 9.81;
                 otherwise
+                    this.numberPlanet = 0;
             end                    
         end
+       %% GameParameter nextPlanet      
+        % Zweck: Stellt den Planeten um und ruft die Einstellungsmethode
+        % für den Planeten auf
+        %
+        % Pre: Instanz GameParameter ist erstellt
+        %
+        % Post: Planet ist umgestellt, Variabeln Modifiziert
+        %
+        % Input: Instanz GameParameter, instanzvariabeln
+        %
+        % Output: Instanz GameParameter, instanzvariabeln
+        %
+        % Modifizierte InstanzVraiabeln: 
+        %   this.numberPlanet
+        %
+        function this = nextPlanet(this)
+            if this.numberPlanet == 13
+               this.numberPlanet = 0;
+            end
+            this.numberPlanet= this.numberPlanet+1;
+            this.setPlanet();
+        end 
+        %% GameParameter nextWind      
+        % Zweck: Stellt den Wind um
+        %
+        % Pre: Instanz GameParameter ist erstellt
+        %
+        % Post: Wind ist umgestellt, Variabeln Modifiziert
+        %
+        % Input: Instanz GameParameter, instanzvariabeln
+        %
+        % Output: Instanz GameParameter, instanzvariabeln
+        %
+        % Modifizierte InstanzVraiabeln: 
+        %   this.wind
+        %   this.numberWind 
+        %
+        function this = nextWind(this)
+            if this.numberWind == 3
+               this.numberWind = 0;
+            end
+            this.numberWind = this.numberWind + 1;
+            switch this.numberWind
+                case 1
+                    this.wind = 'Wind>> low';
+
+                case 2
+                    this.wind = 'Wind>> medium';
+
+                case 3
+                    this.wind = 'Wind>> high';
+                otherwise
+                    this.numberWind = 0;
+            end
+        end 
+        %% GameParameter nextMountain      
+        % Zweck: Stellt die Berghöhe um
+        %
+        % Pre: Instanz GameParameter ist erstellt
+        %
+        % Post: Berghöhe ist umgestellt, Variabeln Modifiziert
+        %
+        % Input: Instanz GameParameter, instanzvariabeln
+        %
+        % Output: Instanz GameParameter, instanzvariabeln
+        %
+        % Modifizierte InstanzVraiabeln: 
+        %   this.mountain
+        %   this.numberMountain
+        %   this.BERGOFFSET
+        %
+        function this = nextMountain(this)
+            if this.numberMountain == 3
+               this.numberMountain = 0;
+            end
+            this.numberMountain = this.numberMountain + 1;
+            switch this.numberMountain
+                case 1
+                    this.mountain = 'Mountains>> low';
+                    this.BERGOFFSET = 25;
+                case 2
+                    this.mountain = 'Mountains>> medium';
+                    this.BERGOFFSET = 75;
+                case 3
+                    this.mountain = 'Mountains>> high';
+                    this.BERGOFFSET = 115;
+                otherwise
+                    this.numberMountain = 1;
+            end
+        end 
+        %% GameParameter nextMode      
+        % Zweck: Stellt die Spielmodus um
+        %
+        % Pre: Instanz GameParameter ist erstellt
+        %
+        % Post: Spielmodus ist umgestellt, Variabeln Modifiziert
+        %
+        % Input: Instanz GameParameter, instanzvariabeln
+        %
+        % Output: Instanz GameParameter, instanzvariabeln
+        %
+        % Modifizierte InstanzVraiabeln: 
+        %   this.numberMode
+        %   this.gameMode
+        %
+        function this = nextMode(this)
+            if this.numberMode == 2
+               this.numberMode = 0;
+            end
+            this.numberMode = this.numberMode + 1;
+            switch this.numberMode
+                case 1
+                    this.gameMode = 'Game Mode>> tactics';
+                case 2
+                    this.gameMode = 'Game Mode>> agilety';
+                otherwise
+                    this.numberMode = 1;
+            end
+        end 
+        %% GameParameter setPlayerQuantety      
+        % Zweck: Stellt die Spieleranzahl ein
+        %
+        % Pre: Instanz GameParameter ist erstellt
+        %
+        % Post: Spieleranzahl ist eingestellt. Variabeln Modifiziert
+        %
+        % Input: Instanz GameParameter, instanzvariabeln
+        %  playerQuantety REPLACE_WITH_DASH_DASH Spieler anzahl
+        %
+        % Output: Instanz GameParameter, instanzvariabeln
+        %
+        % Modifizierte InstanzVraiabeln: 
+        %   this.playerQuantety
+        %
+        function [this] = setPlayerQuantety(this, playerQuantety)
+            this.playerQuantety = playerQuantety;
+        end
         
+        %% GameParameter getStandardLivePoints      
+        % Zweck: Stellt die Spieleranzahl ein
+        %
+        % Pre: Instanz GameParameter ist erstellt
+        %
+        % Post: standardLivePoints sind zurückgegeben
+        %
+        % Input: Instanz GameParameter, instanzvariabeln
+        %
+        % Output: Instanz GameParameter, instanzvariabeln
+        %   standardLivePoints REPLACE_WITH_DASH_DASH Standardlebenspunkte
+        %
         function [standardLivePoints] = getStandardLivePoints(this)
-        standardLivePoints = this.standardLivepoints;
+            standardLivePoints = this.standardLivepoints;
         end
     end
     

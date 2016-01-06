@@ -1,93 +1,89 @@
-classdef Figure < handle
-%%  Class Header
+%% Class Header
 %
-%   Class Name: Figure.m
-%   Call: name = Figure(GameStates,GameParameter)
+% Class Name: Figure.m
+% Call: name = Figure(GameStates,GameParameter)
 %
-%   Zweck: In dieser Klasse befinden sich alle Methoden zum mit dem User zu Interagieren
-%   Dies beinhalten zeichnen der Menues sowie allen spielelemente, sowie
-%   die Eventhandler
-%   Dies ist die Umfangreichste Klasse des Projektes
-%   Empfehlung für Workaround:
-%   Parent Class für Anzeigeinstanzen
-%   Child für Menu und Gamescreen
-%   Wieter sollte der Powerbar als eigene Klasse implementiert werden
+% Zweck: In dieser Klasse befinden sich alle Methoden zum mit dem User zu Interagieren
+% Dies beinhalten zeichnen der Menues sowie allen spielelemente, sowie
+% die Eventhandler
+% Dies ist die Umfangreichste Klasse des Projektes
+% Empfehlung für Workaround:
+% Parent Class für Anzeigeinstanzen
+% Child für Menu und Gamescreen
+% Wieter sollte der Powerbar als eigene Klasse implementiert werden
 %
 %% Changelog
-% Version 00.01.03  11.12.15  Raphael Waltenspül   Neu Erstellen der
-% Handle Classes Figure
-% Version 00.01.01  12.12.15  Raphael Waltenspül   Menu zur eingabe von
-% Parametern in dieser Klasse implementiert
-% Version 00.01.05  20.12.15  Raphael Waltenspül   Implementieren der
-% Funktione Element Zeichnen, Intersection implementiert
-% Version 00.01.09  31.12.15  Raphael Waltenspül   Implementieren der
-% Funktione Powerbar und Eventhandler in Figure,
-% Version 00.01.10  01.01.16  Raphael Waltenspül   Neu Entwickeln der
-% Buttons / Game Mode Taktik in Figure
-% Version 00.01.11  02.01.16  Raphael Waltenspül   Aufräumen fertigstellen
-% Gameablauf
-% Version 01.00.00b  03.01.16  Raphael Waltenspül   Buglist Testen
-% Kommentieren Dokumentieren
+% * Version 00.01.03  11.12.15  Raphael Waltenspül   Neu Erstellen der Handle Classes Figure
+% * Version 00.01.01  12.12.15  Raphael Waltenspül   Menu zur eingabe von Parametern in dieser Klasse implementiert
+% * Version 00.01.05  20.12.15  Raphael Waltenspül   Implementieren der Funktione Element Zeichnen, Intersection implementiert
+% * Version 00.01.09  31.12.15  Raphael Waltenspül   Implementieren der Funktione Powerbar und Eventhandler in Figure,
+% * Version 00.01.10  01.01.16  Raphael Waltenspül   Neu Entwickeln der Buttons / Game Mode Taktik in Figure
+% * Version 00.01.11  02.01.16  Raphael Waltenspül   Aufräumen fertigstellen Gameablauf
+% * Version 01.00.00b  03.01.16  Raphael Waltenspül   Buglist Testen Kommentieren Dokumentieren
 
-%%  Input und Output: für Methoden, siehe Methoden
-%   Konstruktor:    >> GameStates,GameParameter
-%                   << Figure Instanz
-%   Precondition:   
-%   GameStates,GameParameter sind dem Konstruktor übergeben
+%% Input und Output
+% für Methoden, siehe Methoden
+
+% Konstruktor:    >> GameStates,GameParameter
+%                 << Figure Instanz
+% Precondition:   
+% GameStates,GameParameter sind dem Konstruktor übergeben
 %
-%   Postcondition: 
-%   Erzeugt ein Grafikfenster in dem das Spiel Abläuft, gibt eine Figure
-%   Instanz zurücck
-%   
-%	Variables:
-%       Für Instanzvariabeln siehe Properties
+% Postcondition: 
+% Erzeugt ein Grafikfenster in dem das Spiel Abläuft, gibt eine Figure
+% Instanz zurücck
+% 
+% Variables:
+% Für Instanzvariabeln siehe Properties
 %
-%%   Implementierte Methoden
-%  this = Figure(GameStates,GameParameter)
-%  [] = drawMenue(this)
-%  [] = drawGamescreen(this)    
-%  [] = drawActualPlayer(this, GameState, color)
-%  [] = drawPlayerPoints(this, GameParameter, Player)
-%  [] = drawGameRound(this, GameParameter, GameState)
-%  [] = drawGameButtons(this)       
-%  [] = drawPowerBar(this)       
-%  [] = updatePowerBar(this,power)
-%  [p] = drawInScreen(this,terrain)
-%  [p] = updateInScreen(this, terrain)
-%  [p] = drawElement(this, shape)
-%  [p] = drawElementCol(this,shape,color)
-%  [] = deleteElement(this,p)
-%  [] = updateElement(this,p, shape)
-%  [] = updateElementCol(this,p,shape,color)
-%  [] = drawShockwave(this, impact)    
-%  [newTerrain] = drawImpactCircle(this, terrain, impact)        
-%  [intersections] = getOuterIntersections(this, x1arr, y1arr, centerX, centerY,r)
-%  [] = updateState(this,GameStates)       
-%  [] = updateParameters(this,GameParameter)       ^       
-%  [GameParameter] = getParameters(this)
-%  [fig] = getFig(this)
-%  [power] = getPower(this)
-%  [angel] = getAngle(this)
-%  btnPlayerCountClick(this,source,eventdata)        
-%  btnGameModeClick(this,source,eventdata)        
-%  btnWindClick(this,source,eventdata);        
-%  btnMountainClick(this,source,eventdata)
-%  btnPlanetClick(this,source,eventdata)nd
-%  sldRoundsChange(this,source,eventdata)
-%  btnStartClick(this,source,eventdata)
-%  [] = btnFireClick(this,source,eventdata)
-%  btnAngleClick(this,source,eventdata)
-%  btnPowerClick(this,source,eventdata)
-%  myMouseDownCallBack(this,hObject,~)    
-%  myMouseUpCallBack(this,hObject,~)
+%% Implementierte Methoden
+
+% this = Figure(GameStates,GameParameter)
+% [] = drawMenue(this)
+% [] = drawGamescreen(this)    
+% [] = drawActualPlayer(this, GameState, color)
+% [] = drawPlayerPoints(this, GameParameter, Player)
+% [] = drawGameRound(this, GameParameter, GameState)
+% [] = drawGameButtons(this)       
+% [] = drawPowerBar(this)       
+% [] = updatePowerBar(this,power)
+% [p] = drawInScreen(this,terrain)
+% [p] = updateInScreen(this, terrain)
+% [p] = drawElement(this, shape)
+% [p] = drawElementCol(this,shape,color)
+% [] = deleteElement(this,p)
+% [] = updateElement(this,p, shape)
+% [] = updateElementCol(this,p,shape,color)
+% [] = drawShockwave(this, impact)    
+% [newTerrain] = drawImpactCircle(this, terrain, impact)        
+% [intersections] = getOuterIntersections(this, x1arr, y1arr, centerX, centerY,r)
+% [] = updateState(this,GameStates)       
+% [] = updateParameters(this,GameParameter)       ^       
+% [GameParameter] = getParameters(this)
+% [fig] = getFig(this)
+% [power] = getPower(this)
+% [angel] = getAngle(this)
+% btnPlayerCountClick(this,source,eventdata)        
+% btnGameModeClick(this,source,eventdata)        
+% btnWindClick(this,source,eventdata);        
+% btnMountainClick(this,source,eventdata)
+% btnPlanetClick(this,source,eventdata)nd
+% sldRoundsChange(this,source,eventdata)
+% btnStartClick(this,source,eventdata)
+% [] = btnFireClick(this,source,eventdata)
+% btnAngleClick(this,source,eventdata)
+% btnPowerClick(this,source,eventdata)
+% myMouseDownCallBack(this,hObject,~)    
+% myMouseUpCallBack(this,hObject,~)
 %
-%% Buglist TODO / this
-%%   Empfehlung für Workaround:
-%   Parent Class für Anzeigeinstanzen
-%   Child für Menu und Gamescreen
-%   Wieter sollte der Powerbar als eigene Klasse implementiert werden
+%% Buglist TODO 
+%% Empfehlung für Workaround:
+% Parent Class für Anzeigeinstanzen
+% Child für Menu und Gamescreen
+% Powerbar als eigene Klasse implementieren
 
 %% instanzVariabeln
+classdef Figure < handle
     properties
         screenSize = get(0,'ScreenSize'); %Variable für die grösse des aktuellen Bildshirms
         fireEvent  = 0; % -- variable für Programmsteuerung {0= Schuss nicht erfolgt 1= Schuss erfolgt} 
@@ -122,6 +118,7 @@ classdef Figure < handle
     
     methods
         %% Konstruktor
+        
         % Zweck:
         %
         % Input:
@@ -137,6 +134,7 @@ classdef Figure < handle
         
         %% Zeichnet Menue       
         % Zweck: Zeichnet das Spielmenue mit allen Tasten.
+        
         % Pre: Instanz erstellt
         % Post: Menue ist gezeichnet und Angezeigt
         %
@@ -263,7 +261,8 @@ classdef Figure < handle
             this.fig.Visible = 'on';                  
         end
         
-        %% Zeichnet Spielfeld im Fullscreen Modus       
+        %% Zeichnet Spielfeld im Fullscreen Modus    
+        
         % Zweck: Zeichnet das Spielfeld
         % Pre: Instanz erstellt
         % Post: Menue ist gezeichnet und Angezeigt
@@ -291,6 +290,7 @@ classdef Figure < handle
             this.fig.Color = this.gameStates.BLACK;
             
             %% Fullscreen erstellen
+            
             % Quelle 
             % http://stackoverflow.com/questions/15286458/automatically-maximize-figure-in-matlab
             % http://www.mathworks.com/matlabcentral/answers/98331-is-it-possible-to-maximize-minimize-or-get-the-state-of-my-figure-programmatically-in-matlab
@@ -329,8 +329,7 @@ classdef Figure < handle
              
             %FarbSchema erstellen Joel Koch 4.1.16: (hier) nicht notwendig.
             %colormap(0.4*summer+0.4*flipud(pink)+0.1*flipud(winter));
-            
-            
+                 
             % Verhindern Das der Bildschirm verändert wird
             this.fig.Resize = 'off';
             hold on;
@@ -338,25 +337,27 @@ classdef Figure < handle
         end
         
         %% Zeichnen Spieler welcher am zug ist auf das Spielfeld
+        
         % Zweck: Zeichnen eines Textes der Angibt, welcher Spieler am Zug
         % ist
         % Pre: Instanz erstellt, Spielfeld erstellt
         % Post: test ist gezeichnet
         %
         % Input:    this Figure Instant, Instanzvariabeln
-        %           GameState -- Status Instanz 
-        %           color -- farbe des Spieler
+        % GameState -- Status Instanz 
+        % color -- farbe des Spieler
         %
         % Output: void
         %
         function [] = drawActualPlayer(this, GameState, color)
-            %% hier werden die Plaziervariabeln berechnet, wo komt der Text
+            % Plaziervariabeln
+            % hier werden die Plaziervariabeln berechnet, wo komt der Text
             % hin
             axes = this.gameParameter.axisArray;
             leftBorder = (this.gameStates.SCREEN_WIDTH - (axes(1,2)+100)) / 2 ;
             fromleftBorder = 10;
             fromTop = this.gameStates.SCREEN_HIGH - 160;
-            %% Player tesxt wird erstellt und parametriert
+            %% Player Text wird erstellt und parametriert
             this.player = uicontrol;
             this.player.Style = 'text';
             this.player.String =  ['Player >> ', num2str(GameState.getActualPlayer)];
@@ -367,6 +368,7 @@ classdef Figure < handle
             this.player.FontSize = this.gameStates.TEXT_SIZE ;
         end
         %% Zeichnen Spieler welcher am zug ist auf das Spielfeld
+        
         % Zweck: Zeichnen eines Textes für jeden Spieler, der Angibt,
         % welcher Spieler wieviele Siegespunkte hat.
         % 
@@ -374,8 +376,8 @@ classdef Figure < handle
         % Post: test ist gezeichnet
         %
         % Input:     this Figure Instant, Instanzvariabeln
-        %           GameParameter -- Parameter Instanz 
-        %           Player -- Array mit Spieler instanzen
+        % GameParameter -- Parameter Instanz 
+        % Player -- Array mit Spieler instanzen
         %
         % Output: void
         %
@@ -407,14 +409,14 @@ classdef Figure < handle
         %% Zeichnen Aktuelle Spielrunde auf das Spielfeld
         % Zweck: Zeichnen eines Textes für die Spielrunde, der angibt,
         % welche Spielrunde aktuell am laufen ist
-        % 
+        
         % Pre: Instanz erstellt, Spielfeld erstellt, Spieler erstellt,
         % Runde gestartet
         % Post: text ist gezeichnet
         %
         % Input:    this Figure Instant, Instanzvariabeln
-        %           GameParameter -- Parameter Instanz 
-        %           GameState -- Status instanz
+        % GameParameter -- Parameter Instanz 
+        % GameState -- Status instanz
         %
         % Output: void
         %
@@ -440,8 +442,8 @@ classdef Figure < handle
         end
         %% Zeichnen der Gamebutton für den Taktik Mode auf das Spielfeld
         % Zweck: Zeichnen aller für den Taktikmode benötigten Spielbuttons auf das Spielfeld
-        %  erstllt die jewiligen Eventhandler zu ein ausgabe
-        %
+        % erstllt die jewiligen Eventhandler zu ein ausgabe
+        
         % Pre: Instanz erstellt, Spielfeld erstellt, taktik mode,
         % Runde gestartet
         % Post: alle Buttons sind gezeichnet ist gezeichnet, alle
@@ -516,7 +518,7 @@ classdef Figure < handle
         end        
         %% Zeichnen der Powerbar für den Geschiklichkeitsmodus
         % Zweck: Zeichnen aller für den Geschiklichkeitsmodus benötigten Spielelemente auf das Spielfeld
-        %  erstllt die jewiligen Eventhandler zu ein / ausgabe
+        % erstllt die jewiligen Eventhandler zu ein / ausgabe
         %
         % Pre: Instanz erstellt, Spielfeld erstellt, Geschiklichkeitsmodus,
         % Runde gestartet
@@ -525,7 +527,7 @@ classdef Figure < handle
         % Input:    this Figure Instant, Instanzvariabeln
         %
         % Output: void
-        %        
+        % 
         function [] = drawPowerBar(this)       
             this.updatePowerBar(0); % ruft update mit wert null = leer auf
             %% eventhandler werden erstellt
@@ -544,17 +546,17 @@ classdef Figure < handle
         
         %% Zeichnen der Landscape im Spielfeld
         % Zweck: Zeichnen des Landschaftsarrays im spielfeld
-        %
+        
         % Pre: Instanz erstellt, Spielfeld erstellt,
         % 
         % Post: Die Landschaft ist gezeichnet
         %
         % Input:  this Figure Instant, Instanzvariabeln
-        %           terrain -- array mit den aktuellen
-        %           Landschaftskoordinaten
+        % terrain -- array mit den aktuellen
+        % Landschaftskoordinaten
         %
         % Output: void
-        %   
+        % 
         function [p] = drawInScreen(this,terrain)
             shapeX = terrain(1,:); % Xwerte des Arrays
             shapeY = terrain(2,:); % Ywerte des Array
@@ -572,7 +574,7 @@ classdef Figure < handle
         %% Zeichnen eines [x,y] Arrays im bildschirm
         % Zweck: Zeichnen eines beliebigen [x,y] Arrays im Spielfeld (Bsp.:
         % Tank, Wtterpfeil)
-        %
+       
         % Pre: Instanz erstellt, Spielfeld erstellt, shape erstellt
         % 
         % Post: das shape ist gezeichnet, ein shapehndeler wurde
@@ -580,7 +582,7 @@ classdef Figure < handle
         % Das shape wird in Schwarz gezeichnet
         %
         % Input:    this Figure Instant, Instanzvariabeln
-        %           shape -- [x,y] Koordinaten
+        % shape -- [x,y] Koordinaten
         %
         % Output: shapehandler
         %
@@ -596,14 +598,14 @@ classdef Figure < handle
         end
         %% Löschen eines Shape
         % Zweck: Löscht ein bereits erstelltes shape
-        %
+        
         % Pre: Instanz erstellt, Spielfeld erstellt, shape gezeichnet,
         % Shapehandler vorhanden
         % 
         % Post: das shape ist gelöschtt
         %
         % Input:    this Figure Instanz, Instanzvariabeln
-        %           p -- shapehandler
+        % p -- shapehandler
         %
         % Output: void
         %
@@ -612,7 +614,7 @@ classdef Figure < handle
         end
         %% Update eines Shape
         % Zweck: Löscht ein bereits erstelltes shape und zeichet dieses neu
-        %
+        
         % Pre: Instanz erstellt, Spielfeld erstellt, shape gezeichnet,
         % Shapehandler vorhanden
         % 
@@ -620,8 +622,8 @@ classdef Figure < handle
         % gezeichnet
         %
         % Input:    this Figure Instanz, Instanzvariabeln
-        %           shape -- [x,y] Koordinaten
-        %           p -- shapehandler
+        % shape -- [x,y] Koordinaten
+        % p -- shapehandler
         %
         % Output: void
         %
@@ -637,17 +639,17 @@ classdef Figure < handle
         end
         %% Zeichnen einer Shockwelle
         % Zweck: Zeichnet eine shockwelle an einer stelle X/Y
-        %
+        
         % Pre: Instanz erstellt, Spielfeld erstellt, shuss berechnet,
         % einschlagkoordinaten vorhanden
         % 
         % Post: auf dem Spielfeld wurde eine Shockwelle angezeigt
         %
         % Input:    this Figure Instanz, Instanzvariabeln
-        %           impact -- [x,y] Koordinaten des einschlages
+        % impact -- [x,y] Koordinaten des einschlages
         %
         % Output: void
-        %   
+        % 
         function [] = drawShockwave(this, impact)
             
             r = this.gameParameter.detonationRadius; % Definition des Explosionsradius
@@ -682,7 +684,7 @@ classdef Figure < handle
         end 
         %% Zeichnen und animieren eines neuen Terrains
         % Zweck: Zeichnet an einer Einschlagstelle einen Krater
-        %
+        
         % Pre: Instanz erstellt, Spielfeld erstellt, schuss berechnet,
         % einschlagkoordinaten vorhanden, terrain vorhanden
         % 
@@ -690,25 +692,25 @@ classdef Figure < handle
         % Terrain wurde zurückgegeben
         %
         % Input:    this Figure Instanz, Instanzvariabeln
-        %           impact -- [x,y] Koordinaten des einschlages
-        %           terrain -- [x,y] KoordinatenArray des Terrains
+        % impact -- [x,y] Koordinaten des einschlages
+        % terrain -- [x,y] KoordinatenArray des Terrains
         %
         % Output: newTerrain -- [x,y] KoordinatenArray des neu moddelierten Terrains
-        %   
+        % 
         function [newTerrain] = drawImpactCircle(this, terrain, impact)        
-            %% Array speichern
+            % Array speichern
             x1arr = terrain(1,:); 
             y1arr = terrain(2,:);
             centerX = impact(1,1);
             centerY = impact(2,1);
             
-            %% RadiusVariabel des einschalg Kraters 
+            % RadiusVariabel des einschalg Kraters 
             r = this.gameParameter.detonationRadius;
             
-            %% Landschaftspunkte ausserhalb des Radius holen:
+            % Landschaftspunkte ausserhalb des Radius holen:
             intersections = this.getOuterIntersections(x1arr, y1arr, centerX, centerY, r);
 
-            %% Für die Verständlichkeit namen vergeben:
+            % Für die Verständlichkeit namen vergeben:
             outerLeftX  =   x1arr(intersections(1));
             outerLeftY  =   y1arr(intersections(1));
             outerRightX =   x1arr(intersections(2));
@@ -716,7 +718,7 @@ classdef Figure < handle
             craterSteps =   intersections(2)-intersections(1)-1;
             craterSteps =   20;   % Anzahl Koordinatenpaare für den Bogen
 
-            %% Kreissegment Start und Endpunkte rechnen in Bogenmass
+            % Kreissegment Start und Endpunkte rechnen in Bogenmass
             % mit complex-zahlen machen, sonst gibts noch
             % QuadrantenFallunterscheidung! Dazu muss aber der Einschlagpunkt die 
             % Koordinate 0+0i haben
@@ -726,23 +728,23 @@ classdef Figure < handle
             z= outerRightX - centerX + (outerRightY-centerY) * i;
             circleEnd=angle(z);
 
-            %% der Bogen muss zwingend im Gegenuhrzeigersinn erfolgen, sonst gibts
+            % der Bogen muss zwingend im Gegenuhrzeigersinn erfolgen, sonst gibts
             % Hügel und andere Fehler.
             if circleEnd<circleStart 
                 circleEnd=circleEnd+2*pi;
             end
             
-            %% Schockwelle zeichnen (Animation, dauert einen Moment)
+            % Schockwelle zeichnen (Animation, dauert einen Moment)
             this.drawShockwave(impact)
 
-            %% rechnet den Explosions-Bogen in n=craterSteps Schritten
+            % rechnet den Explosions-Bogen in n=craterSteps Schritten
             phi=linspace(circleStart, circleEnd, craterSteps);
             arcX=r*cos(phi);
             arcY=r*sin(phi);
             x =arcX + centerX;
             y =arcY + centerY;
 
-            %% Terrain-Matrizen anpassen, ein Stück davon ersetzen
+            % Terrain-Matrizen anpassen, ein Stück davon ersetzen
             partXbefore = x1arr(1:intersections(1));
             partXafter = x1arr(intersections(2):end);
             partYbefore =y1arr(1:intersections(1));
@@ -754,18 +756,18 @@ classdef Figure < handle
         
         %% Rechnen der Outer Intersections
         % Zweck: Rechnet die Outerintersections
-        %
+        
         % Pre: Instanz erstellt, Spielfeld erstellt, schuss berechnet,
         % einschlagkoordinaten vorhanden, terrain vorhanden
         % 
         % Post:     die Intersections sind berechnet
         %
         % Input:    this Figure Instanz, Instanzvariabeln
-        %           x1arr -- X KoordinatenArray des Terrains
-        %           y1arr -- Y KoordinatenArray des Terrains
-        %           centerX -- X Koordinaten des Einschlags 
-        %           centerY -- Y Koordinaten des Einschlags 
-        %           r -- Radius des kraters
+        % x1arr -- X KoordinatenArray des Terrains
+        % y1arr -- Y KoordinatenArray des Terrains
+        % centerX -- X Koordinaten des Einschlags 
+        % centerY -- Y Koordinaten des Einschlags 
+        % r -- Radius des kraters
         % Output: intersections -- 
         % 
         function [intersections] = getOuterIntersections(this, x1arr, y1arr, centerX, centerY, r)
@@ -783,13 +785,13 @@ classdef Figure < handle
         end
         %% Speichern / Update des Statusobjektes
         % Zweck: Speicher ein neues Statusobjekt
-        %
+        
         % Pre: Instanz erstellt, Statusobjekte vorhanden
         % 
         % Post:     das neue Statusobjekt wurde gespeichert
         %
         % Input:    this Figure Instanz, Instanzvariabeln
-        %           GameStates -- Status Instanz
+        % GameStates -- Status Instanz
         % Output: void 
         % 
         function [] = updateState(this,GameStates)       
@@ -797,13 +799,13 @@ classdef Figure < handle
         end
         %% Speichern / Update des Prameterobjektes
         % Zweck: Speicher ein neues Prameterobjekt
-        %
+        
         % Pre: Instanz erstellt, Prameterobjekt vorhanden
         % 
         % Post:     das neue Prameterobjekt wurde gespeichert
         %
         % Input:    this Figure Instanz, Instanzvariabeln
-        %           GameParameter -- Status Instanz
+        % GameParameter -- Status Instanz
         % Output: void 
         % 
         function [] = updateParameters(this,GameParameter)       
@@ -811,13 +813,13 @@ classdef Figure < handle
         end
         %% gibt das Prameterobjektes aus
         % Zweck: Erhalten eines durch das Menue modifizierte Prameterobjektes
-        %
+        
         % Pre: Instanz erstellt, Prameterobjekt vorhanden
         % 
         % Post:     das Parameterobjekurde wurde ausgegeben
         %
         % Input:    this Figure Instanz, Instanzvariabeln
-        %           
+        % 
         % Output:   GameParameter -- Instanz der GameParameter Klasse
         % 
         function [GameParameter] = getParameters(this)
@@ -826,13 +828,13 @@ classdef Figure < handle
         %% Gibt den figurehandler der aktuellen Figure Instanz zurück
         % Zweck: erhalten eines figurehandlers zum Manipulieren (löschen
         % etc,)
-        %
+        
         % Pre: Instanz erstellt, fig handler vorhanden
         % 
         % Post:     das Parameterobjekurde wurde ausgegeben
         %
         % Input:    this Figure Instanz, Instanzvariabeln
-        %           
+        % 
         % Output:   fig -- figurehandler
         % 
         function [fig] = getFig(this)
@@ -841,13 +843,13 @@ classdef Figure < handle
         %% Rückgabe aktuellen Wert des Powerslider
         % Zweck: Auslesen des wertes des powersliders und Rückgabe des
         % Wertes
-        %
+        
         % Pre: Instanz erstellt, Gamebuttons sind, erstellt, Taktik Mode, 
         % 
         % Post:     der Powerwert wurde zurückgegeben
         %
         % Input:    this Figure Instanz, Instanzvariabeln
-        %           
+        % 
         % Output:   power -- Wert für power (double)
         % 
         function [power] = getPower(this)
@@ -856,13 +858,13 @@ classdef Figure < handle
         %% Rückgabe aktuellen Wert des AngleSlider
         % Zweck: Auslesen des wertes des AngleSlider und Rückgabe des
         % Wertes
-        %
+        
         % Pre: Instanz erstellt, Gamebuttons sind, erstellt, Taktik Mode, 
         % 
         % Post:     der Anglewert wurde zurückgegeben in Grad
         %
         % Input:    this Figure Instanz, Instanzvariabeln
-        %           
+        % 
         % Output:   angle -- Wert für angle in Grad (double)
         % 
         function [angel] = getAngle(this)
@@ -870,14 +872,14 @@ classdef Figure < handle
         end
         %% Eventhandler btnPlayerCountClick
         % Zweck: Manipulation der Spieleranzah
-        %
+        
         % Pre: Instanz erstellt, fig handler vorhanden, Gamebuttons sind
         % erstellt, Enthandler ist definiert, Menue gezeicnet
         % 
         % Post:     Die Spieleranzahl ist in den Parametern manipuliert
         %
         % Input:    this Figure Instanz, Instanzvariabeln
-        %           
+        % 
         % Output:   void
         % 
         function btnPlayerCountClick(this,source,eventdata)
@@ -890,14 +892,14 @@ classdef Figure < handle
         end
         %% Eventhandler btnGameModeClick
         % Zweck: Manipulation der Gamemodus
-        %
+        
         % Pre: Instanz erstellt, fig handler vorhanden, Gamebuttons sind
         % erstellt, Enthandler ist definiert, Menue gezeicnet,
         % 
         % Post:     Die Gamemodus ist in den Parametern manipuliert
         %
         % Input:    this Figure Instanz, Instanzvariabeln
-        %           
+        % 
         % Output:   void
         % 
         function btnGameModeClick(this,source,eventdata)
@@ -906,14 +908,14 @@ classdef Figure < handle
         end
         %% Eventhandler btnWindClick
         % Zweck: Manipulation der Windstärke
-        %
+        
         % Pre: Instanz erstellt, fig handler vorhanden, Gamebuttons sind
         % erstellt, Enthandler ist definiert, Menue gezeichnet,
         % 
         % Post:     Die Windstärke ist in den Parametern manipuliert
         %
         % Input:    this Figure Instanz, Instanzvariabeln
-        %           
+        % 
         % Output:   void
         % 
         function btnWindClick(this,source,eventdata)
@@ -922,14 +924,14 @@ classdef Figure < handle
         end
         %% Eventhandler btnMountainClick
         % Zweck: Manipulation der Berghöhe
-        %
+        
         % Pre: Instanz erstellt, fig handler vorhanden, Gamebuttons sind
         % erstellt, Enthandler ist definiert, Menue gezeichnet,
         % 
         % Post:     Die Berghöhe ist in den Parametern manipuliert
         %
         % Input:    this Figure Instanz, Instanzvariabeln
-        %           
+        % 
         % Output:   void
         % 
         function btnMountainClick(this,source,eventdata)
@@ -938,14 +940,14 @@ classdef Figure < handle
         end
         %% Eventhandler btnPlanetClick
         % Zweck: Manipulation der Planteeinstellung
-        %
+        
         % Pre: Instanz erstellt, fig handler vorhanden, Gamebuttons sind
         % erstellt, Enthandler ist definiert, Menue gezeichnet,
         % 
         % Post:     Die Planteeinstellung ist in den Parametern manipuliert
         %
         % Input:    this Figure Instanz, Instanzvariabeln
-        %           
+        % 
         % Output:   void
         % 
         function btnPlanetClick(this,source,eventdata)
@@ -954,14 +956,14 @@ classdef Figure < handle
         end
         %% Eventhandler sldRoundsChange
         % Zweck: Manipulation der Anzahl Runden 
-        %
+        
         % Pre: Instanz erstellt, fig handler vorhanden, Gamebuttons sind
         % erstellt, Enthandler ist definiert, Menue gezeichnet,
         % 
         % Post:     Die Anzahl Runden ist in den Parametern manipuliert
         %
         % Input:    this Figure Instanz, Instanzvariabeln
-        %           
+        % 
         % Output:   void
         % 
         function sldRoundsChange(this,source,eventdata)
@@ -970,14 +972,14 @@ classdef Figure < handle
         end
         %% Eventhandler btnStartClick
         % Zweck: Menue Schliessen und Starten des Spiels
-        %
+        
         % Pre: Instanz erstellt, fig handler vorhanden, Gamebuttons sind
         % erstellt, Enthandler ist definiert, Menue gezeichnet,
         % 
         % Post:     Das Menue ist geschlossen      
         %
         % Input:    this Figure Instanz, Instanzvariabeln
-        %           
+        % 
         % Output:   void
         % 
         function btnStartClick(this,source,eventdata)
@@ -986,14 +988,14 @@ classdef Figure < handle
         end
         %% Eventhandler btnFireClick
         % Zweck: Feuerbefehl des Taktik Modus ausgeben
-        %
+        
         % Pre: Instanz erstellt, Gamebuttons sind erstellt, Enthandler ist
         % definiert, Speilfeld gezeichnet,
         % 
         % Post:     Der Fireevent wurde gesetzt     
         %
         % Input:    this Figure Instanz, Instanzvariabeln
-        %           
+        % 
         % Output:   void
         % 
         function [] = btnFireClick(this,source,eventdata)
@@ -1001,14 +1003,14 @@ classdef Figure < handle
         end
         %% Eventhandler btnAngleClick
         % Zweck: Einstellen des Winkelwertes und ausgeben auf Spielfeld
-        %
+        
         % Pre: Instanz erstellt, Gamebuttons sind erstellt, Enthandler ist
         % definiert, Speilfeld gezeichnet,
         % 
         % Post:     Der Winkel wurde verändert und der neue wert ausgegeben     
         %
         % Input:    this Figure Instanz, Instanzvariabeln
-        %           
+        % 
         % Output:   void
         % 
         function btnAngleClick(this,source,eventdata)
@@ -1017,14 +1019,14 @@ classdef Figure < handle
         end
         %% Eventhandler btnPowerClick
         % Zweck: Einstellen des Powerwertes und ausgeben auf Spielfeld
-        %
+        
         % Pre: Instanz erstellt, Gamebuttons sind erstellt, Enthandler ist
         % definiert, Speilfeld gezeichnet,
         % 
         % Post:     Die power wurde verändert und der neue Wert ausgegeben     
         %
         % Input:    this Figure Instanz, Instanzvariabeln
-        %           
+        % 
         % Output:   void
         % 
         function btnPowerClick(this,source,eventdata)
@@ -1035,14 +1037,14 @@ classdef Figure < handle
         %% Eventhandler myMouseDownCallBack
         % Zweck: Zeigt an das die Muas gedrückt wird. Speicher die
         % Koordinaten des Mauszeigers
-        %
+        
         % Pre: Instanz erstellt, Gamebuttons sind erstellt, Enthandler ist
         % definiert, Speilfeld gezeichnet,
         % 
         % Post:     Die Variable mousedown wird auf eins gesetzt  
         %
         % Input:    this Figure Instanz, Instanzvariabeln
-        %           
+        % 
         % Output:   void
         % 
         function myMouseDownCallBack(this,hObject,~)
@@ -1069,14 +1071,14 @@ classdef Figure < handle
         %% Eventhandler myMouseUpCallBack
         % Zweck: Zeigt an das die Muas losgelassenwird. Speicher die
         % Koordinaten des Mauszeigers
-        %
+        
         % Pre: Instanz erstellt, Gamebuttons sind erstellt, Enthandler ist
         % definiert, Speilfeld gezeichnet,
         % 
         % Post:     Die Variable mousedown wird auf 0 gesetzt  
         %
         % Input:    this Figure Instanz, Instanzvariabeln
-        %           
+        % 
         % Output:   void
         % 
         function myMouseUpCallBack(this,hObject,~)

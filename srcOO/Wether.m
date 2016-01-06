@@ -1,28 +1,28 @@
-classdef Wether < handle
     %%  Class Header
-    %
+    % Zweck: In Instanzen dieser klasse wird das Wetter für das Spiel
+    % erstellt und die änderung des Wetters während des Spiels berechnet.
+    % Weiter wird das Windpfeilshape in AAbhängikeit der Windstärke
+    % erstellt und dessen Farbe ermittelt.
+    
     %   Class Name: Wether.m
     %   Call: name = Wether()
     %
-    %   Zweck: In Instanzen dieser klasse wird das Wetter für das Spiel
-    %   erstellt und die änderung des Wetters während des Spiels berechnet.
-    %   Weiter wird das Windpfeilshape in AAbhängikeit der Windstärke
-    %   erstellt und dessen Farbe ermittelt.
-    %
     %% Changelog
-    % Version 00.00.13  12.11.15  Raphael Waltenspül    Menu zur eingabe von
+    % * Version 00.00.13  12.11.15  Raphael Waltenspül    Menu zur eingabe von
     % Parametern erstellt
-    % Version 00.01.00  22.11.15  Raphael Waltenspül    Umbau in
+    % * Version 00.01.00  22.11.15  Raphael Waltenspül    Umbau in
     % Objektoriert erfogt
-    % Version 00.01.01  12.11.15  Raphael Waltenspül    Menu zur eingabe von
+    % * Version 00.01.01  12.11.15  Raphael Waltenspül    Menu zur eingabe von
     % Parametern erwiter auf Objektorientiert
-    % Version 00.01.02  10.12.15  Raphael Waltenspül   Neu Erstellen der
+    % * Version 00.01.02  10.12.15  Raphael Waltenspül   Neu Erstellen der
     % Handle Classes GameParameter, Gamestates, Wether
-    % Version 00.01.11  02.01.16  Raphael Waltenspül   Aufräumen fertigstellen
+    % * Version 00.01.11  02.01.16  Raphael Waltenspül   Aufräumen fertigstellen
     % Gameablauf
-    % Version 01.00.00b  03.01.16  Raphael Waltenspül   Buglist Testen
-    %
-    %%  Input und Output: für Methoden, siehe Methoden
+    % * Version 01.00.00b  03.01.16  Raphael Waltenspül   Buglist Testen
+    
+    %% Input und Output
+    % für Methoden, siehe Methoden
+    
     %   Konstruktor:   GameParameter
     %   Precondition:  GameParameter sind Instanziert
     %
@@ -32,11 +32,10 @@ classdef Wether < handle
     %       Für Instanzvariabeln siehe Properties
     %
     %%   Implementierte Methoden
-    %
-    %
+
     %% Buglist TODO / this
-    %
-    
+%% Classdef
+ classdef Wether < handle
     properties
         gameParameter; % Instanz der GameParameter
         wind; % die Windstärke auf in x richtung
@@ -45,7 +44,7 @@ classdef Wether < handle
     methods
         %% Wether Konstruktor 
         % Zweck: Instanz von Wether ist erzeugt
-        %
+        
         % Pre: die GameParameter sind Instanziert und übergeben
         %
         % Post: Wether ist erstellt
@@ -66,7 +65,7 @@ classdef Wether < handle
         %% Wether updateWether 
         % Zweck: Die Windstärke wird neu berechnet, dies in abhängikeit von
         % der Aktuellen Windstärke
-        %
+        
         % Pre: Wether ist erstellt
         %
         % Post: this.wind ist neu gerechnet
@@ -85,7 +84,7 @@ classdef Wether < handle
         %% Wether getWindShape 
         % Zweck: Das Windshape wird in Abhängikeit der Windstärke
         % berechnet, und Als [x,y] Array zurückgegeben.
-        %
+        
         % Pre: Wether ist erstellt
         %
         % Post: windVektor ist zurückgegeben
@@ -108,7 +107,7 @@ classdef Wether < handle
         %% Wether getWindShapeColor 
         % Zweck: Die Farbe des Windshape wird in Abhängikeit der Windstärke
         % berechnet, und Als [r,g,b] Array zurückgegeben.
-        %
+        
         % Pre: Wether ist erstellt
         %
         % Post: windVektor ist zurückgegeben

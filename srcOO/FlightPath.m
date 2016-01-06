@@ -1,6 +1,5 @@
-classdef  FlightPath < handle
 %%  Class Header
-%
+
 %   Class Name: FlightPath.m
 %   Call: name = FlightPath()
 %
@@ -9,26 +8,27 @@ classdef  FlightPath < handle
 %   trefferermittlung zu verfügung
 %
 %% Changelog
-% Version 00.00.01  07.10.15  Raphael Waltenspül    Erstellt des Main
+% * Version 00.00.01  07.10.15  Raphael Waltenspül    Erstellt des Main
 % Objekts, noch nicht Objekt Orientiert.
-% Version 00.00.07  19.10.15  Joel Koch             Einschlag implementier
-% Version 00.00.08  21.10.15  Raphael Waltenspül    Flugparabel berechnung
+% * Version 00.00.07  19.10.15  Joel Koch             Einschlag implementier
+% * Version 00.00.08  21.10.15  Raphael Waltenspül    Flugparabel berechnung
 % erster entwurf
-% Version 00.00.09  22.10.15  Raphael Waltenspül    Koordinaten der
+% * Version 00.00.09  22.10.15  Raphael Waltenspül    Koordinaten der
 % Flugparabel berechnen und ausgeben
-% Version 00.01.00  22.11.15  Raphael Waltenspül    Umbau in
+% * Version 00.01.00  22.11.15  Raphael Waltenspül    Umbau in
 % Objektoriert erfogt
-% Version 00.01.04  11.12.15  Raphael Waltenspül   Implementieren der
+% * Version 00.01.04  11.12.15  Raphael Waltenspül   Implementieren der
 % Funktionen des Landscapes in Handle Class Landscape
-% Version 00.01.06  28.12.15  Raphael Waltenspül   Trefferermittlung
-% Version 00.01.08  31.12.15  Raphael Waltenspül   Trefferermittlung
-% Version 00.01.11  02.01.16  Raphael Waltenspül   Aufräumen fertigstellen
+% * Version 00.01.06  28.12.15  Raphael Waltenspül   Trefferermittlung
+% * Version 00.01.08  31.12.15  Raphael Waltenspül   Trefferermittlung
+% * Version 00.01.11  02.01.16  Raphael Waltenspül   Aufräumen fertigstellen
 % Gameablauf
-% Version 01.00.00b  03.01.16  Raphael Waltenspül   Buglist Testen
+% * Version 01.00.00b  03.01.16  Raphael Waltenspül   Buglist Testen
 % Kommentieren Dokumentieren
-%
-%
-%%  Input und Output: für Methoden, siehe Methoden
+
+%%  Input und Output: 
+% für Methoden, siehe Methoden
+
 %   Konstruktor:   void
 %   Precondition:  
 %
@@ -38,82 +38,79 @@ classdef  FlightPath < handle
 %       Für Instanzvariabeln siehe Properties
 %
 %%   Implementierte Methoden
+
 % [this]= FlightPath()
 % [retCoordinates] = calcCoordinates(this, energie, winkel, Wether, Landscape, Player)
 % [percentDamage] = isHit(this, PlayerArray, playerNr)
 %
 %% Buglist TODO / this
-%%   #1
-%  Berechnen der Flugbahn
-%  TODO:
-%  das Programm hat noch bugs mit den Arrays Landscape und
-%  Flighpath zu vergleichen. Dies insbesonder wenn aus dem Bild
-%  geschossen wird. Es kann ein IndexExceedsMatrixDimensions
-%  Exeption geworfen werden. Behandelt wird diese momentran noch, in dem der nächste Spielr am zug ist...
 
+%%  Berechnen der Flugbahn
+classdef  FlightPath < handle
     properties
         impact; % Einschlagkoordinatn [x;y]
     end
     
     methods
-            %% FlightPath Konstruktor 
-            % Zweck: Instanz von GameStates ist erzeugt
-            %
-            % Pre: 
-            %
-            % Post: FlightPath ist erstellt
-            %
-            % Input: void
-            %
-            % Output: Instanz FlightPath
-            %
-            % Modifizierte Instanzvariable
+%% FlightPath Konstruktor 
+% Zweck: Instanz von GameStates ist erzeugt
+
+% Pre: 
+%
+% Post: FlightPath ist erstellt
+%
+% Input: void
+%
+% Output: Instanz FlightPath
+%
+% Modifizierte Instanzvariable
         function [this]= FlightPath()
             
         end
-            %% FlightPath calcCoordinates 
-            % Zweck: Berechnet die Koordinaten der Flugbahn numerisch
-            % Dies unter berücksichtigung von Wind und Lufztwiederstand
-            %
-            % Pre: instanz FlightPath it erstellt
-            % energie ist zwischen 0 und 100000
-            % winkel ist zwischen 0 und 180 Grad
-            % Instanzen Wether, Landscape, Player sind erstellt
-            %
-            % Post: Flugbahnkoordinaten sind berechnet
-            %
-            % Input: instanz FlightPath
-            % energie
-            % winkel 
-            % Wether 
-            % Landscape
-            % Player
-            %
-            % Output: retCoordinates [x;y] -- Array mit den
-            % Flugbahnkoordinaten
-            %
+%% FlightPath calcCoordinates 
+% Zweck: Berechnet die Koordinaten der Flugbahn numerisch
+% Dies unter berücksichtigung von Wind und Lufztwiederstand
+
+% Pre: instanz FlightPath it erstellt
+% energie ist zwischen 0 und 100000
+% winkel ist zwischen 0 und 180 Grad
+% Instanzen Wether, Landscape, Player sind erstellt
+%
+% Post: Flugbahnkoordinaten sind berechnet
+%
+% Input: instanz FlightPath
+% energie
+% winkel 
+% Wether 
+% Landscape
+% Player
+%
+% Output: retCoordinates [x;y] -- Array mit den
+% Flugbahnkoordinaten
+%
         function [retCoordinates] = calcCoordinates(this, energie, winkel, Wether, Landscape, Player)
 
-            %% Parameter
-            % Der Winkel in Grad und Rad
-            % 
-            % $$ang_{rad} = \pi  \frac{ang_{deg}}{180}$$
-            % 
+%% Parameter
+
+% Der Winkel in Grad und Rad
+% 
+% $$ang_{rad} = \pi  \frac{ang_{deg}}{180}$$
+% 
             angle = winkel;
             angRad = pi() * angle/180;
             
-            %% Berechnung der Abbschussgeschwindigkeit
-            % 
-            % $$Energie Projektil: E_{prj} \ Geschwindigkeit Projektil: v_{prj} \ Msse Projektil: m_{Projektil}$$
-            % 
-            % $$Wirkungsgrad Kanon: n_{can} Energie Treibladung $$
-            %
-            % $$E_{prj} = \frac{m_{prj}}{2} v_{prj}^{2}$$
-            %
-            % $$E_{prj} = E_{trbl} * n_{can}$$
-            %
-            % $$v_{prj} = \sqrt{ \frac{2 E_{prj}}{m_{prj}}}$$
-            %
+%% Berechnung der Abbschussgeschwindigkeit
+
+% $$Energie Projektil: E_{prj} \ Geschwindigkeit Projektil: v_{prj} \ Msse Projektil: m_{Projektil}$$
+% 
+% $$Wirkungsgrad Kanon: n_{can} Energie Treibladung $$
+%
+% $$E_{prj} = \frac{m_{prj}}{2} v_{prj}^{2}$$
+%
+% $$E_{prj} = E_{trbl} * n_{can}$$
+%
+% $$v_{prj} = \sqrt{ \frac{2 E_{prj}}{m_{prj}}}$$
+            
             masseProjektil = 1; % Variable erst in späteren Versionen veränderbar
             energieTreibladung = energie; % Variable erst in späteren Versionen veränderbar
             wirkungsGradKanone = 1; % Variable erst in späteren Versionen veränderbar
@@ -210,21 +207,21 @@ classdef  FlightPath < handle
            
         end
         
-        %% FlightPath isHit 
-        % Zweck: Prüfen ob ein Speiler getroffen wurde
-        %
-        % Pre: instanz FlightPath it erstellt,
-        %  playerNr ist bekannt und übergeben
-        %
-        % Post: Ermittelt ob der Spieler mit der playerNr getroffen wurde
-        % und der Schaden wurde zurückgegeben
-        %
-        % Input: instanz FlightPath
-        % PlayerArray --
-        % playerNr --
-        %
-        % Output: percentDamage-- Schaden am Spieler
-        %
+%% FlightPath isHit 
+% Zweck: Prüfen ob ein Speiler getroffen wurde
+
+% Pre: instanz FlightPath it erstellt,
+%  playerNr ist bekannt und übergeben
+%
+% Post: Ermittelt ob der Spieler mit der playerNr getroffen wurde
+% und der Schaden wurde zurückgegeben
+%
+% Input: instanz FlightPath
+% PlayerArray --
+% playerNr --
+%
+% Output: percentDamage-- Schaden am Spieler
+%
         function [percentDamage] = isHit(this, PlayerArray, playerNr)
            
             tempPsXY = PlayerArray(playerNr).tankArray; % Spieler wird gespeicher

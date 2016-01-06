@@ -1,31 +1,30 @@
-classdef GameStates < handle
 %%  Class Header
-%
-%   Class Name: GameParameter.m
-%   Call: name = GameParameter()
-%
 %   Zweck: In der Instanz dieser Klasse werden alle vom Spieler
 %   nicht veränderbaren (Konstanten) Parameter gespeichert. 
 %   Die Modifikation der Parameter erfolgt durch den Programmierer
 %   Weiter dient die Instanz dieser Klasse zum speichern aller
 %   Prommablaufsteurungs releveanter Variablen
-%
+
+%   Class Name: GameParameter.m
+%   Call: name = GameParameter()%
 %% Changelog
-% Version 00.00.01  07.10.15  Raphael Waltenspül    Erstellt des Main
+% * Version 00.00.01  07.10.15  Raphael Waltenspül    Erstellt des Main
 % Objekts, noch nicht Objekt Orientiert.
-% Version 00.00.11  28.10.15  Joel Koch Code Aufgeräumt
-% Version 00.01.00  22.11.15  Raphael Waltenspül    Umbau in
+% * Version 00.00.11  28.10.15  Joel Koch Code Aufgeräumt
+% * Version 00.01.00  22.11.15  Raphael Waltenspül    Umbau in
 % Objektoriert erfogt
-% Version 00.01.02  10.12.15  Raphael Waltenspül   Neu Erstellen der
+% * Version 00.01.02  10.12.15  Raphael Waltenspül   Neu Erstellen der
 % Handle Classes GameParameter, Gamestates, Wether
-% Version 00.01.10  01.01.16  Raphael Waltenspül   Neu Entwickeln der
+% * Version 00.01.10  01.01.16  Raphael Waltenspül   Neu Entwickeln der
 % Buttons / Game Mode Taktik in Figure
-% Version 00.01.11  02.01.16  Raphael Waltenspül   Aufräumen fertigstellen
+% * Version 00.01.11  02.01.16  Raphael Waltenspül   Aufräumen fertigstellen
 % Gameablauf
-% Version 01.00.00b  03.01.16  Raphael Waltenspül   Buglist Testen
+% * Version 01.00.00b  03.01.16  Raphael Waltenspül   Buglist Testen
 % Kommentieren Dokumentieren
 %
-%%  Input und Output: für Methoden, siehe Methoden
+%%  Input und Output
+% für Methoden, siehe Methoden
+
 %   Konstruktor:   void
 %   Precondition:  
 %
@@ -33,8 +32,9 @@ classdef GameStates < handle
 %   
 %	Variables:
 %       Für Instanzvariabeln siehe Properties
-%
+
 %%   Implementierte Methoden
+
 % this = GameStates()
 % this = setMenueProccessed(this, state)
 % state = getProcessState(this)
@@ -46,9 +46,10 @@ classdef GameStates < handle
 % [] = nextPlayer(this, GameParameter, PlayerArray)
 % [gameRound] = getGameRound(this)
 % [gameRound] = nextGameRound(this, GameParameter)
-%
+
 %% Buglist TODO / this
-%
+%% Classdef
+classdef GameStates < handle
     properties (GetAccess = public)
            
            FONT = 'Courier';    % Sans Schriftart für Ganzes Spiel 
@@ -83,7 +84,8 @@ classdef GameStates < handle
     end
     
     properties (Access = private)
-      %% Mit folgenden Parameter wird der Status des Programess Beschrieben
+      %% Programmstatus
+      % Mit folgenden Parameter wird der Status des Programess Beschrieben
       % Anmerkung. Statemacheen wurde noch nicht weiter verfolgtt. Für
       % Komplexere Versionen des Programmes vorgesehen
       menueProcessed = 0;
@@ -99,7 +101,7 @@ classdef GameStates < handle
             
             %% GameState Konstruktor 
             % Zweck: Instanz von GameStates ist erzeugt
-            %
+            
             % Pre:  
             %
             % Post: GameStates ist erstellt
@@ -134,7 +136,7 @@ classdef GameStates < handle
         end
         %% GameState setMenueProccessed 
         % Zweck: Setter zum setzen des Menue States
-        %
+        
         % Pre: Instanz GameState ist erstellt
         %
         % Post: Menustate ist gesetzt
@@ -152,7 +154,7 @@ classdef GameStates < handle
         %% GameState getProcessState      
         % Wird noch nicht verwendet
         % Zweck: Getter für die Statemachine
-        %
+        
         % Pre: Instanz GameState ist erstellt
         %
         % Post: Status ist zurückgegeben
@@ -166,7 +168,7 @@ classdef GameStates < handle
         end
         %% GameState setPlayerInGame 
         % Zweck: Setter für die Anzahl Spieler im Spiel
-        %
+        
         % Pre: Instanz GameState ist erstellt
         %
         % Post: Anzahl Spieler ist gesetzt
@@ -184,7 +186,7 @@ classdef GameStates < handle
         %% GameState decreasePlayerInGame
         % Zweck: Reduziert die Aktuelle anzahl Spieler im Spiel und gibt
         % die neue Anzahl an Spieler zurück.
-        %
+        
         % Pre: Instanz GameState ist erstellt
         %
         % Post: Anzahl Spieler ist reduziert, die neue ANzahl ist
@@ -203,7 +205,7 @@ classdef GameStates < handle
         end 
         %% GameState getPlayerInGame      
         % Zweck: Getter für Anzahl Spieler im Spiel
-        %
+        
         % Pre: Instanz GameState ist erstellt
         %
         % Post: Anzahl Spieler ist zurückgegeben
@@ -217,7 +219,7 @@ classdef GameStates < handle
         end 
         %% GameState setActualPlayer 
         % Zweck: Setter für Aktuellen Spieler
-        %
+        
         % Pre: Instanz GameState ist erstellt
         %
         % Post: Aktueller Spieler ist gesetzt
@@ -234,7 +236,7 @@ classdef GameStates < handle
         end
         %% GameState getActualPlayer      
         % Zweck: Getter für Aktuellen Spieler
-        %
+        
         % Pre: Instanz GameState ist erstellt
         %
         % Post: Aktueller Spieler ist zurückgegeben
@@ -249,7 +251,7 @@ classdef GameStates < handle
         %% GameState nextPlayer      
         % Zweck: Stellt den nächsten Spieler welchernoch über lebenspunkte
         % verfügt ein
-        %
+        
         % Pre: Instanz GameState ist erstellt
         % Instanz GameParameter ist erstellt
         % Instanz Player in PlayerArray sind erstellt
@@ -284,7 +286,7 @@ classdef GameStates < handle
         end
         %% GameState getGameRound      
         % Zweck: Getter für Spielrunde
-        %
+       
         % Pre: Instanz GameState ist erstellt
         %
         % Post: Spielrunde ist zurückgegeben
@@ -298,7 +300,7 @@ classdef GameStates < handle
         end
         %% GameState nextGameRound      
         % Zweck: Stellt die nächste Spielrunde ein
-        %
+        
         % Pre: Instanz GameParameter und GameState ist erstellt
         %
         % Post: neue Spielrunde ist eingestellt

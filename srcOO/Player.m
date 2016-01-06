@@ -1,32 +1,32 @@
-classdef Player < handle
 %%  Class Header
-%
+% Zweck: In der Instanz dieser Klasse werden Alle daten und Methoden zu
+% den einzelnen Spielern bereitgestellt. Dies Beinhaltet Lebenspunket,
+% Namen, Punktestand, sowie die Farbe und Grafischen objekte. Dies um die Spieler
+% für kommende Anpassungen Varaiabel zu halten. (beispielsweise könnte
+% jeder Spieler ein anderes Fahrzeug erhalten)
+
 %   Class Name: Player.m
 %   Call: name = Player(number, name, tankType, GameParameter)
-%
-%   Zweck: In der Instanz dieser Klasse werden Alle daten und Methoden zu
-%   den einzelnen Spielern bereitgestellt. Dies Beinhaltet Lebenspunket,
-%   Namen, Punktestand, sowie die Farbe und Grafischen objekte. Dies um die Spieler
-%   für kommende Anpassungen Varaiabel zu halten. (beispielsweise könnte
-%   jeder Spieler ein anderes Fahrzeug erhalten)
-%
+
 %% Changelog
-% Version 00.00.03  15.10.15  Joel Koch             Panzer erstellt
-% Version 00.00.10  25.10.15  Joel Koch             Panzer Detailliert
+% * Version 00.00.03  15.10.15  Joel Koch             Panzer erstellt
+% * Version 00.00.10  25.10.15  Joel Koch             Panzer Detailliert
 % entworfn
-% Version 00.00.11  28.10.15  Joel Koch Code Aufgeräumt
-% Version 00.01.00  22.11.15  Raphael Waltenspül    Umbau in
+% * Version 00.00.11  28.10.15  Joel Koch Code Aufgeräumt
+% * Version 00.01.00  22.11.15  Raphael Waltenspül    Umbau in
 % Objektoriert erfogt
-% Version 00.01.03  11.12.15  Raphael Waltenspül   Neu Erstellen der
+% * Version 00.01.03  11.12.15  Raphael Waltenspül   Neu Erstellen der
 % Handle Classes Figure, Player
-% Version 00.01.05  20.12.15  Raphael Waltenspül   Implementieren der
+% * Version 00.01.05  20.12.15  Raphael Waltenspül   Implementieren der
 % Funktione Panzer in Player, neu Panzer Farbe, Intersection in Figure,
-% Version 00.01.11  02.01.16  Raphael Waltenspül   Aufräumen fertigstellen
+% * Version 00.01.11  02.01.16  Raphael Waltenspül   Aufräumen fertigstellen
 % Gameablauf
-% Version 01.00.00b  03.01.16  Raphael Waltenspül   Buglist Testen
+% * Version 01.00.00b  03.01.16  Raphael Waltenspül   Buglist Testen
 % Kommentieren Dokumentieren
-%
-%%  Input und Output: für Methoden, siehe Methoden
+
+%%  Input und Output
+% für Methoden, siehe Methoden
+
 %   Konstruktor:     number -- Nummer des Spieler
 %                    name -- Name des Spielers -- Verwendung in
 %                    späteren Versionen
@@ -40,6 +40,7 @@ classdef Player < handle
 %   Postcondition: Eine Player Instanz ist erstellt
 %   
 %%   Implementierte Methoden
+
 % this = Player(number, name, tankType, GameParameter)
 % [] = genTank(this)
 % [color] = getTankColor(this)
@@ -48,8 +49,8 @@ classdef Player < handle
 % [angle] = calcAngle(this, mouseX, mouseY)
 %
 %% Buglist TODO / this
-%
-    
+%% Classdef
+classdef Player < handle
     properties(GetAccess = public)
         number; % Nummer des Spieler
         name; % Name des Spieler
@@ -64,7 +65,7 @@ classdef Player < handle
     methods
         %% Player Konstruktor  
         % Zweck: Erstellt eine Instanz der Klasse Player
-        %
+        
         % Pre: Instanz GameParameter ist erstellt
         %   	Anzahl Spieler ist bekannt, Nummer übergeben
         %
@@ -89,7 +90,7 @@ classdef Player < handle
         
         %% Player genTank
         % Zweck: Zeichnen eines Panzers als XY Array
-        %
+       
         % Pre: Instanz Player ist erstellt
         %
         % Post: XY Array für Polygon ist erstellt
@@ -121,7 +122,7 @@ classdef Player < handle
         end
         %% Player getTankColor
         % Zweck: Jedem Spieler eine eigene Farbe zuweisen
-        %
+        
         % Pre: Instanz Player ist erstellt
         %
         % Post: [r g b] Array für Polygonfarbe ist Spielrspezifisch erstellt
@@ -147,7 +148,7 @@ classdef Player < handle
         %% Player posTank
         % Zweck: den Spieler zufällig in seinem Bereich plazieren. Das
         % Polygon für die plazierung berechnen
-        %
+        
         % Pre:  Instanz Player ist erstellt
         %       Instanz GameParameter ist erstellt
         %       Instanz Landscape ist erstellt
@@ -179,7 +180,7 @@ classdef Player < handle
         
         %% Player getTank
         % Zweck: getteer Methode für das Tank Array
-        %
+        
         % Pre:  Instanz Player ist erstellt
         %       this.tankArray ist erstellt
         %
@@ -195,7 +196,7 @@ classdef Player < handle
         
         %% Player getTank
         % Zweck: berechnen des Winkels zwischen maus und spieler
-        %
+       
         % Pre:  mausposition ist bekannt
         %
         % Post: der relative Winkel zwischen Maus und Fahrzeug wurde
