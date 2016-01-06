@@ -292,7 +292,7 @@ classdef GameParameter < handle
                 case 1
                     this.gameMode = 'Game Mode>> tactics';
                 case 2
-                    this.gameMode = 'Game Mode>> agilety';
+                    this.gameMode = 'Game Mode>> agility';
                 otherwise
                     this.numberMode = 1;
             end

@@ -166,7 +166,7 @@ classdef Figure < handle
             % Eventhandler erstellen
             this.btnPlayerCount = uicontrol;
             this.btnPlayerCount.Style = 'pushbutton';
-            this.btnPlayerCount.String = ['N off Players >> ',  num2str(this.gameParameter.playerQuantety)];
+            this.btnPlayerCount.String = ['N of Players >> ',  num2str(this.gameParameter.playerQuantety)];
             this.btnPlayerCount.Position = [0,this.gameStates.MENUE_HIGH-115,this.gameStates.MENUE_WIDTH,25];
             this.btnPlayerCount.ForegroundColor = this.gameStates.GREEN;
             this.btnPlayerCount.BackgroundColor = this.gameStates.BLACK;

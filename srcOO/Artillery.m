@@ -182,7 +182,7 @@
 %% Buglist 
 %TODO / Gesamtes Projekt
 
-% #1
+% #1 Behoben!
 % In: coordinate = shot.calcCoordinates(power, angle , weth, lndsc, player(state.getActualPlayer));
 % Berechnen der Flugbahn
 % TODO: try catch entfernen
@@ -202,7 +202,8 @@
 
 %% 01 Initialisieren des Spieles
 % löschen des Workspaces
-function [] = Artillery()clear;
+function [] = Artillery()
+clear;
 close all;
 
 param = GameParameter;      % Instanz GameParameter erzeugen
